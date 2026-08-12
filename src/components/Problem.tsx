@@ -5,8 +5,7 @@ export function Problem() {
     <section className="container-page py-20 sm:py-28">
       <div className="mx-auto max-w-3xl">
         <Reveal>
-          <span className="eyebrow">The problem</span>
-          <h2 className="mt-3 text-[28px] leading-tight sm:text-[36px]">
+          <h2 className="text-[28px] leading-tight sm:text-[36px]">
             Live Activities are great. Building them isn&rsquo;t.
           </h2>
         </Reveal>

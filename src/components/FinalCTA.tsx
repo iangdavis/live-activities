@@ -12,7 +12,7 @@ export function FinalCTA() {
           className="relative overflow-hidden rounded-[24px] border border-[color:var(--color-line-strong)] px-6 py-16 text-center sm:px-10 sm:py-20"
           style={{
             background:
-              'radial-gradient(80% 120% at 50% 0%, rgba(109,139,255,0.14), transparent 60%), var(--color-surface)',
+              'radial-gradient(80% 120% at 50% 0%, rgba(255,255,255,0.06), transparent 60%), var(--color-surface)',
           }}
         >
           <h2 className="mx-auto max-w-2xl text-[30px] leading-tight sm:text-[42px]">

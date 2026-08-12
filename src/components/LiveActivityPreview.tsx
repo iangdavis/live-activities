@@ -86,12 +86,12 @@ export function LiveActivityPreview() {
 
   return (
     <div className="relative mx-auto w-full max-w-[320px]" aria-hidden="true">
-      {/* Soft glow behind the device */}
+      {/* Soft glow behind the device — faint emerald tie to the live status */}
       <div
-        className="pointer-events-none absolute -inset-8 -z-10 opacity-70 blur-3xl"
+        className="pointer-events-none absolute -inset-8 -z-10 opacity-60 blur-3xl"
         style={{
           background:
-            'radial-gradient(50% 40% at 50% 30%, rgba(109,139,255,0.22), transparent 70%)',
+            'radial-gradient(50% 40% at 50% 32%, rgba(52,211,153,0.16), transparent 70%)',
         }}
       />
 
@@ -115,10 +115,10 @@ export function LiveActivityPreview() {
         >
           {/* Wallpaper accent */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-60"
+            className="pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-70"
             style={{
               background:
-                'radial-gradient(80% 60% at 50% -10%, rgba(109,139,255,0.18), transparent 70%)',
+                'radial-gradient(80% 60% at 50% -10%, rgba(52,211,153,0.12), transparent 70%)',
             }}
           />
 

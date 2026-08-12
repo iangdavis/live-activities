@@ -16,7 +16,7 @@ export function Footer() {
       <div className="container-page flex flex-col items-center justify-between gap-6 py-10 sm:flex-row">
         <a href="#top" className="flex items-center gap-2.5" aria-label={config.productName}>
           <Logo size={24} />
-          <span className="text-[14px] font-semibold tracking-tight text-[var(--color-ink)]">
+          <span className="font-display text-[14px] font-semibold tracking-tight text-[var(--color-ink)]">
             {config.productName}
           </span>
         </a>

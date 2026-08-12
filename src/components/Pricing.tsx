@@ -43,16 +43,15 @@ export function Pricing() {
 
   return (
     <section id="pricing" className="container-page py-20 sm:py-28">
-      <SectionHeading eyebrow="Pricing" title="Simple pricing.">
+      <SectionHeading title="Simple pricing.">
         The plans we intend to launch with. Join the waitlist to get early
         access.
       </SectionHeading>
 
-      <div className="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
-        {PLANS.map((plan, i) => (
-          <Reveal
+      <Reveal delay={60} className="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
+        {PLANS.map((plan) => (
+          <div
             key={plan.name}
-            delay={i * 90}
             className={`surface-card relative flex flex-col p-7 ${
               plan.featured ? 'ring-1 ring-[color:var(--color-accent)]/30' : ''
             }`}
@@ -94,9 +93,9 @@ export function Pricing() {
             >
               Join the waitlist
             </button>
-          </Reveal>
+          </div>
         ))}
-      </div>
+      </Reveal>
 
       <Reveal delay={120}>
         <p className="mt-8 text-center text-[13px] text-[var(--color-faint)]">

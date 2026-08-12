@@ -100,8 +100,7 @@ export function ApiExample() {
     <section id="api" className="container-page py-20 sm:py-28">
       <div className="mx-auto max-w-2xl text-center">
         <Reveal>
-          <span className="eyebrow">The API</span>
-          <h2 className="mt-3 text-[28px] leading-tight sm:text-[36px]">
+          <h2 className="text-[28px] leading-tight sm:text-[36px]">
             One API. That&rsquo;s the idea.
           </h2>
         </Reveal>

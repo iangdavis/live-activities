@@ -25,7 +25,7 @@ export function Navbar() {
       <nav className="container-page flex h-16 items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5" aria-label={config.productName}>
           <Logo />
-          <span className="text-[15px] font-semibold tracking-tight text-[var(--color-ink)]">
+          <span className="font-display text-[15px] font-semibold tracking-tight text-[var(--color-ink)]">
             {config.productName}
           </span>
         </a>
