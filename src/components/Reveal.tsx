@@ -1,29 +1,18 @@
 import type { ElementType, ReactNode } from 'react'
-import { useReveal } from '../hooks/useReveal'
 
 type RevealProps = {
   children: ReactNode
   as?: ElementType
   className?: string
-  /** Stagger delay in milliseconds. */
+  /** Kept for API compatibility; no longer used (scroll reveal removed). */
   delay?: number
 }
 
-export function Reveal({
-  children,
-  as: Tag = 'div',
-  className = '',
-  delay = 0,
-}: RevealProps) {
-  const { ref, visible } = useReveal<HTMLElement>()
-
-  return (
-    <Tag
-      ref={ref}
-      className={`reveal ${visible ? 'is-visible' : ''} ${className}`}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
-    >
-      {children}
-    </Tag>
-  )
+/**
+ * Previously animated content into view on scroll. That effect was removed by
+ * preference, so this is now a plain layout wrapper that simply renders its
+ * children (keeping existing call sites and layout classes intact).
+ */
+export function Reveal({ children, as: Tag = 'div', className = '' }: RevealProps) {
+  return <Tag className={className}>{children}</Tag>
 }
