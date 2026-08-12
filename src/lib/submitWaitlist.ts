@@ -23,8 +23,17 @@ export async function submitWaitlist(email: string): Promise<SubmitResult> {
     try {
       const res = await fetch(config.waitlistEndpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: trimmed }),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          email: trimmed,
+          // FormSubmit control fields (harmless for a custom endpoint).
+          _subject: `New ${config.productName} waitlist signup`,
+          _template: 'table',
+          _captcha: 'false',
+        }),
       })
       if (!res.ok) {
         return { ok: false, error: 'Something went wrong. Please try again.' }
