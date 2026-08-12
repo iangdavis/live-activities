@@ -5,7 +5,7 @@
 const contactEmail = 'iandavis2@me.com'
 
 export const config = {
-  productName: 'ActivityKit Cloud',
+  productName: 'Live Hive',
   tagline: 'Live Activities, without the backend headache.',
   contactEmail,
   // Set to real URLs when they exist. Empty string => link is omitted.
