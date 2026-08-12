@@ -1,4 +1,4 @@
-# ActivityKit Cloud — Landing Page
+# Live Hive — Landing Page
 
 A polished, production-quality **coming-soon / waitlist** landing page for a
 developer-focused SaaS that provides infrastructure for Apple iOS Live
@@ -57,7 +57,7 @@ src/
 Everything that is likely to change lives in `src/config.ts`:
 
 - `productName` — the product name shown throughout the page (currently a
-  temporary placeholder, `ActivityKit Cloud`).
+  currently `Live Hive`).
 - `links` — footer links (`github`, `x`, `contact`). An empty string omits the
   link rather than fabricating a URL.
 - `waitlistEndpoint` — leave empty to use the local mock submission handler.
