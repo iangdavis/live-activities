@@ -1,24 +1,44 @@
 import { useEffect, useRef, useState } from 'react'
 import { config } from '../config'
-import { submitWaitlist } from '../lib/submitWaitlist'
+import { submitWaitlist, isValidEmail } from '../lib/submitWaitlist'
 import { CheckIcon } from './icons'
 
 type WaitlistModalProps = {
   isOpen: boolean
   onClose: () => void
+  /** When true, open directly in the success state (e.g. after a redirect). */
+  initialSuccess?: boolean
 }
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
-export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
+// Use the reliable native form POST in production; use the local mock in dev so
+// testing doesn't send real emails.
+const useNativeSubmit = Boolean(config.waitlistFormAction) && import.meta.env.PROD
+
+function successRedirectUrl() {
+  if (typeof window === 'undefined') return ''
+  return `${window.location.origin}${window.location.pathname}?waitlist=success`
+}
+
+export function WaitlistModal({
+  isOpen,
+  onClose,
+  initialSuccess = false,
+}: WaitlistModalProps) {
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<Status>('idle')
+  const [status, setStatus] = useState<Status>(initialSuccess ? 'success' : 'idle')
   const [error, setError] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
-  // Reset state shortly after close and focus input on open.
+  // Focus input on open; reset state shortly after close.
   useEffect(() => {
     if (isOpen) {
+      if (initialSuccess) {
+        setStatus('success')
+        return
+      }
       const t = setTimeout(() => inputRef.current?.focus(), 60)
       return () => clearTimeout(t)
     }
@@ -28,7 +48,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
       setError('')
     }, 250)
     return () => clearTimeout(t)
-  }, [isOpen])
+  }, [isOpen, initialSuccess])
 
   // Close on Escape.
   useEffect(() => {
@@ -40,11 +60,25 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     return () => window.removeEventListener('keydown', onKey)
   }, [isOpen, onClose])
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (status === 'submitting') return
+
+    if (!isValidEmail(email)) {
+      setStatus('error')
+      setError('Please enter a valid email address.')
+      return
+    }
+
     setStatus('submitting')
     setError('')
+
+    if (useNativeSubmit) {
+      // Native POST to FormSubmit; the browser navigates and returns via _next.
+      formRef.current?.submit()
+      return
+    }
+
     const result = await submitWaitlist(email)
     if (result.ok) {
       setStatus('success')
@@ -113,13 +147,40 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
               spam, just a note when it&rsquo;s ready.
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-5" noValidate>
+            <form
+              ref={formRef}
+              action={config.waitlistFormAction || undefined}
+              method="POST"
+              onSubmit={handleSubmit}
+              className="mt-5"
+              noValidate
+            >
+              {/* FormSubmit control fields (used by the native POST path). */}
+              <input
+                type="hidden"
+                name="_subject"
+                value={`New ${config.productName} waitlist signup`}
+              />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_next" value={successRedirectUrl()} />
+              {/* Honeypot: bots fill this; humans never see it. */}
+              <input
+                type="text"
+                name="_honey"
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                aria-hidden="true"
+              />
+
               <label htmlFor="waitlist-email" className="sr-only">
                 Email address
               </label>
               <input
                 ref={inputRef}
                 id="waitlist-email"
+                name="email"
                 type="email"
                 inputMode="email"
                 autoComplete="email"

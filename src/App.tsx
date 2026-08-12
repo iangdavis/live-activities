@@ -16,8 +16,8 @@ function App() {
         <Navbar />
         <main>
           <Hero />
-          <Problem />
           <ApiExample />
+          <Problem />
           <Infrastructure />
           <WhyThisExists />
           <Pricing />
