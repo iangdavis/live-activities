@@ -105,13 +105,12 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
           </div>
         ) : (
           <>
-            <span className="eyebrow">Early access</span>
-            <h3 id="waitlist-title" className="mt-3 text-xl font-semibold">
+            <h3 id="waitlist-title" className="text-xl font-semibold">
               Join the waitlist
             </h3>
             <p className="mt-2 text-[15px] leading-relaxed text-[var(--color-muted)]">
-              Be one of the first developers to try {config.productName}. No spam
-              &mdash; just a note when it&rsquo;s ready.
+              Be one of the first developers to try {config.productName}. No
+              spam, just a note when it&rsquo;s ready.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-5" noValidate>

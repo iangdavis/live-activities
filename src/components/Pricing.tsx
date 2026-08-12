@@ -43,7 +43,7 @@ export function Pricing() {
 
   return (
     <section id="pricing" className="container-page py-20 sm:py-28">
-      <SectionHeading eyebrow="Pricing" title="Simple pricing.">
+      <SectionHeading title="Simple pricing.">
         The plans we intend to launch with. Join the waitlist to get early
         access.
       </SectionHeading>

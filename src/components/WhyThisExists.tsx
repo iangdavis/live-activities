@@ -15,8 +15,7 @@ export function WhyThisExists() {
                 'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
             }}
           />
-          <span className="eyebrow">Why this exists</span>
-          <h2 className="mt-3 text-[28px] leading-tight sm:text-[36px]">
+          <h2 className="text-[28px] leading-tight sm:text-[36px]">
             One thing. Done well.
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-[var(--color-muted)] sm:text-[17px]">

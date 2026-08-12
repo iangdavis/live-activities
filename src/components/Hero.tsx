@@ -9,14 +9,7 @@ export function Hero() {
     <section id="top" className="bg-ambient relative overflow-hidden">
       <div className="container-page relative pt-16 pb-20 sm:pt-24 sm:pb-28">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="reveal is-visible inline-flex items-center gap-2 rounded-full border border-[color:var(--color-line-strong)] bg-white/[0.03] px-3 py-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-live)]" />
-            <span className="eyebrow !text-[11px] !text-[var(--color-ink-soft)]">
-              Live Activity Infrastructure
-            </span>
-          </div>
-
-          <h1 className="mt-6 text-[40px] leading-[1.05] sm:text-[58px] sm:leading-[1.03]">
+          <h1 className="text-[40px] leading-[1.05] sm:text-[58px] sm:leading-[1.03]">
             Live Activities, without
             <br className="hidden sm:block" /> the backend headache.
           </h1>
