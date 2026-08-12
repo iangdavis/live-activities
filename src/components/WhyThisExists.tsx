@@ -12,7 +12,7 @@ export function WhyThisExists() {
             className="pointer-events-none absolute inset-x-0 top-0 h-px"
             style={{
               background:
-                'linear-gradient(90deg, transparent, rgba(109,139,255,0.5), transparent)',
+                'linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent)',
             }}
           />
           <span className="eyebrow">Why this exists</span>

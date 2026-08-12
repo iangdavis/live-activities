@@ -54,23 +54,22 @@ export function Infrastructure() {
     <section id="infrastructure" className="container-page py-20 sm:py-28">
       <SectionHeading eyebrow="What we handle" title="We handle the annoying parts." />
 
-      <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-line)] sm:grid-cols-2 lg:grid-cols-3">
-        {FEATURES.map(({ title, body, Icon }, i) => (
-          <Reveal
+      <Reveal delay={60} className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-[color:var(--color-line)] bg-[color:var(--color-line)] sm:grid-cols-2 lg:grid-cols-3">
+        {FEATURES.map(({ title, body, Icon }) => (
+          <div
             key={title}
-            delay={(i % 3) * 70}
             className="group bg-[color:var(--color-surface)] p-6 transition-colors duration-300 hover:bg-[color:var(--color-surface-2)]"
           >
-            <span className="grid h-10 w-10 place-items-center rounded-[10px] border border-[color:var(--color-line-strong)] bg-white/[0.03] text-[var(--color-accent-soft)] transition-colors duration-300 group-hover:text-[var(--color-accent)]">
+            <span className="grid h-10 w-10 place-items-center rounded-[10px] border border-[color:var(--color-line-strong)] bg-white/[0.03] text-[var(--color-ink-soft)] transition-colors duration-300 group-hover:border-[color:var(--color-accent)]/40 group-hover:text-[var(--color-accent)]">
               <Icon />
             </span>
             <h3 className="mt-4 text-[17px] font-semibold">{title}</h3>
             <p className="mt-2 text-[14.5px] leading-relaxed text-[var(--color-muted)]">
               {body}
             </p>
-          </Reveal>
+          </div>
         ))}
-      </div>
+      </Reveal>
     </section>
   )
 }
