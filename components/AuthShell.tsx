@@ -13,12 +13,31 @@ export function AuthShell({
 }) {
   return (
     <div className="bg-ambient flex min-h-screen flex-col">
-      <header className="container-page flex h-16 items-center">
+      <header className="container-page flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <Logo />
           <span className="font-display text-[15px] font-semibold text-[var(--color-ink)]">
             {site.productName}
           </span>
+        </Link>
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-[14px] text-[var(--color-muted)] transition-colors hover:text-[var(--color-ink)]"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M15 18 9 12l6-6" />
+          </svg>
+          Back
         </Link>
       </header>
       <main className="container-page flex flex-1 items-start justify-center py-16">
