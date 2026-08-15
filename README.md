@@ -91,9 +91,10 @@ Never commit `.p8` files, API keys, or `.env`.
    `prisma migrate deploy && prisma generate && next build`).
 
 APNs delivery happens in the API request (HTTP/2 to Apple, a few hundred
-milliseconds). A cron at `/api/cron/deliver` retries any rows left `queued`.
-If Vercel’s execution model is a problem later, run `npm run worker` as a
-small Node process — not a second platform by default.
+milliseconds). `/api/cron/deliver` can retry leftover `queued` rows if you
+call it with `Authorization: Bearer $CRON_SECRET`. Vercel Hobby does not
+support cron, so that schedule is not configured. On Pro you can add it in
+the dashboard, or run `npm run worker` as a small Node process.
 
 ## Apple / APNs
 
