@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { JetBrains_Mono, Manrope, Space_Grotesk } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import { site } from '@/lib/config'
 import { publicAppUrl } from '@/lib/env'
 import './globals.css'
@@ -74,7 +75,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`dark ${manrope.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }
