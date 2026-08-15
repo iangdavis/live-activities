@@ -1,27 +1,41 @@
 {
-  "name": "live-hive-landing",
+  "name": "live-hive",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "0.1.0",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "worker": "tsx scripts/delivery-worker.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.14.0",
+    "bcryptjs": "^3.0.2",
+    "jose": "^6.0.12",
+    "next": "^15.5.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.4",
     "oxlint": "^1.75.0",
-    "tailwindcss": "^4.3.3",
-    "typescript": "~6.0.2",
-    "vite": "^8.2.0"
+    "prisma": "^6.14.0",
+    "tailwindcss": "^4.1.12",
+    "tsx": "^4.20.4",
+    "typescript": "~5.9.2",
+    "vitest": "^3.2.4"
   }
 }

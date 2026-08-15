@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  accounts Account[]
+  events   AnalyticsEvent[]
+}
+
+model Account {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projects Project[]
+
+  @@index([ownerId])
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  accountId String
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name      String
+  publicId  String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appleTeamId      String?
+  appleKeyId       String?
+  apnsKeyEncrypted String?
+  bundleId         String?
+  apnsEnvironment  ApnsEnvironment @default(sandbox)
+
+  apiKeys    ApiKey[]
+  activities Activity[]
+  deliveries Delivery[]
+
+  @@index([accountId])
+}
+
+enum ApnsEnvironment {
+  sandbox
+  production
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name       String
+  keyHash    String    @unique
+  keyPrefix  String
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([projectId])
+}
+
+enum ActivityStatus {
+  active
+  ended
+  expired
+  failed
+}
+
+model Activity {
+  id                 String         @id @default(cuid())
+  projectId          String
+  project            Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  externalActivityId String
+  pushToken          String
+  type               String?
+  status             ActivityStatus @default(active)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  expiresAt          DateTime?
+  endedAt            DateTime?
+  lastDeliveryStatus String?
+  lastDeliveryAt     DateTime?
+
+  deliveries Delivery[]
+
+  @@unique([projectId, externalActivityId])
+  @@index([projectId, createdAt])
+}
+
+enum DeliveryType {
+  update
+  end
+}
+
+enum DeliveryStatus {
+  queued
+  sent
+  failed
+}
+
+model Delivery {
+  id           String         @id @default(cuid())
+  publicId     String         @unique
+  activityId   String
+  activity     Activity       @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  projectId    String
+  project      Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type         DeliveryType
+  status       DeliveryStatus @default(queued)
+  contentState Json?
+  payload      Json?
+  apnsStatus   Int?
+  apnsReason   String?
+  error        String?
+  createdAt    DateTime       @default(now())
+  completedAt  DateTime?
+
+  @@index([activityId, createdAt])
+  @@index([projectId, createdAt])
+  @@index([status, createdAt])
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  name       String
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  accountId  String?
+  projectId  String?
+  properties Json?
+  createdAt  DateTime @default(now())
+
+  @@index([name, createdAt])
+  @@index([userId, name])
+  @@index([projectId, name])
+}
+
+model UsageMonth {
+  id        String @id @default(cuid())
+  projectId String
+  month     String
+  updates   Int    @default(0)
+
+  @@unique([projectId, month])
+}

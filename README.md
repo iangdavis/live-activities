@@ -1,73 +1,113 @@
-# Live Hive — Landing Page
+# Live Hive
 
-A polished, production-quality **coming-soon / waitlist** landing page for a
-developer-focused SaaS that provides infrastructure for Apple iOS Live
-Activities.
+Live Activities, without the backend headache.
 
-> Live Activities, without the backend headache.
-> One simple API to start, update, and end iOS Live Activities. We handle the
-> infrastructure behind it.
+Live Hive is an HTTP API and dashboard for iOS Live Activities. Your backend
+registers an ActivityKit push token, then sends updates and end events. Live
+Hive talks to APNs and records whether Apple accepted the push.
 
-This repository is a **landing page only**. It does not implement the product,
-a dashboard, authentication, APNs, ActivityKit, billing, or any backend. The
-only interactive business functionality is the waitlist email capture.
+This repository is a single [Next.js](https://nextjs.org/) application
+(marketing, docs, dashboard, and `/api/v1`).
 
-## Tech stack
+## Product flow
 
-- [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vite.dev/)
-- [Tailwind CSS v4](https://tailwindcss.com/)
+```
+Your backend  →  Live Hive API  →  APNs  →  iPhone Live Activity
+```
 
-## Getting started
+Public API:
+
+```
+POST /api/v1/activities
+POST /api/v1/activities/:id/update
+POST /api/v1/activities/:id/end
+```
+
+Also served at `/v1/*` for `api.livehive.dev`.
+
+## Local development
 
 ```bash
+cp .env.example .env
+# Generate secrets:
+#   openssl rand -base64 32   # AUTH_SECRET and CRON_SECRET
+#   openssl rand -hex 32      # ENCRYPTION_KEY
+
+docker compose up -d db
 npm install
-npm run dev      # start the dev server
-npm run build    # type-check + production build
-npm run preview  # preview the production build
-npm run lint     # run oxlint
+npx prisma migrate deploy
+npm run dev
 ```
 
-## Project structure
+Open [http://localhost:3000](http://localhost:3000).
 
-```
-src/
-  components/
-    Navbar.tsx
-    Hero.tsx
-    LiveActivityPreview.tsx   # animated iPhone / Dynamic Island mockup
-    Problem.tsx
-    ApiExample.tsx
-    Infrastructure.tsx
-    WhyThisExists.tsx
-    Pricing.tsx
-    FinalCTA.tsx
-    Footer.tsx
-    WaitlistModal.tsx         # email capture + success state
-    WaitlistProvider.tsx      # opens the modal from any CTA
-    ...
-  hooks/useReveal.ts          # subtle scroll-in reveal (respects reduced motion)
-  lib/submitWaitlist.ts       # mock submission, ready for a real endpoint
-  config.ts                   # product name, links, waitlist endpoint
-  App.tsx
+Optional delivery worker (only needed for leftover queued jobs; API routes
+deliver to APNs during the request):
+
+```bash
+npm run worker
 ```
 
-## Configuration
+## Tests
 
-Everything that is likely to change lives in `src/config.ts`:
+```bash
+npm test
+```
 
-- `productName` — the product name shown throughout the page (currently a
-  currently `Live Hive`).
-- `links` — footer links (`github`, `x`, `contact`). An empty string omits the
-  link rather than fabricating a URL.
-- `waitlistEndpoint` — leave empty to use the local mock submission handler.
-  Set it to a real URL to have the form `POST` `{ "email": "..." }` as JSON.
+Integration tests that hit Postgres run when `CI=true` or `RUN_DB_TESTS=1`.
 
-To wire up a real waitlist backend, set `waitlistEndpoint`, or replace the mock
-branch in `src/lib/submitWaitlist.ts` with your provider's SDK call.
+```bash
+docker compose up -d db
+DATABASE_URL=postgresql://livehive:livehive@localhost:5432/livehive \
+  DIRECT_URL=postgresql://livehive:livehive@localhost:5432/livehive \
+  RUN_DB_TESTS=1 npm test
+```
 
-## Accessibility & motion
+## Environment variables
 
-Animations are intentionally restrained and honor
-`prefers-reduced-motion: reduce`. The waitlist modal is keyboard accessible
-(focus on open, `Escape` to close) and locks background scroll while open.
+See `.env.example` for every variable.
+
+| Name | Purpose |
+| --- | --- |
+| `DATABASE_URL` | Pooled Postgres URL |
+| `DIRECT_URL` | Direct Postgres URL for migrations |
+| `AUTH_SECRET` | Signs session cookies |
+| `APP_URL` | Canonical origin (`https://livehive.dev`) |
+| `ENCRYPTION_KEY` | 32-byte hex key that encrypts APNs `.p8` material |
+| `CRON_SECRET` | Bearer token for `/api/cron/deliver` and activation metrics |
+
+Never commit `.p8` files, API keys, or `.env`.
+
+## Production (Vercel)
+
+1. Create a Vercel project from this repo.
+2. Provision managed Postgres (Vercel Postgres, Neon, or similar).
+3. Set the environment variables above.
+4. Attach domains:
+   - `livehive.dev` → the Next.js deployment
+   - `api.livehive.dev` → the same deployment (`/v1/*` rewrites to `/api/v1/*`)
+5. Deploy. `postinstall` runs `prisma generate`. Run `prisma migrate deploy`
+   against production (Vercel build command can be
+   `prisma migrate deploy && prisma generate && next build`).
+
+APNs delivery happens in the API request (HTTP/2 to Apple, a few hundred
+milliseconds). A cron at `/api/cron/deliver` retries any rows left `queued`.
+If Vercel’s execution model is a problem later, run `npm run worker` as a
+small Node process — not a second platform by default.
+
+## Apple / APNs
+
+Each project needs:
+
+- Team ID
+- Key ID
+- `.p8` private key
+- Bundle ID
+- Sandbox or production
+
+Documented at `/docs/apns`. Live Hive does not fake successful delivery.
+
+## What this MVP does not include
+
+Design Studio, SDKs, Android, SSO, team permissions, billing automation,
+Kubernetes, or extra notification providers.
