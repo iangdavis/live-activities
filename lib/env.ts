@@ -16,6 +16,11 @@ function requireEnv(name: string): string {
   return value
 }
 
+export function isEncryptionKeyConfigured(): boolean {
+  const hex = read('ENCRYPTION_KEY')
+  return Boolean(hex && /^[0-9a-fA-F]{64}$/.test(hex))
+}
+
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? 'development',
   isProd: process.env.NODE_ENV === 'production',

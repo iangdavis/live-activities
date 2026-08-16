@@ -1,6 +1,6 @@
 'use server'
 
-import { redirect } from 'next/navigation'
+import { redirect, unstable_rethrow } from 'next/navigation'
 import { getSession } from '@/lib/session'
 import { createProject, updateProjectApns } from '@/lib/projects'
 import { createApiKey, revokeApiKey } from '@/lib/api-keys'
@@ -23,6 +23,7 @@ export async function createProjectAction(formData: FormData) {
     })
     redirect(`/dashboard/projects/${project.id}`)
   } catch (error) {
+    unstable_rethrow(error)
     if (error instanceof ApiError) {
       redirect(`/dashboard/projects?error=${encodeURIComponent(error.message)}`)
     }
@@ -46,12 +47,14 @@ export async function updateApnsAction(formData: FormData) {
     })
     redirect(`/dashboard/projects/${projectId}?saved=1`)
   } catch (error) {
-    if (error instanceof ApiError) {
-      redirect(
-        `/dashboard/projects/${projectId}?error=${encodeURIComponent(error.message)}`,
-      )
-    }
-    throw error
+    unstable_rethrow(error)
+    const message =
+      error instanceof ApiError
+        ? error.message
+        : 'Could not save APNs settings. Check ENCRYPTION_KEY in Vercel (64 hex chars) and redeploy.'
+    redirect(
+      `/dashboard/projects/${projectId}?error=${encodeURIComponent(message)}`,
+    )
   }
 }
 

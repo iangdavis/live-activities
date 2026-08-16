@@ -1,5 +1,6 @@
 import { createHash, createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
 import { env } from './env'
+import { ApiError } from './errors'
 
 const API_KEY_PREFIX = 'lh_live_'
 
@@ -30,9 +31,22 @@ export function generatePublicId(prefix: string): string {
 }
 
 function encryptionKey(): Buffer {
-  const hex = env.encryptionKey
+  let hex: string
+  try {
+    hex = env.encryptionKey
+  } catch {
+    throw new ApiError(
+      503,
+      'misconfigured',
+      'Server is missing ENCRYPTION_KEY. Add a 64-character hex value in Vercel and redeploy.',
+    )
+  }
   if (!/^[0-9a-fA-F]{64}$/.test(hex)) {
-    throw new Error('ENCRYPTION_KEY must be 32 bytes encoded as 64 hex characters')
+    throw new ApiError(
+      503,
+      'misconfigured',
+      'ENCRYPTION_KEY must be 32 bytes as 64 hex characters (openssl rand -hex 32).',
+    )
   }
   return Buffer.from(hex, 'hex')
 }

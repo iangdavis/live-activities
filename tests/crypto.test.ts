@@ -7,6 +7,7 @@ import {
   isApiKeyFormat,
   tokenPreview,
 } from '@/lib/crypto'
+import { ApiError } from '@/lib/errors'
 
 describe('API keys', () => {
   it('generates hashed live keys and never stores plaintext', () => {
@@ -30,6 +31,40 @@ describe('secret encryption', () => {
     const encrypted = encryptSecret(pem)
     expect(encrypted).not.toContain('PRIVATE KEY')
     expect(decryptSecret(encrypted)).toBe(pem)
+  })
+
+  it('throws a clear ApiError when ENCRYPTION_KEY is missing', () => {
+    const previous = process.env.ENCRYPTION_KEY
+    delete process.env.ENCRYPTION_KEY
+    try {
+      expect(() => encryptSecret('secret')).toThrow(ApiError)
+      try {
+        encryptSecret('secret')
+      } catch (error) {
+        expect(error).toBeInstanceOf(ApiError)
+        expect((error as ApiError).status).toBe(503)
+        expect((error as ApiError).message).toMatch(/ENCRYPTION_KEY/)
+      }
+    } finally {
+      process.env.ENCRYPTION_KEY = previous
+    }
+  })
+
+  it('throws a clear ApiError when ENCRYPTION_KEY is not 64 hex characters', () => {
+    const previous = process.env.ENCRYPTION_KEY
+    process.env.ENCRYPTION_KEY = 'not-64-hex'
+    try {
+      expect(() => encryptSecret('secret')).toThrow(ApiError)
+      try {
+        encryptSecret('secret')
+      } catch (error) {
+        expect(error).toBeInstanceOf(ApiError)
+        expect((error as ApiError).status).toBe(503)
+        expect((error as ApiError).message).toMatch(/64 hex/)
+      }
+    } finally {
+      process.env.ENCRYPTION_KEY = previous
+    }
   })
 })
 
