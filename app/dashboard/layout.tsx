@@ -24,6 +24,8 @@ export default async function DashboardLayout({
   const session = await getSession()
   if (!session) redirect('/login')
 
+  const greetingName = session.name?.trim() || session.email.split('@')[0] || 'there'
+
   return (
     <div className="min-h-screen md:grid md:grid-cols-[220px_1fr]">
       <aside className="border-b border-[color:var(--color-line)] md:border-b-0 md:border-r">
@@ -57,7 +59,7 @@ export default async function DashboardLayout({
       </aside>
       <div>
         <header className="flex h-16 items-center justify-end border-b border-[color:var(--color-line)] px-6 text-[13px] text-[var(--color-muted)]">
-          {session.email}
+          Hi, {greetingName}
         </header>
         <div className="px-6 py-8">{children}</div>
       </div>
