@@ -26,7 +26,7 @@ export default async function ActivitiesPage({
         <PageHeader title="Activities" />
         <EmptyState
           title="No activities"
-          body="Register a Live Activity with your API key after creating a project."
+          body="Create a Live Activity with your API key after creating a project."
           actionHref="/docs/getting-started"
           actionLabel="Read the docs"
         />
@@ -53,9 +53,9 @@ export default async function ActivitiesPage({
       {activities.length === 0 ? (
         <EmptyState
           title="No activities in this project"
-          body="POST /api/v1/activities with your API key to register one."
+          body="POST /api/v1/activities with your API key to create one."
           actionHref="/docs/activities/register"
-          actionLabel="Registration docs"
+          actionLabel="Create docs"
         />
       ) : (
         <div className="overflow-x-auto">

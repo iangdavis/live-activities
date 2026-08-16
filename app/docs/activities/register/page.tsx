@@ -1,19 +1,21 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Register a Live Activity',
+  title: 'Create a Live Activity',
   description:
-    'Register an ActivityKit push token with Live Hive so the server can update that Live Activity.',
+    'Create a Live Hive activity from an ActivityKit push token so you can update and end it later.',
   alternates: { canonical: '/docs/activities/register' },
 }
 
 export default function RegisterDocsPage() {
   return (
     <>
-      <h1 className="text-[32px]">Register</h1>
+      <h1 className="text-[32px]">Create</h1>
       <p className="mt-4">
-        After ActivityKit gives you a push-to-start or update token, send it to
-        your backend, then register it with Live Hive.
+        The iOS app starts the Live Activity. Your backend then creates it in
+        Live Hive by sending the push token. This is not a one-time setup:
+        tokens rotate, so call it again whenever ActivityKit gives you a new
+        one.
       </p>
       <pre>
         <code>{`POST /api/v1/activities
@@ -25,8 +27,8 @@ export default function RegisterDocsPage() {
 }`}</code>
       </pre>
       <p>
-        <code>type</code> is optional. Registration is idempotent for{' '}
-        <code>project + activity_id</code>: a second call updates the token.
+        <code>type</code> is optional. Same <code>project + activity_id</code>{' '}
+        replaces the stored token instead of inserting a duplicate.
       </p>
       <p>
         In Swift, observe <code>Activity.pushTokenUpdates</code> or the

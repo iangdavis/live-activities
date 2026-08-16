@@ -7,7 +7,7 @@ const DOCS_NAV = [
   { href: '/docs/getting-started', label: 'Getting started' },
   { href: '/docs/authentication', label: 'Authentication' },
   { href: '/docs/activities', label: 'Activities' },
-  { href: '/docs/activities/register', label: 'Register' },
+  { href: '/docs/activities/register', label: 'Create' },
   { href: '/docs/activities/update', label: 'Update' },
   { href: '/docs/activities/end', label: 'End' },
   { href: '/docs/apns', label: 'APNs' },

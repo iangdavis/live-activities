@@ -3,7 +3,7 @@
 Live Activities, without the backend headache.
 
 Live Hive is an HTTP API and dashboard for iOS Live Activities. Your backend
-registers an ActivityKit push token, then sends updates and end events. Live
+creates an activity from an ActivityKit push token, then sends updates and end events. Live
 Hive talks to APNs and records whether Apple accepted the push.
 
 This repository is a single [Next.js](https://nextjs.org/) application

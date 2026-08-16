@@ -73,7 +73,7 @@ export default function GettingStartedPage() {
           <code>NSSupportsLiveActivities</code>), add a WidgetKit extension, and
           start the activity with a push token.
         </li>
-        <li>From your backend, register that token with Live Hive.</li>
+        <li>From your backend, create the activity in Live Hive (send the push token).</li>
         <li>When your domain state changes, POST an update. When it is done, POST end.</li>
       </ol>
 
@@ -90,13 +90,13 @@ export default function GettingStartedPage() {
       <h2>2. Call Live Hive from your backend</h2>
       <p>
         Your server is written in whatever. Live Hive is three authenticated
-        POSTs: register, update, end. The iOS app does not call these. Keep{' '}
+        POSTs: create, update, end. The iOS app does not call these. Keep{' '}
         <code>lh_live_</code> in server env, never in the binary.
       </p>
       <BackendSnippet />
       <p>
         Same routes:{' '}
-        <Link href="/docs/activities/register">register</Link>,{' '}
+        <Link href="/docs/activities/register">create</Link>,{' '}
         <Link href="/docs/activities/update">update</Link>,{' '}
         <Link href="/docs/activities/end">end</Link>.
       </p>

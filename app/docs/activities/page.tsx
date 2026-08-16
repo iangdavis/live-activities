@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Activities',
   description:
-    'Register, update, and end iOS Live Activities through the Live Hive HTTP API.',
+    'Create, update, and end iOS Live Activities through the Live Hive HTTP API.',
   alternates: { canonical: '/docs/activities' },
 }
 
@@ -19,7 +19,7 @@ export default function ActivitiesDocsPage() {
       <ul>
         <li>
           <Link href="/docs/activities/register">POST /v1/activities</Link> —
-          register a token
+          create (send the push token)
         </li>
         <li>
           <Link href="/docs/activities/update">POST /v1/activities/:id/update</Link>{' '}
@@ -32,8 +32,8 @@ export default function ActivitiesDocsPage() {
       </ul>
       <p>
         <code>activity_id</code> in the API is your ID (for example an order
-        ID). It is unique per project. Registering the same ID again updates the
-        push token instead of creating a duplicate.
+        ID). It is unique per project. Creating the same ID again updates the
+        push token instead of inserting a duplicate.
       </p>
     </>
   )

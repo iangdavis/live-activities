@@ -39,7 +39,7 @@ export function Architecture() {
           ))}
         </div>
         <p className="mt-5 text-center text-[14px] text-[var(--color-muted)]">
-          You never talk to APNs directly. Register a token, then POST updates.
+          You never talk to APNs directly. Create the activity, then POST updates.
         </p>
       </Reveal>
     </section>

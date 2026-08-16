@@ -34,7 +34,7 @@ export default async function DashboardHome() {
         <div className="mt-4">
           <EmptyState
             title="No projects yet"
-            body="Create a project to get an API key and start registering Live Activities."
+            body="Create a project to get an API key and start sending Live Activities."
             actionHref="/dashboard/projects"
             actionLabel="Create project"
           />
@@ -64,7 +64,7 @@ export default async function DashboardHome() {
       </h2>
       {activities.length === 0 ? (
         <p className="mt-3 text-[14px] text-[var(--color-muted)]">
-          No activities registered yet. Follow the{' '}
+          No activities yet. Follow the{' '}
           <Link href="/docs/getting-started" className="text-[var(--color-accent-soft)]">
             getting started guide
           </Link>

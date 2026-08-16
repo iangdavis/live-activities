@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Live Activity push token',
   description:
-    'How ActivityKit push tokens work, where to read them in Swift, and how to register them with a backend.',
+    'How ActivityKit push tokens work, where to read them in Swift, and how to send them to a backend.',
   alternates: { canonical: '/guides/live-activity-push-token' },
 }
 
@@ -20,7 +20,7 @@ export default function Page() {
         After you request a Live Activity, observe{' '}
         <code>activity.pushTokenUpdates</code>. The value is <code>Data</code>;
         send it to your backend as lowercase hex. Tokens can rotate. If you
-        register the same <code>activity_id</code> again, Live Hive replaces
+        create the same <code>activity_id</code> again, Live Hive replaces
         the stored token.
       </p>
       <p>
@@ -29,7 +29,7 @@ export default function Page() {
         uses, and keep sandbox vs production straight.
       </p>
       <p>
-        Register with Live Hive:{' '}
+        Create in Live Hive:{' '}
         <Link href="/docs/activities/register">POST /v1/activities</Link>.
       </p>
     </>
