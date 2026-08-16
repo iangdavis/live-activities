@@ -62,7 +62,8 @@ export default function GettingStartedPage() {
           <Link href="/signup">Create a Live Hive account</Link> and a project.
         </li>
         <li>
-          Create an API key. Copy it once. It starts with <code>lh_live_</code>.
+          Create an API key on the project page. Copy it once. It starts with{' '}
+          <code>lh_live_</code>.
         </li>
         <li>
           Add your Apple APNs credentials on the project page. See{' '}

@@ -23,8 +23,8 @@ export default function AuthDocsPage() {
       </p>
       <h2>Where to get a key</h2>
       <p>
-        Dashboard → API Keys → Create key. The key is scoped to one project. It
-        cannot read or update activities that belong to a different project.
+        Dashboard → the project → Create key. The key is scoped to that project.
+        It cannot read or update activities that belong to a different project.
       </p>
       <h2>Base URL</h2>
       <p>

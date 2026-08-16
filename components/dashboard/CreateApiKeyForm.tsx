@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createApiKeyAction } from '@/app/dashboard/actions'
 
 export function CreateApiKeyForm({ projectId }: { projectId: string }) {
+  const router = useRouter()
   const [plaintext, setPlaintext] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
@@ -18,21 +20,19 @@ export function CreateApiKeyForm({ projectId }: { projectId: string }) {
       return
     }
     setPlaintext(result.plaintext ?? null)
+    router.refresh()
   }
 
   return (
-    <div className="surface-card p-5">
-      <h2 className="text-[16px] text-[var(--color-ink)]">Create API key</h2>
-      <p className="mt-1 text-[13px] text-[var(--color-muted)]">
-        This key can only access this project.
-      </p>
-      <form action={onSubmit} className="mt-3 flex flex-col gap-3 sm:flex-row">
+    <div>
+      <form action={onSubmit} className="mt-4 flex flex-col gap-3 sm:flex-row">
         <input type="hidden" name="projectId" value={projectId} />
         <input
           name="name"
           className="field"
           placeholder="Production"
           defaultValue="Default"
+          aria-label="Key name"
         />
         <button type="submit" disabled={pending} className="btn-primary shrink-0">
           {pending ? 'Creating…' : 'Create key'}

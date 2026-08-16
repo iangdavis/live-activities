@@ -1,6 +1,7 @@
 'use server'
 
 import { redirect, unstable_rethrow } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 import { getSession } from '@/lib/session'
 import { createProject, updateProjectApns } from '@/lib/projects'
 import { createApiKey, revokeApiKey } from '@/lib/api-keys'
@@ -73,6 +74,7 @@ export async function createApiKeyAction(formData: FormData): Promise<{
       projectId,
       name,
     })
+    revalidatePath(`/dashboard/projects/${projectId}`)
     return { plaintext: key.plaintext }
   } catch (error) {
     return {
@@ -86,5 +88,6 @@ export async function revokeApiKeyAction(formData: FormData) {
   const projectId = String(formData.get('projectId') || '')
   const apiKeyId = String(formData.get('apiKeyId') || '')
   await revokeApiKey({ accountId: session.accountId, projectId, apiKeyId })
-  redirect(`/dashboard/api-keys?project=${projectId}`)
+  revalidatePath(`/dashboard/projects/${projectId}`)
+  redirect(`/dashboard/projects/${projectId}`)
 }

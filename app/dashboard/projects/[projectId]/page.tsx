@@ -1,10 +1,11 @@
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { getOwnedProject } from '@/lib/projects'
+import { listApiKeys } from '@/lib/api-keys'
 import { encryptionKeyStatus } from '@/lib/env'
 import { updateApnsAction } from '../../actions'
 import { Notice, PageHeader } from '@/components/dashboard/ui'
-import Link from 'next/link'
+import { ProjectApiKeys } from '@/components/dashboard/ProjectApiKeys'
 
 export default async function ProjectDetailPage({
   params,
@@ -18,6 +19,7 @@ export default async function ProjectDetailPage({
   const { projectId } = await params
   const { error, saved } = await searchParams
   const project = await getOwnedProject(session.accountId, projectId)
+  const keys = await listApiKeys(session.accountId, project.id)
   const apnsConfigured = Boolean(project.apnsKeyEncrypted)
   const encryption = encryptionKeyStatus()
 
@@ -42,13 +44,6 @@ export default async function ProjectDetailPage({
               <dd className="mt-1 font-mono text-[var(--color-ink-soft)]">{project.id}</dd>
             </div>
           </dl>
-          <p className="mt-4 text-[13px] text-[var(--color-muted)]">
-            Secret API keys are created on the{' '}
-            <Link href={`/dashboard/api-keys?project=${project.id}`} className="text-[var(--color-accent-soft)]">
-              API Keys
-            </Link>{' '}
-            page. The full key is shown only once.
-          </p>
         </section>
 
         <section className="surface-card p-6">
@@ -134,6 +129,8 @@ export default async function ProjectDetailPage({
           </form>
         </section>
       </div>
+
+      <ProjectApiKeys projectId={project.id} keys={keys} />
     </div>
   )
 }
