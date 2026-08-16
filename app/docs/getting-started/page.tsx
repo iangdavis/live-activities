@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { BackendSnippet } from '@/components/docs/BackendSnippet'
 
 export const metadata: Metadata = {
   title: 'Getting started',
@@ -47,36 +48,6 @@ func sendTokenToYourBackend(activityId: String, pushToken: String) async throws 
   _ = try await URLSession.shared.data(for: request)
 }`
 
-const BACKEND = `const LIVEHIVE = 'https://livehive.dev/api/v1'
-const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
-
-async function livehive(path, body) {
-  const res = await fetch(\`\${LIVEHIVE}\${path}\`, {
-    method: 'POST',
-    headers: {
-      Authorization: \`Bearer \${KEY}\`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  })
-  if (!res.ok) throw new Error(await res.text())
-  return res.json()
-}
-
-// Phone started the Live Activity and posted the token to you.
-await livehive('/activities', {
-  activity_id: 'abc123',
-  push_token: tokenFromThePhone,
-})
-
-await livehive('/activities/abc123/update', {
-  content_state: { status: 'driver_arriving', eta: 4 },
-})
-
-await livehive('/activities/abc123/end', {
-  content_state: { status: 'delivered', eta: 0 },
-})`
-
 export default function GettingStartedPage() {
   return (
     <>
@@ -122,15 +93,9 @@ export default function GettingStartedPage() {
         POSTs: register, update, end. The iOS app does not call these. Keep{' '}
         <code>lh_live_</code> in server env, never in the binary.
       </p>
+      <BackendSnippet />
       <p>
-        <code>fetch</code> below is copy-paste for Node, Bun, Deno, or any
-        runtime with fetch. Python, Go, Rails, and PHP do the same HTTP.
-      </p>
-      <pre>
-        <code>{BACKEND}</code>
-      </pre>
-      <p>
-        Terminal equivalent:{' '}
+        Same routes:{' '}
         <Link href="/docs/activities/register">register</Link>,{' '}
         <Link href="/docs/activities/update">update</Link>,{' '}
         <Link href="/docs/activities/end">end</Link>.
