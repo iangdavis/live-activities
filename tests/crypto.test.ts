@@ -66,6 +66,18 @@ describe('secret encryption', () => {
       process.env.ENCRYPTION_KEY = previous
     }
   })
+
+  it('accepts quoted or whitespace-padded 64-hex keys from Vercel pastes', () => {
+    const previous = process.env.ENCRYPTION_KEY
+    const hex = 'ab'.repeat(32)
+    const pem = '-----BEGIN PRIVATE KEY-----\nABC\n-----END PRIVATE KEY-----'
+    try {
+      process.env.ENCRYPTION_KEY = ` "${hex}" \n`
+      expect(decryptSecret(encryptSecret(pem))).toBe(pem)
+    } finally {
+      process.env.ENCRYPTION_KEY = previous
+    }
+  })
 })
 
 describe('token preview', () => {

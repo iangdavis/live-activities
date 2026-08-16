@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { getOwnedProject } from '@/lib/projects'
-import { isEncryptionKeyConfigured } from '@/lib/env'
+import { encryptionKeyStatus } from '@/lib/env'
 import { updateApnsAction } from '../../actions'
 import { Notice, PageHeader } from '@/components/dashboard/ui'
 import Link from 'next/link'
@@ -19,18 +19,13 @@ export default async function ProjectDetailPage({
   const { error, saved } = await searchParams
   const project = await getOwnedProject(session.accountId, projectId)
   const apnsConfigured = Boolean(project.apnsKeyEncrypted)
-  const encryptionReady = isEncryptionKeyConfigured()
+  const encryption = encryptionKeyStatus()
 
   return (
     <div>
       <PageHeader title={project.name} />
       <Notice
-        error={
-          error ||
-          (!encryptionReady
-            ? 'This server is missing ENCRYPTION_KEY. Add a 64-character hex value in Vercel (openssl rand -hex 32) and redeploy before saving a .p8 key.'
-            : undefined)
-        }
+        error={error || (!encryption.ok ? encryption.message : undefined)}
         saved={saved === '1'}
       />
 

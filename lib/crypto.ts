@@ -38,14 +38,14 @@ function encryptionKey(): Buffer {
     throw new ApiError(
       503,
       'misconfigured',
-      'Server is missing ENCRYPTION_KEY. Add a 64-character hex value in Vercel and redeploy.',
+      'Server cannot read ENCRYPTION_KEY. Set it on Vercel Production (openssl rand -hex 32) and Redeploy.',
     )
   }
   if (!/^[0-9a-fA-F]{64}$/.test(hex)) {
     throw new ApiError(
       503,
       'misconfigured',
-      'ENCRYPTION_KEY must be 32 bytes as 64 hex characters (openssl rand -hex 32).',
+      `ENCRYPTION_KEY is set but invalid (${hex.length} characters; need 64 hex from openssl rand -hex 32, no quotes).`,
     )
   }
   return Buffer.from(hex, 'hex')
