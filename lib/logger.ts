@@ -5,7 +5,9 @@ const SENSITIVE_KEY =
 
 function redactValue(key: string, value: unknown): unknown {
   if (SENSITIVE_KEY.test(key)) return '[redacted]'
-  if (typeof value === 'string' && value.startsWith('lh_live_')) return '[redacted]'
+  if (typeof value === 'string' && (value.startsWith('lh_live_') || value.startsWith('lh_pub_'))) {
+    return '[redacted]'
+  }
   if (typeof value === 'string' && value.includes('BEGIN PRIVATE KEY')) {
     return '[redacted]'
   }

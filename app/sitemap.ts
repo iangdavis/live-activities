@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/docs',
     '/docs/getting-started',
     '/docs/authentication',
+    '/docs/ios',
     '/docs/activities',
     '/docs/activities/register',
     '/docs/activities/update',

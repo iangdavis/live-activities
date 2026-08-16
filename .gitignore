@@ -50,3 +50,7 @@ dist-ssr
 # Local
 *.local
 *.tsbuildinfo
+
+# Swift
+.build
+.swiftpm

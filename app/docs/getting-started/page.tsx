@@ -5,12 +5,12 @@ import { BackendSnippet } from '@/components/docs/BackendSnippet'
 export const metadata: Metadata = {
   title: 'Getting started',
   description:
-    'Start an iOS Live Activity in Swift, send the push token to your backend, and update it through the Live Hive API.',
+    'Register an iOS Live Activity with the Live Hive SDK, then update and end it from your backend. No token-registration server required.',
   alternates: { canonical: '/docs/getting-started' },
 }
 
 const SWIFT = `import ActivityKit
-import Foundation
+import LiveHive
 
 struct DeliveryAttributes: ActivityAttributes {
   public struct ContentState: Codable, Hashable {
@@ -19,7 +19,9 @@ struct DeliveryAttributes: ActivityAttributes {
   }
 }
 
-func startDelivery(activityId: String) async throws {
+LiveHive.configure(publicKey: "lh_pub_...")
+
+func startDelivery() async throws {
   let activity = try Activity.request(
     attributes: DeliveryAttributes(),
     content: .init(
@@ -29,23 +31,7 @@ func startDelivery(activityId: String) async throws {
     pushType: .token
   )
 
-  Task {
-    for await tokenData in activity.pushTokenUpdates {
-      let token = tokenData.map { String(format: "%02x", $0) }.joined()
-      try? await sendTokenToYourBackend(activityId: activityId, pushToken: token)
-    }
-  }
-}
-
-func sendTokenToYourBackend(activityId: String, pushToken: String) async throws {
-  var request = URLRequest(url: URL(string: "https://api.yourapp.com/live-activities")!)
-  request.httpMethod = "POST"
-  request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-  request.httpBody = try JSONEncoder().encode([
-    "activity_id": activityId,
-    "push_token": pushToken,
-  ])
-  _ = try await URLSession.shared.data(for: request)
+  LiveHive.register(activity)
 }`
 
 export default function GettingStartedPage() {
@@ -53,51 +39,60 @@ export default function GettingStartedPage() {
     <>
       <h1 className="text-[32px]">Getting started</h1>
       <p className="mt-4">
-        Live Hive is an HTTP API for your backend. The iOS app still starts the
-        Live Activity and reads the push token. Do not put an{' '}
-        <code>lh_live_</code> key in the app.
+        The iOS app starts the Live Activity and sends the push token directly
+        to Live Hive. Your backend never sees the token. Do not put an{' '}
+        <code>lh_live_</code> server key in the app.
       </p>
       <ol className="mt-6 list-decimal space-y-3 pl-5">
         <li>
           <Link href="/signup">Create a Live Hive account</Link> and a project.
         </li>
         <li>
-          Create an API key on the project page. Copy it once. It starts with{' '}
-          <code>lh_live_</code>.
-        </li>
-        <li>
-          Add your Apple APNs credentials on the project page. See{' '}
+          Configure Apple credentials on the project page. See{' '}
           <Link href="/docs/apns">APNs setup</Link>.
         </li>
         <li>
-          In the iOS app, enable Live Activities (
-          <code>NSSupportsLiveActivities</code>), add a WidgetKit extension, and
-          start the activity with a push token.
+          Copy the <strong>iOS Public Key</strong> (<code>lh_pub_...</code>). It
+          is safe to include in your iOS app.
         </li>
-        <li>From your backend, create the activity in Live Hive (send the push token).</li>
-        <li>When your domain state changes, POST an update. When it is done, POST end.</li>
+        <li>
+          Add the Live Hive iOS SDK and call{' '}
+          <code>LiveHive.configure</code> then <code>LiveHive.register(activity)</code>.
+        </li>
+        <li>
+          Copy the <strong>Server API Key</strong> (<code>lh_live_...</code>).
+          Keep it secret.
+        </li>
+        <li>From your backend, POST an update. When it is done, POST end.</li>
       </ol>
+      <p>
+        No token-registration server is required. The SDK observes{' '}
+        <code>pushTokenUpdates</code>, converts the token to hex, and registers
+        it with Live Hive. You still need ActivityKit, a WidgetKit extension,
+        and <code>NSSupportsLiveActivities</code>.
+      </p>
 
-      <h2>1. Start the activity (Swift)</h2>
+      <h2>1. Start and register the activity (iOS)</h2>
       <p>
         <code>content_state</code> later must match this{' '}
-        <code>ContentState</code>. Observe <code>pushTokenUpdates</code> — the
-        token can rotate. Send it to <em>your</em> server, not to Live Hive.
+        <code>ContentState</code>. Use the public key only.
       </p>
       <pre>
         <code>{SWIFT}</code>
       </pre>
-
-      <h2>2. Call Live Hive from your backend</h2>
       <p>
-        Your server is written in whatever. Live Hive is three authenticated
-        POSTs: create, update, end. The iOS app does not call these. Keep{' '}
-        <code>lh_live_</code> in server env, never in the binary.
+        See <Link href="/docs/ios">iOS SDK</Link> for installation.
+      </p>
+
+      <h2>2. Update and end from your backend</h2>
+      <p>
+        Keep <code>lh_live_</code> in server env. The object you pass is the
+        widget <code>ContentState</code>.
       </p>
       <BackendSnippet />
       <p>
         Same routes:{' '}
-        <Link href="/docs/activities/register">create</Link>,{' '}
+        <Link href="/docs/activities/register">register</Link>,{' '}
         <Link href="/docs/activities/update">update</Link>,{' '}
         <Link href="/docs/activities/end">end</Link>.
       </p>

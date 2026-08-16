@@ -9,7 +9,7 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
-    const result = await handleActivityRegistration(request, { allowPublic: false })
+    const result = await handleActivityRegistration(request, { allowPublic: true })
     return jsonOk(result, 201)
   } catch (error) {
     if (!(error instanceof ApiError)) {

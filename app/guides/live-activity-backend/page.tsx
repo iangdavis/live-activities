@@ -25,10 +25,10 @@ export default function Page() {
       </p>
       <p>
         That is the entire job. Live Hive is that backend as an HTTP API:{' '}
-        <Link href="/docs/activities/register">create</Link>,{' '}
+        <Link href="/docs/activities/register">register</Link>,{' '}
         <Link href="/docs/activities/update">update</Link>,{' '}
-        <Link href="/docs/activities/end">end</Link>. You keep order logic,
-        ETAs, and auth in your own service.
+        <Link href="/docs/activities/end">end</Link>. The iOS app registers the
+        token. You keep order logic, ETAs, and auth in your own service.
       </p>
       <p>
         Related: <Link href="/guides/activitykit-server">ActivityKit server</Link>

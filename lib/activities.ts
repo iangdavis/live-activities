@@ -27,6 +27,7 @@ export async function registerActivity(input: {
   pushToken: string
   type?: string
   expiresAt?: Date
+  createLimit?: number
 }) {
   const pushToken = normalizePushToken(input.pushToken)
   const existing = await prisma.activity.findUnique({
@@ -37,6 +38,19 @@ export async function registerActivity(input: {
       },
     },
   })
+
+  if (!existing && input.createLimit != null) {
+    const activeCount = await prisma.activity.count({
+      where: { projectId: input.project.id, status: 'active' },
+    })
+    if (activeCount >= input.createLimit) {
+      throw new ApiError(
+        403,
+        'plan_limit',
+        `Active activity limit (${input.createLimit}) reached.`,
+      )
+    }
+  }
 
   const data = {
     pushToken,

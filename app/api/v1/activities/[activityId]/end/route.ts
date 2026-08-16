@@ -3,6 +3,7 @@ import {
   authenticateApiRequest,
   corsPreflight,
   endActivitySchema,
+  requireSecretApiKey,
 } from '@/lib/api-auth'
 import { endActivity } from '@/lib/activities'
 import { ApiError, jsonError, jsonOk } from '@/lib/errors'
@@ -17,7 +18,8 @@ export async function POST(
   context: { params: Promise<{ activityId: string }> },
 ) {
   try {
-    const { project } = await authenticateApiRequest(request)
+    const auth = await authenticateApiRequest(request)
+    requireSecretApiKey(auth)
     const { activityId } = await context.params
     let body: { content_state?: Record<string, unknown>; dismissal_date?: number } = {}
     const text = await request.text()
@@ -38,7 +40,7 @@ export async function POST(
       }
     }
     const result = await endActivity({
-      project,
+      project: auth.project,
       externalActivityId: activityId,
       contentState: body.content_state,
       dismissalDate: body.dismissal_date,

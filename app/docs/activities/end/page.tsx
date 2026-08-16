@@ -11,7 +11,8 @@ export default function EndDocsPage() {
     <>
       <h1 className="text-[32px]">End</h1>
       <p className="mt-4">
-        Send an end event when the Live Activity should dismiss.
+        Send an end event when the Live Activity should dismiss. This route
+        requires a server API key (<code>lh_live_...</code>).
       </p>
       <pre>
         <code>{`POST /api/v1/activities/customer-activity-123/end

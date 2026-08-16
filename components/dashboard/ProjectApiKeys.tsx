@@ -1,47 +1,62 @@
 import { CreateApiKeyForm } from '@/components/dashboard/CreateApiKeyForm'
+import { CopyButton } from '@/components/dashboard/CopyButton'
 import { revokeApiKeyAction } from '@/app/(app)/actions'
 
-export function ProjectApiKeys({
+type KeyRow = {
+  id: string
+  name: string
+  type: 'PUBLIC' | 'SECRET'
+  keyPrefix: string
+  revealedKey: string | null
+  lastUsedAt: Date | null
+  revokedAt: Date | null
+}
+
+function KeyTable({
   projectId,
   keys,
+  empty,
+  allowReveal,
 }: {
   projectId: string
-  keys: Array<{
-    id: string
-    name: string
-    keyPrefix: string
-    lastUsedAt: Date | null
-    revokedAt: Date | null
-  }>
+  keys: KeyRow[]
+  empty: string
+  allowReveal: boolean
 }) {
   return (
-    <section className="surface-card mt-6 p-6">
-      <h2 className="text-[16px] text-[var(--color-ink)]">API keys</h2>
-      <p className="mt-1 text-[13px] text-[var(--color-muted)]">
-        Scoped to this project. The full key is shown only once.
-      </p>
-      <CreateApiKeyForm projectId={projectId} />
-
-      <div className="mt-6 overflow-x-auto">
-        {keys.length === 0 ? (
-          <p className="text-[14px] text-[var(--color-muted)]">No keys yet.</p>
-        ) : (
-          <table className="w-full text-left text-[14px]">
-            <thead className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-              <tr>
-                <th className="pb-2 font-medium">Name</th>
-                <th className="pb-2 font-medium">Key</th>
-                <th className="pb-2 font-medium">Last used</th>
-                <th className="pb-2 font-medium" />
-              </tr>
-            </thead>
-            <tbody>
-              {keys.map((key) => (
+    <div className="mt-4 overflow-x-auto">
+      {keys.length === 0 ? (
+        <p className="text-[14px] text-[var(--color-muted)]">{empty}</p>
+      ) : (
+        <table className="w-full text-left text-[14px]">
+          <thead className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
+            <tr>
+              <th className="pb-2 font-medium">Name</th>
+              <th className="pb-2 font-medium">Key</th>
+              <th className="pb-2 font-medium">Last used</th>
+              <th className="pb-2 font-medium" />
+            </tr>
+          </thead>
+          <tbody>
+            {keys.map((key) => {
+              const revealed = allowReveal && !key.revokedAt ? key.revealedKey : null
+              return (
                 <tr key={key.id} className="border-t border-[color:var(--color-line)]">
                   <td className="py-3 text-[var(--color-ink)]">{key.name}</td>
                   <td className="py-3 font-mono text-[13px] text-[var(--color-muted)]">
-                    {key.keyPrefix}…
-                    {key.revokedAt ? ' (revoked)' : ''}
+                    {revealed ? (
+                      <span className="break-all text-[var(--color-ink)]">{revealed}</span>
+                    ) : (
+                      <>
+                        {key.keyPrefix}…
+                        {key.revokedAt ? ' (revoked)' : ''}
+                      </>
+                    )}
+                    {revealed && (
+                      <span className="ml-3">
+                        <CopyButton value={revealed} />
+                      </span>
+                    )}
                   </td>
                   <td className="py-3 text-[var(--color-muted)]">
                     {key.lastUsedAt ? key.lastUsedAt.toISOString() : 'Never'}
@@ -61,11 +76,66 @@ export function ProjectApiKeys({
                     )}
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </section>
+              )
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
+  )
+}
+
+export function ProjectApiKeys({
+  projectId,
+  keys,
+}: {
+  projectId: string
+  keys: KeyRow[]
+}) {
+  const publicKeys = keys.filter((key) => key.type === 'PUBLIC')
+  const secretKeys = keys.filter((key) => key.type !== 'PUBLIC')
+
+  return (
+    <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <section className="surface-card p-6">
+        <h2 className="text-[16px] text-[var(--color-ink)]">iOS Public Key</h2>
+        <p className="mt-1 text-[13px] text-[var(--color-muted)]">
+          Safe to include in your iOS app. Used only to register Live Activity
+          push tokens. It cannot update, end, or read activities.
+        </p>
+        <CreateApiKeyForm
+          projectId={projectId}
+          type="PUBLIC"
+          nameDefault="iOS"
+          buttonLabel="Create iOS public key"
+        />
+        <KeyTable
+          projectId={projectId}
+          keys={publicKeys}
+          empty="No iOS public key yet."
+          allowReveal
+        />
+      </section>
+
+      <section className="surface-card p-6">
+        <h2 className="text-[16px] text-[var(--color-ink)]">Server API Key</h2>
+        <p className="mt-1 text-[13px] text-[var(--color-muted)]">
+          Keep this secret. Never put it in your iOS app. Use it from your
+          backend to update and end activities.
+        </p>
+        <CreateApiKeyForm
+          projectId={projectId}
+          type="SECRET"
+          nameDefault="Production"
+          buttonLabel="Create server API key"
+        />
+        <KeyTable
+          projectId={projectId}
+          keys={secretKeys}
+          empty="No server API key yet."
+          allowReveal={false}
+        />
+      </section>
+    </div>
   )
 }

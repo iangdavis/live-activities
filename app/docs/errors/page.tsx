@@ -23,8 +23,12 @@ export default function ErrorsDocsPage() {
       </pre>
       <ul>
         <li>
-          <code>unauthorized</code> / <code>invalid_api_key</code> — missing or
-          wrong Bearer token
+          <code>unauthorized</code> / <code>invalid_api_key</code> — missing,
+          wrong, or revoked Bearer token
+        </li>
+        <li>
+          <code>forbidden</code> — a public iOS key was used for a server-only
+          operation (update, end, or read)
         </li>
         <li>
           <code>invalid_request</code> — JSON or field validation failed

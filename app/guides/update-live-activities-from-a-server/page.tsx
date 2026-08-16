@@ -21,20 +21,21 @@ export default function Page() {
           Start the activity on device with <code>Activity.request</code>.
         </li>
         <li>
-          Read the Live Activity push token and POST it to your backend with a
-          stable ID.
+          Read the Live Activity push token and register it with Live Hive
+          (the iOS SDK does this; no token-forwarding server is required).
         </li>
         <li>
-          When your domain state changes, your backend sends an APNs Live
-          Activity update whose <code>content-state</code> matches that struct.
+          When your domain state changes, your backend sends a Live Hive
+          update whose <code>content_state</code> matches that struct.
         </li>
         <li>When the job is done, send an end event.</li>
       </ol>
       <p>
-        With Live Hive, steps 4–5 are{' '}
+        With Live Hive, token registration is{' '}
+        <Link href="/docs/activities/register">register</Link> and steps 4–5 are{' '}
         <Link href="/docs/activities/update">update</Link> and{' '}
-        <Link href="/docs/activities/end">end</Link>. You still own steps 1–3 in
-        the iOS app.
+        <Link href="/docs/activities/end">end</Link>. You still own ActivityKit
+        and WidgetKit setup in the iOS app.
       </p>
     </>
   )

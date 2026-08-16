@@ -19,9 +19,9 @@ export default function Page() {
       <p>
         After you request a Live Activity, observe{' '}
         <code>activity.pushTokenUpdates</code>. The value is <code>Data</code>;
-        send it to your backend as lowercase hex. Tokens can rotate. If you
+        send it to Live Hive as lowercase hex (the iOS SDK does this). Tokens can rotate. If you
         create the same <code>activity_id</code> again, Live Hive replaces
-        the stored token.
+        the stored token. Your backend does not need to receive the token.
       </p>
       <p>
         Push-to-start tokens are separate: they let you start an activity when
@@ -30,7 +30,8 @@ export default function Page() {
       </p>
       <p>
         Create in Live Hive:{' '}
-        <Link href="/docs/activities/register">POST /v1/activities</Link>.
+        <Link href="/docs/activities/register">POST /v1/activities/register</Link>
+        , or call <Link href="/docs/ios">LiveHive.register(activity)</Link>.
       </p>
     </>
   )

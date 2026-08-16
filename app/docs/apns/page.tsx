@@ -14,9 +14,10 @@ export default function ApnsDocsPage() {
       <h1 className="text-[32px]">APNs</h1>
       <p className="mt-4">
         Live Hive sends Live Activity remote notifications with token-based
-        APNs authentication (a .p8 key). You provide Apple credentials per
-        project. They are encrypted at rest and never shown again in the
-        dashboard.
+        APNs authentication (a .p8 key). You provide Apple credentials once per
+        project on the project page. They are encrypted at rest and never shown
+        again in the dashboard. Live Hive is not a generic APNs provider — it
+        only sends Live Activity updates for your app.
       </p>
       <h2>What to create in Apple Developer</h2>
       <ol className="list-decimal space-y-2 pl-5">

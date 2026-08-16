@@ -2,7 +2,8 @@ import { Reveal } from './Reveal'
 import { SectionHeading } from './SectionHeading'
 
 const STEPS = [
-  { from: 'Your backend', to: 'Live Hive API' },
+  { from: 'iOS app', to: 'Live Hive register' },
+  { from: 'Your backend', to: 'Live Hive update / end' },
   { from: 'Live Hive', to: 'APNs' },
   { from: 'APNs', to: 'iPhone Live Activity' },
 ]
@@ -39,7 +40,7 @@ export function Architecture() {
           ))}
         </div>
         <p className="mt-5 text-center text-[14px] text-[var(--color-muted)]">
-          You never talk to APNs directly. Create the activity, then POST updates.
+          The iOS app registers the push token. Your backend never sees it.
         </p>
       </Reveal>
     </section>

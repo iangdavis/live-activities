@@ -2,28 +2,35 @@
 
 Live Activities, without the backend headache.
 
-Live Hive is an HTTP API and dashboard for iOS Live Activities. Your backend
-creates an activity from an ActivityKit push token, then sends updates and end events. Live
-Hive talks to APNs and records whether Apple accepted the push.
+Live Hive is an HTTP API, dashboard, and small SDKs for iOS Live Activities.
+The iOS app registers the ActivityKit push token directly with Live Hive. Your
+backend updates and ends activities with a secret API key. Live Hive talks to
+APNs and records whether Apple accepted the push.
 
 This repository is a single [Next.js](https://nextjs.org/) application
-(marketing, docs, dashboard, and `/api/v1`).
+(marketing, docs, dashboard, and `/api/v1`) plus SDKs in `sdks/`.
 
 ## Product flow
 
 ```
-Your backend  →  Live Hive API  →  APNs  →  iPhone Live Activity
+iOS app  →  Live Hive register  →  stored push token
+Your backend  →  Live Hive update/end  →  APNs  →  iPhone
 ```
+
+No token-registration server is required. Do not put `lh_live_...` in the iOS app.
 
 Public API:
 
 ```
-POST /api/v1/activities
-POST /api/v1/activities/:id/update
-POST /api/v1/activities/:id/end
+POST /v1/activities/register          # iOS public key (lh_pub_...)
+POST /v1/activities/:id/update       # server API key (lh_live_...)
+POST /v1/activities/:id/end          # server API key
 ```
 
-Also served at `/v1/*` for `api.livehive.dev`.
+Also served at `/api/v1/*`. `api.livehive.dev/v1/*` rewrites to the same routes.
+
+`POST /v1/activities` remains available as a secret-key create endpoint for
+existing backends.
 
 ## Local development
 
@@ -108,7 +115,12 @@ Each project needs:
 
 Documented at `/docs/apns`. Live Hive does not fake successful delivery.
 
+## SDKs
+
+- iOS: `sdks/ios` — `LiveHive.configure` + `LiveHive.register(activity)`
+- Node: `sdks/node` — `livehive.activities.update` / `end`
+
 ## What this MVP does not include
 
-Design Studio, SDKs, Android, SSO, team permissions, billing automation,
+Design Studio, Android, SSO, team permissions, billing automation,
 Kubernetes, or extra notification providers.

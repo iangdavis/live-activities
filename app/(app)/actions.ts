@@ -61,21 +61,24 @@ export async function updateApnsAction(formData: FormData) {
 
 export async function createApiKeyAction(formData: FormData): Promise<{
   plaintext?: string
+  type?: 'PUBLIC' | 'SECRET'
   error?: string
 }> {
   const session = await getSession()
   if (!session) return { error: 'Not signed in.' }
   const projectId = String(formData.get('projectId') || '')
   const name = String(formData.get('name') || 'Default')
+  const type = String(formData.get('type') || 'SECRET') === 'PUBLIC' ? 'PUBLIC' : 'SECRET'
   try {
     const key = await createApiKey({
       accountId: session.accountId,
       userId: session.id,
       projectId,
       name,
+      type,
     })
     revalidatePath(`/projects/${projectId}`)
-    return { plaintext: key.plaintext }
+    return { plaintext: key.plaintext, type: key.type }
   } catch (error) {
     return {
       error: error instanceof ApiError ? error.message : 'Could not create API key.',

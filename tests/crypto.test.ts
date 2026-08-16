@@ -5,6 +5,8 @@ import {
   generateApiKey,
   hashApiKey,
   isApiKeyFormat,
+  isPublicApiKeyFormat,
+  isSecretApiKeyFormat,
   tokenPreview,
 } from '@/lib/crypto'
 import { ApiError } from '@/lib/errors'
@@ -13,15 +15,28 @@ describe('API keys', () => {
   it('generates hashed live keys and never stores plaintext', () => {
     const key = generateApiKey()
     expect(key.plaintext.startsWith('lh_live_')).toBe(true)
+    expect(key.type).toBe('SECRET')
     expect(isApiKeyFormat(key.plaintext)).toBe(true)
+    expect(isSecretApiKeyFormat(key.plaintext)).toBe(true)
     expect(hashApiKey(key.plaintext)).toBe(key.hash)
     expect(key.hash).not.toContain(key.plaintext)
     expect(key.prefix.startsWith('lh_live_')).toBe(true)
   })
 
+  it('generates public keys with a distinct prefix', () => {
+    const key = generateApiKey('PUBLIC')
+    expect(key.plaintext.startsWith('lh_pub_')).toBe(true)
+    expect(key.type).toBe('PUBLIC')
+    expect(isPublicApiKeyFormat(key.plaintext)).toBe(true)
+    expect(isSecretApiKeyFormat(key.plaintext)).toBe(false)
+    expect(isApiKeyFormat(key.plaintext)).toBe(true)
+    expect(key.hash).not.toContain(key.plaintext)
+  })
+
   it('rejects non-live key formats', () => {
     expect(isApiKeyFormat('sk_live_abc')).toBe(false)
     expect(isApiKeyFormat('lh_live_short')).toBe(false)
+    expect(isApiKeyFormat('lh_pub_short')).toBe(false)
   })
 })
 

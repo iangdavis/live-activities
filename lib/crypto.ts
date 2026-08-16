@@ -2,28 +2,42 @@ import { createHash, createCipheriv, createDecipheriv, randomBytes } from 'node:
 import { env } from './env'
 import { ApiError } from './errors'
 
-const API_KEY_PREFIX = 'lh_live_'
+export const SECRET_API_KEY_PREFIX = 'lh_live_'
+export const PUBLIC_API_KEY_PREFIX = 'lh_pub_'
+
+export type ApiKeyKind = 'SECRET' | 'PUBLIC'
 
 export function hashApiKey(plaintext: string): string {
   return createHash('sha256').update(plaintext).digest('hex')
 }
 
-export function generateApiKey(): {
+export function generateApiKey(type: ApiKeyKind = 'SECRET'): {
   plaintext: string
   hash: string
   prefix: string
+  type: ApiKeyKind
 } {
+  const keyPrefix = type === 'PUBLIC' ? PUBLIC_API_KEY_PREFIX : SECRET_API_KEY_PREFIX
   const secret = randomBytes(24).toString('base64url')
-  const plaintext = `${API_KEY_PREFIX}${secret}`
+  const plaintext = `${keyPrefix}${secret}`
   return {
     plaintext,
     hash: hashApiKey(plaintext),
     prefix: plaintext.slice(0, 16),
+    type,
   }
 }
 
+export function isSecretApiKeyFormat(value: string): boolean {
+  return value.startsWith(SECRET_API_KEY_PREFIX) && value.length >= 24
+}
+
+export function isPublicApiKeyFormat(value: string): boolean {
+  return value.startsWith(PUBLIC_API_KEY_PREFIX) && value.length >= 24
+}
+
 export function isApiKeyFormat(value: string): boolean {
-  return value.startsWith(API_KEY_PREFIX) && value.length >= 24
+  return isSecretApiKeyFormat(value) || isPublicApiKeyFormat(value)
 }
 
 export function generatePublicId(prefix: string): string {

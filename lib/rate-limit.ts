@@ -60,4 +60,5 @@ export const limits = {
   auth: { limit: 10, windowMs: 60_000 },
   api: { limit: 120, windowMs: 60_000 },
   public: { limit: 60, windowMs: 60_000 },
+  publicRegister: { limit: 40, windowMs: 60_000 },
 }

@@ -30,7 +30,7 @@ const FEATURES: Feature[] = [
   },
   {
     title: 'Tokens',
-    body: 'Manage Live Activity push tokens without building the plumbing yourself.',
+    body: 'The iOS SDK registers Live Activity push tokens with Live Hive. Your backend never needs a token-forwarding endpoint.',
     Icon: TokenIcon,
     layout: 'wide',
     span: 'lg:col-span-3',

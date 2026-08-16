@@ -3,6 +3,7 @@ import {
   authenticateApiRequest,
   corsPreflight,
   readJson,
+  requireSecretApiKey,
   updateActivitySchema,
 } from '@/lib/api-auth'
 import { updateActivity } from '@/lib/activities'
@@ -18,11 +19,12 @@ export async function POST(
   context: { params: Promise<{ activityId: string }> },
 ) {
   try {
-    const { project } = await authenticateApiRequest(request)
+    const auth = await authenticateApiRequest(request)
+    requireSecretApiKey(auth)
     const { activityId } = await context.params
     const body = await readJson(request, updateActivitySchema)
     const result = await updateActivity({
-      project,
+      project: auth.project,
       externalActivityId: activityId,
       contentState: body.content_state,
       alert: body.alert,

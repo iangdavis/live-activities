@@ -60,18 +60,28 @@ enum ApnsEnvironment {
   production
 }
 
+enum ApiKeyType {
+  SECRET
+  PUBLIC
+}
+
 model ApiKey {
-  id         String    @id @default(cuid())
-  projectId  String
-  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  name       String
-  keyHash    String    @unique
-  keyPrefix  String
-  lastUsedAt DateTime?
-  revokedAt  DateTime?
-  createdAt  DateTime  @default(now())
+  id          String     @id @default(cuid())
+  projectId   String
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name        String
+  type        ApiKeyType @default(SECRET)
+  keyHash     String     @unique
+  keyPrefix   String
+  /// Recoverable copy of PUBLIC keys only so the dashboard can show them again.
+  /// SECRET keys are hashed and never stored in recoverable form.
+  revealedKey String?
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime   @default(now())
 
   @@index([projectId])
+  @@index([projectId, type])
 }
 
 enum ActivityStatus {

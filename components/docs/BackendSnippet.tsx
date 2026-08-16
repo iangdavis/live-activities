@@ -5,33 +5,20 @@ import { useEffect, useState } from 'react'
 const SNIPPETS = {
   node: {
     label: 'Node.js',
-    code: `const LIVEHIVE = 'https://livehive.dev/api/v1'
-const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
+    code: `import { LiveHive } from 'livehive'
 
-async function livehive(path, body) {
-  const res = await fetch(\`\${LIVEHIVE}\${path}\`, {
-    method: 'POST',
-    headers: {
-      Authorization: \`Bearer \${KEY}\`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  })
-  if (!res.ok) throw new Error(await res.text())
-  return res.json()
-}
-
-await livehive('/activities', {
-  activity_id: 'abc123',
-  push_token: tokenFromThePhone,
+const livehive = new LiveHive({
+  apiKey: process.env.LIVEHIVE_API_KEY, // lh_live_...
 })
 
-await livehive('/activities/abc123/update', {
-  content_state: { status: 'driver_arriving', eta: 4 },
+await livehive.activities.update('abc123', {
+  status: 'driver_arriving',
+  eta: 4,
 })
 
-await livehive('/activities/abc123/end', {
-  content_state: { status: 'delivered', eta: 0 },
+await livehive.activities.end('abc123', {
+  status: 'delivered',
+  eta: 0,
 })`,
   },
   python: {
@@ -55,11 +42,6 @@ def livehive(path, body):
     )
     with urllib.request.urlopen(req) as res:
         return json.load(res)
-
-livehive("/activities", {
-    "activity_id": "abc123",
-    "push_token": token_from_the_phone,
-})
 
 livehive("/activities/abc123/update", {
     "content_state": {"status": "driver_arriving", "eta": 4},
@@ -103,10 +85,6 @@ func livehive(path string, body any) error {
 	return nil
 }
 
-_ = livehive("/activities", map[string]any{
-	"activity_id": "abc123",
-	"push_token":  tokenFromThePhone,
-})
 _ = livehive("/activities/abc123/update", map[string]any{
 	"content_state": map[string]any{"status": "driver_arriving", "eta": 4},
 })
@@ -131,11 +109,6 @@ def livehive(path, body)
   raise res.body unless res.is_a?(Net::HTTPSuccess)
   JSON.parse(res.body)
 end
-
-livehive("/activities", {
-  activity_id: "abc123",
-  push_token: token_from_the_phone,
-})
 
 livehive("/activities/abc123/update", {
   content_state: { status: "driver_arriving", eta: 4 },

@@ -1,8 +1,10 @@
 import { z } from 'zod'
 import { prisma } from './db'
-import { hashApiKey, isApiKeyFormat } from './crypto'
+import { hashApiKey, isApiKeyFormat, isPublicApiKeyFormat, type ApiKeyKind } from './crypto'
 import { ApiError } from './errors'
 import { clientIp, limits, rateLimit } from './rate-limit'
+import { registerActivity } from './activities'
+import { FREE_TIER } from './plan'
 import type { Project } from '@prisma/client'
 
 const bearerRe = /^Bearer\s+(.+)$/i
@@ -10,6 +12,7 @@ const bearerRe = /^Bearer\s+(.+)$/i
 export type ApiAuth = {
   project: Project
   apiKeyId: string
+  keyType: ApiKeyKind
 }
 
 export async function authenticateApiRequest(request: Request): Promise<ApiAuth> {
@@ -24,7 +27,8 @@ export async function authenticateApiRequest(request: Request): Promise<ApiAuth>
   }
 
   const ip = clientIp(request)
-  const limited = rateLimit(`api:${hashApiKey(token)}:${ip}`, limits.api.limit, limits.api.windowMs)
+  const spec = isPublicApiKeyFormat(token) ? limits.public : limits.api
+  const limited = rateLimit(`api:${hashApiKey(token)}:${ip}`, spec.limit, spec.windowMs)
   if (!limited.ok) {
     throw new ApiError(429, 'rate_limited', 'Too many requests. Slow down and retry.')
   }
@@ -43,7 +47,21 @@ export async function authenticateApiRequest(request: Request): Promise<ApiAuth>
     data: { lastUsedAt: new Date() },
   })
 
-  return { project: apiKey.project, apiKeyId: apiKey.id }
+  return {
+    project: apiKey.project,
+    apiKeyId: apiKey.id,
+    keyType: apiKey.type,
+  }
+}
+
+export function requireSecretApiKey(auth: ApiAuth): void {
+  if (auth.keyType !== 'SECRET') {
+    throw new ApiError(
+      403,
+      'forbidden',
+      'This operation requires a server API key (lh_live_...). Public iOS keys can only register activities.',
+    )
+  }
 }
 
 export function corsPreflight(): Response {
@@ -90,4 +108,36 @@ export async function readJson<T>(
     throw new ApiError(400, 'invalid_request', 'Request validation failed.', parsed.error.flatten())
   }
   return parsed.data
+}
+
+export async function handleActivityRegistration(
+  request: Request,
+  options: { allowPublic: boolean },
+) {
+  const auth = await authenticateApiRequest(request)
+  if (!options.allowPublic) {
+    requireSecretApiKey(auth)
+  }
+
+  if (auth.keyType === 'PUBLIC') {
+    const ip = clientIp(request)
+    const burst = rateLimit(
+      `public-register:${auth.project.id}:${ip}`,
+      limits.publicRegister.limit,
+      limits.publicRegister.windowMs,
+    )
+    if (!burst.ok) {
+      throw new ApiError(429, 'rate_limited', 'Too many registration requests. Slow down and retry.')
+    }
+  }
+
+  const body = await readJson(request, registerActivitySchema)
+  return registerActivity({
+    project: auth.project,
+    externalActivityId: body.activity_id,
+    pushToken: body.push_token,
+    type: body.type,
+    expiresAt: body.expires_at ? new Date(body.expires_at) : undefined,
+    createLimit: auth.keyType === 'PUBLIC' ? FREE_TIER.maxActiveActivities : undefined,
+  })
 }

@@ -13,7 +13,8 @@ export default function UpdateDocsPage() {
       <h1 className="text-[32px]">Update</h1>
       <p className="mt-4">
         <code>content_state</code> must match the <code>ContentState</code> your
-        widget extension decodes. Live Hive does not transform it.
+        widget extension decodes. Live Hive does not transform it. This route
+        requires a server API key (<code>lh_live_...</code>).
       </p>
       <pre>
         <code>{`POST /api/v1/activities/customer-activity-123/update
