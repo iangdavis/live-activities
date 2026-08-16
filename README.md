@@ -119,6 +119,7 @@ Documented at `/docs/apns`. Live Hive does not fake successful delivery.
 
 - iOS: `sdks/ios` — `LiveHive.configure` + `LiveHive.register(activity)`
 - Node: `sdks/node` — `livehive.activities.update` / `end`
+- Demo app: `examples/LiveHiveDemo` — TestFlight-ready project to prove an end-to-end update
 
 ## What this MVP does not include
 
