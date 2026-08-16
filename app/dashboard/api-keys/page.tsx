@@ -40,13 +40,11 @@ export default async function ApiKeysPage({
   return (
     <div>
       <PageHeader title="API Keys" />
-      {projects.length > 1 && (
-        <ProjectPicker
-          projects={projects}
-          selectedId={selected.id}
-          path="/dashboard/api-keys"
-        />
-      )}
+      <ProjectPicker
+        projects={projects}
+        selectedId={selected.id}
+        path="/dashboard/api-keys"
+      />
 
       <CreateApiKeyForm projectId={selected.id} />
 

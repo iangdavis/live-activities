@@ -23,6 +23,9 @@ export function CreateApiKeyForm({ projectId }: { projectId: string }) {
   return (
     <div className="surface-card p-5">
       <h2 className="text-[16px] text-[var(--color-ink)]">Create API key</h2>
+      <p className="mt-1 text-[13px] text-[var(--color-muted)]">
+        This key can only access this project.
+      </p>
       <form action={onSubmit} className="mt-3 flex flex-col gap-3 sm:flex-row">
         <input type="hidden" name="projectId" value={projectId} />
         <input

@@ -41,9 +41,7 @@ export default async function LogsPage({
   return (
     <div>
       <PageHeader title="Logs" />
-      {projects.length > 1 && (
-        <ProjectPicker projects={projects} selectedId={selected.id} path="/dashboard/logs" />
-      )}
+      <ProjectPicker projects={projects} selectedId={selected.id} path="/dashboard/logs" />
       {deliveries.length === 0 ? (
         <EmptyState
           title="No deliveries yet"

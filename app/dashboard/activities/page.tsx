@@ -43,13 +43,11 @@ export default async function ActivitiesPage({
   return (
     <div>
       <PageHeader title="Activities" />
-      {projects.length > 1 && (
-        <ProjectPicker
+      <ProjectPicker
           projects={projects}
           selectedId={selected.id}
           path="/dashboard/activities"
         />
-      )}
       {activities.length === 0 ? (
         <EmptyState
           title="No activities in this project"
