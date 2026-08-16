@@ -32,7 +32,7 @@ export default async function ActivityDetailPage({
       <p className="mb-6 text-[14px] text-[var(--color-muted)]">
         Project{' '}
         <Link
-          href={`/dashboard/projects/${activity.projectId}`}
+          href={`/projects/${activity.projectId}`}
           className="text-[var(--color-ink)] hover:underline"
         >
           {activity.project.name}

@@ -6,11 +6,11 @@ import { redirect } from 'next/navigation'
 
 const NAV = [
   { href: '/dashboard', label: 'Dashboard' },
-  { href: '/dashboard/projects', label: 'Projects' },
-  { href: '/dashboard/activities', label: 'Activities' },
-  { href: '/dashboard/logs', label: 'Logs' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/activities', label: 'Activities' },
+  { href: '/logs', label: 'Logs' },
   { href: '/docs', label: 'Docs' },
-  { href: '/dashboard/settings', label: 'Settings' },
+  { href: '/settings', label: 'Settings' },
 ]
 
 export const dynamic = 'force-dynamic'
@@ -29,7 +29,7 @@ export default async function DashboardLayout({
     <div className="min-h-screen md:grid md:grid-cols-[220px_1fr]">
       <aside className="border-b border-[color:var(--color-line)] md:border-b-0 md:border-r">
         <div className="flex h-16 items-center gap-2.5 px-5">
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link href="/dashboard" className="flex items-center gap-2.5">
             <Logo size={22} />
             <span className="font-display text-[14px] font-semibold text-[var(--color-ink)]">
               {site.productName}

@@ -22,11 +22,11 @@ export async function createProjectAction(formData: FormData) {
       userId: session.id,
       name,
     })
-    redirect(`/dashboard/projects/${project.id}`)
+    redirect(`/projects/${project.id}`)
   } catch (error) {
     unstable_rethrow(error)
     if (error instanceof ApiError) {
-      redirect(`/dashboard/projects?error=${encodeURIComponent(error.message)}`)
+      redirect(`/projects?error=${encodeURIComponent(error.message)}`)
     }
     throw error
   }
@@ -46,7 +46,7 @@ export async function updateApnsAction(formData: FormData) {
           : 'sandbox',
       apnsKeyPem: String(formData.get('apnsKeyPem') || '') || undefined,
     })
-    redirect(`/dashboard/projects/${projectId}?saved=1`)
+    redirect(`/projects/${projectId}?saved=1`)
   } catch (error) {
     unstable_rethrow(error)
     const message =
@@ -54,7 +54,7 @@ export async function updateApnsAction(formData: FormData) {
         ? error.message
         : 'Could not save APNs settings. Check ENCRYPTION_KEY in Vercel (64 hex chars) and redeploy.'
     redirect(
-      `/dashboard/projects/${projectId}?error=${encodeURIComponent(message)}`,
+      `/projects/${projectId}?error=${encodeURIComponent(message)}`,
     )
   }
 }
@@ -74,7 +74,7 @@ export async function createApiKeyAction(formData: FormData): Promise<{
       projectId,
       name,
     })
-    revalidatePath(`/dashboard/projects/${projectId}`)
+    revalidatePath(`/projects/${projectId}`)
     return { plaintext: key.plaintext }
   } catch (error) {
     return {
@@ -88,6 +88,6 @@ export async function revokeApiKeyAction(formData: FormData) {
   const projectId = String(formData.get('projectId') || '')
   const apiKeyId = String(formData.get('apiKeyId') || '')
   await revokeApiKey({ accountId: session.accountId, projectId, apiKeyId })
-  revalidatePath(`/dashboard/projects/${projectId}`)
-  redirect(`/dashboard/projects/${projectId}`)
+  revalidatePath(`/projects/${projectId}`)
+  redirect(`/projects/${projectId}`)
 }

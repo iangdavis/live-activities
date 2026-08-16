@@ -47,7 +47,7 @@ export default async function ProjectsPage({
           {projects.map((project) => (
             <li key={project.id}>
               <Link
-                href={`/dashboard/projects/${project.id}`}
+                href={`/projects/${project.id}`}
                 className="surface-card flex items-center justify-between p-5 hover:bg-[color:var(--color-surface-2)]"
               >
                 <div>

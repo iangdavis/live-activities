@@ -1,5 +1,5 @@
 import { CreateApiKeyForm } from '@/components/dashboard/CreateApiKeyForm'
-import { revokeApiKeyAction } from '@/app/dashboard/actions'
+import { revokeApiKeyAction } from '@/app/(app)/actions'
 
 export function ProjectApiKeys({
   projectId,

@@ -41,7 +41,7 @@ export default async function LogsPage({
   return (
     <div>
       <PageHeader title="Logs" />
-      <ProjectPicker projects={projects} selectedId={selected.id} path="/dashboard/logs" />
+      <ProjectPicker projects={projects} selectedId={selected.id} path="/logs" />
       {deliveries.length === 0 ? (
         <EmptyState
           title="No deliveries yet"
@@ -68,7 +68,7 @@ export default async function LogsPage({
                   </td>
                   <td className="py-3">
                     <Link
-                      href={`/dashboard/activities/${d.activityId}`}
+                      href={`/activities/${d.activityId}`}
                       className="font-mono text-[var(--color-ink)] hover:underline"
                     >
                       {d.activity.externalActivityId}

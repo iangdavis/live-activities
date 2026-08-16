@@ -10,11 +10,11 @@ export default async function ApiKeysRedirectPage({
   const session = await getSession()
   if (!session) redirect('/login')
   const { project: projectId } = await searchParams
-  if (projectId) redirect(`/dashboard/projects/${projectId}`)
+  if (projectId) redirect(`/projects/${projectId}`)
   const first = await prisma.project.findFirst({
     where: { accountId: session.accountId },
     orderBy: { createdAt: 'desc' },
   })
-  if (first) redirect(`/dashboard/projects/${first.id}`)
-  redirect('/dashboard/projects')
+  if (first) redirect(`/projects/${first.id}`)
+  redirect('/projects')
 }

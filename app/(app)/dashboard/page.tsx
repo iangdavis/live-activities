@@ -24,7 +24,7 @@ export default async function DashboardHome() {
   return (
     <div>
       <PageHeader title="Dashboard">
-        <Link href="/dashboard/projects" className="btn-primary">
+        <Link href="/projects" className="btn-primary">
           New project
         </Link>
       </PageHeader>
@@ -35,7 +35,7 @@ export default async function DashboardHome() {
           <EmptyState
             title="No projects yet"
             body="Create a project to get an API key and start sending Live Activities."
-            actionHref="/dashboard/projects"
+            actionHref="/projects"
             actionLabel="Create project"
           />
         </div>
@@ -44,7 +44,7 @@ export default async function DashboardHome() {
           {projects.map((project) => (
             <li key={project.id}>
               <Link
-                href={`/dashboard/projects/${project.id}`}
+                href={`/projects/${project.id}`}
                 className="surface-card block p-5 hover:bg-[color:var(--color-surface-2)]"
               >
                 <div className="text-[16px] font-semibold text-[var(--color-ink)]">
@@ -84,7 +84,7 @@ export default async function DashboardHome() {
                 <tr key={activity.id} className="border-t border-[color:var(--color-line)]">
                   <td className="py-3">
                     <Link
-                      href={`/dashboard/activities/${activity.id}`}
+                      href={`/activities/${activity.id}`}
                       className="font-mono text-[var(--color-ink)] hover:underline"
                     >
                       {activity.externalActivityId}

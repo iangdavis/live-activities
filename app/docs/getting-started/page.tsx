@@ -104,7 +104,7 @@ export default function GettingStartedPage() {
 
       <h2>3. Confirm delivery</h2>
       <p>
-        Open the dashboard. The activity should appear with a last delivery
+        Open the app. The activity should appear with a last delivery
         result. If APNs rejected the push, the error reason is on the activity
         page.
       </p>

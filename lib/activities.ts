@@ -128,7 +128,7 @@ function projectCredentials(project: Project): ApnsCredentials {
     throw new ApiError(
       400,
       'apns_not_configured',
-      'This project has no APNs credentials. Add your Apple Team ID, Key ID, private key, and Bundle ID in the dashboard.',
+      'This project has no APNs credentials. Add your Apple Team ID, Key ID, private key, and Bundle ID on the project page.',
     )
   }
   return {

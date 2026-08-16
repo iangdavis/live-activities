@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createApiKeyAction } from '@/app/dashboard/actions'
+import { createApiKeyAction } from '@/app/(app)/actions'
 
 export function CreateApiKeyForm({ projectId }: { projectId: string }) {
   const router = useRouter()

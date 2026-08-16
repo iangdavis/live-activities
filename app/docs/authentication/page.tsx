@@ -23,7 +23,7 @@ export default function AuthDocsPage() {
       </p>
       <h2>Where to get a key</h2>
       <p>
-        Dashboard → the project → Create key. The key is scoped to that project.
+        In the app, open the project and create a key. It is scoped to that project.
         It cannot read or update activities that belong to a different project.
       </p>
       <h2>Base URL</h2>

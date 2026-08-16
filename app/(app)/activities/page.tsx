@@ -44,10 +44,10 @@ export default async function ActivitiesPage({
     <div>
       <PageHeader title="Activities" />
       <ProjectPicker
-          projects={projects}
-          selectedId={selected.id}
-          path="/dashboard/activities"
-        />
+        projects={projects}
+        selectedId={selected.id}
+        path="/activities"
+      />
       {activities.length === 0 ? (
         <EmptyState
           title="No activities in this project"
@@ -73,7 +73,7 @@ export default async function ActivitiesPage({
                 <tr key={activity.id} className="border-t border-[color:var(--color-line)]">
                   <td className="py-3">
                     <Link
-                      href={`/dashboard/activities/${activity.id}`}
+                      href={`/activities/${activity.id}`}
                       className="font-mono text-[var(--color-ink)] hover:underline"
                     >
                       {activity.externalActivityId}

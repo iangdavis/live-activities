@@ -1,16 +1,32 @@
 import { NextResponse } from 'next/server'
 import { getSessionFromCookieHeader } from '@/lib/session'
 
-const PROTECTED = ['/dashboard']
 const AUTH_PAGES = ['/login', '/signup']
+
+function isAppPath(pathname: string) {
+  return (
+    pathname === '/dashboard' ||
+    pathname.startsWith('/dashboard/') ||
+    pathname === '/projects' ||
+    pathname.startsWith('/projects/') ||
+    pathname === '/activities' ||
+    pathname.startsWith('/activities/') ||
+    pathname === '/logs' ||
+    pathname.startsWith('/logs/') ||
+    pathname === '/settings' ||
+    pathname.startsWith('/settings/') ||
+    pathname === '/api-keys' ||
+    pathname.startsWith('/api-keys/')
+  )
+}
 
 export async function middleware(request: Request) {
   const url = new URL(request.url)
   const session = await getSessionFromCookieHeader(request.headers.get('cookie'))
 
-  if (PROTECTED.some((path) => url.pathname.startsWith(path)) && !session) {
+  if (isAppPath(url.pathname) && !session) {
     const login = new URL('/login', url.origin)
-    login.searchParams.set('next', url.pathname)
+    login.searchParams.set('next', url.pathname + url.search)
     return NextResponse.redirect(login)
   }
 
@@ -22,5 +38,20 @@ export async function middleware(request: Request) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/signup'],
+  matcher: [
+    '/dashboard',
+    '/dashboard/:path*',
+    '/projects',
+    '/projects/:path*',
+    '/activities',
+    '/activities/:path*',
+    '/logs',
+    '/logs/:path*',
+    '/settings',
+    '/settings/:path*',
+    '/api-keys',
+    '/api-keys/:path*',
+    '/login',
+    '/signup',
+  ],
 }
