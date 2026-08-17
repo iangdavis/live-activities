@@ -58,8 +58,9 @@ export default function GettingStartedPage() {
           is safe to include in your iOS app.
         </li>
         <li>
-          Add the Live Hive iOS SDK from <code>sdks/ios</code> in this repo
-          (Xcode: Add Local). Call{' '}
+          Add the Live Hive iOS SDK (
+          <code>https://github.com/iangdavis/livehive-ios</code>, from{' '}
+          <code>0.1.0</code>). Call{' '}
           <code>Activity.request(..., pushType: .token)</code>, then{' '}
           <code>LiveHive.configure</code> and <code>LiveHive.register(activity)</code>.
         </li>

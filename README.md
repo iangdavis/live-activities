@@ -119,7 +119,13 @@ Documented at `/docs/apns`. Live Hive does not fake successful delivery.
 
 ## iOS SDK
 
-`sdks/ios` — add that folder as a local Swift package in Xcode.
+Swift package: [`iangdavis/livehive-ios`](https://github.com/iangdavis/livehive-ios) from `0.1.0`.
+
+```swift
+.package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.1.0")
+```
+
+Source in this repo: `sdks/ios`. Publish with `scripts/publish-ios-sdk.sh`.
 
 `LiveHive.configure` + `LiveHive.register(activity)`.
 

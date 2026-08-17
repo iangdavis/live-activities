@@ -8,11 +8,21 @@ Canonical API: `https://api.livehive.dev/v1`
 
 ## Install
 
-This package lives in the Live Hive repo at `sdks/ios`. In Xcode: File → Add Package Dependencies → Add Local, and choose that directory.
+In Xcode: File → Add Package Dependencies, paste:
 
 ```text
-sdks/ios
+https://github.com/iangdavis/livehive-ios
 ```
+
+Choose version **0.1.0** or later. Add the `LiveHive` library to your app target.
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.1.0")
+]
+```
+
+This folder is also the source copy inside the Live Hive app repo (`sdks/ios`). Add Local still works for development.
 
 ## Golden path
 

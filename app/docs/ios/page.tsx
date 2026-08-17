@@ -24,11 +24,19 @@ LiveHive.configure(publicKey: "lh_pub_...")
 LiveHive.register(activity)`}</code>
       </pre>
       <p>
-        Clone this repository and add the local Swift package at{' '}
-        <code>sdks/ios</code> (Xcode: File → Add Package Dependencies → Add
-        Local). Production posts to{' '}
+        In Xcode: File → Add Package Dependencies, add{' '}
+        <code>https://github.com/iangdavis/livehive-ios</code>, version{' '}
+        <code>0.1.0</code> or later. Add the <code>LiveHive</code> library to
+        your app target.
+      </p>
+      <pre>
+        <code>{`.package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.1.0")`}</code>
+      </pre>
+      <p>
+        Production posts to{' '}
         <code>https://api.livehive.dev/v1/activities/register</code>. Override{' '}
-        <code>baseURL</code> only for local development.
+        <code>baseURL</code> only for local development. Source in this repo is{' '}
+        <code>sdks/ios</code>.
       </p>
       <ul>
         <li>Uses <code>URLSession</code> — no extra networking library.</li>
