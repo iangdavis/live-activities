@@ -77,7 +77,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 - [x] Local Start in Simulator shows `activity.id` (UUID). That is the HTTP `activity_id` later.
 - [ ] Ignore Xcode `Failed to show Widget '….widget'` / `Failed to get descriptors for extensionBundleID` in Simulator if Start still returned an id. Xcode is trying to open a Home Screen widget on SpringBoard; a Live Activity–only extension has no widget descriptor. Run the **app** scheme, not the widget scheme.
 - [x] Local Update / End works in Simulator UI (lock screen on a phone still unproven).
-- [ ] Add package `https://github.com/iangdavis/livehive-ios` from `0.1.0` to the **app** target. If build says `unable to open dependencies file`: Clean Build Folder, File → Packages → Reset Package Caches, delete DerivedData, resolve packages, rebuild.
+- [ ] Add package `https://github.com/iangdavis/livehive-ios` from `0.1.0` to the **app** target. `unable to open dependencies file` after the **first** successful build: wipe DerivedData; if it returns, app target Build Settings → `SWIFT_ENABLE_EXPLICIT_MODULES` = `NO` (Xcode 16 incremental / SPM flake).
 - [ ] `pushType: .token`, `LiveHive.configure(publicKey:)`, `LiveHive.register(activity)`.
 - [ ] Push Notifications capability on the **app** target.
 - [ ] Copy `activity.id`; wait a few seconds; POST update/end with `lh_live_` to `https://api.livehive.dev/v1`.
