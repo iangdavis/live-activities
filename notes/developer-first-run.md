@@ -39,7 +39,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 11. Shared `DeliveryAttributes` (`status: String`, `eta: Int`) — same shape Getting Started will send as `content_state`.
 12. `DeliveryAttributes` must compile into **both** targets. Either one file with both Target Membership boxes checked, or two identical copies (one per target). Not both — that is `invalid redeclaration`. The Live Activity `.swift` file stays widget-only.
 13. App UI: Start (`Activity.request`), Update (`activity.update`), End (`activity.end`).
-14. App Info: `NSSupportsLiveActivities` = YES.
+14. App target (not the widget) must set **`NSSupportsLiveActivities` = YES**. Without it, Start fails: `target does not include NSSupportsLiveActivities`. In Xcode: select the **app** target → **Info** tab → Custom iOS Target Properties → + → `Supports Live Activities` (or key `NSSupportsLiveActivities`) → Boolean `YES`. The key name is `NSSupportsLiveActivities` (not `…Acitivites`).
 15. Run destination: **iPhone** (simulator or device), never **My Mac**. ActivityKit is iOS-only (`no such module ActivityKit` = compiling for Mac).
 16. If no iPhone destination: Xcode → Settings → Platforms → download **iOS**.
 
@@ -95,3 +95,4 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 | How do I get UDID? | Not in Settings. Finder/Xcode on a USB Mac. |
 | `cannot find … in scope` in WidgetBundle | Bundle still calls Xcode’s generated `Widget()` / `*LiveActivity()` after you renamed or deleted those structs. |
 | `.appex` missing bundle executable | Widget target built no binary: empty Compile Sources or `@main` not in the widget target. |
+| Start: target does not include `NSSupportsLiveActivities` | Missing on the **app** Info (Info tab → Supports Live Activities = YES). |
