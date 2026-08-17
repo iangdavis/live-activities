@@ -8,13 +8,23 @@ Canonical API: `https://api.livehive.dev/v1`
 
 ## Install
 
-In Xcode: File → Add Package Dependencies → Add Local, and choose this directory:
+In Xcode: File → Add Package Dependencies, paste:
 
 ```text
-sdks/ios
+https://github.com/iangdavis/live-activities
 ```
 
-The package is not published to Swift Package Manager yet. Do not invent a different package URL.
+Choose version **0.1.0** or later. Or in `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/iangdavis/live-activities.git", from: "0.1.0")
+]
+```
+
+Then add the `LiveHive` product to your app target.
+
+Local checkout of this repo: File → Add Package Dependencies → Add Local → `sdks/ios`.
 
 ## Golden path
 

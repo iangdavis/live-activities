@@ -30,6 +30,8 @@ describe('iOS SDK sources', () => {
   it('is a Swift package that uses URLSession and exposes the intended API', () => {
     const manifest = readFileSync(join(iosRoot, 'Package.swift'), 'utf8')
     expect(manifest).toContain('name: "LiveHive"')
+    const rootManifest = readFileSync(join(process.cwd(), 'Package.swift'), 'utf8')
+    expect(rootManifest).toContain('path: "sdks/ios/Sources/LiveHive"')
     const combined = swift.map((item) => item.source).join('\n')
     expect(combined).toContain('LiveHive.configure')
     expect(combined).toContain('static func register')
