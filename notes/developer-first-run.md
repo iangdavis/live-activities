@@ -2,7 +2,7 @@
 
 Walkthrough: a new iOS developer integrating Live Hive for the first time (Ian, Aug 2026). Append as we go. This is what actually happened, not polished docs.
 
-**Status:** local Start works in Simulator — shows `activity.id` (UUID). Next: Update/End + lock screen, then a physical iPhone. Live Hive SDK not added.
+**Status:** local Start / Update / End works in Simulator UI. Pre-Live Hive ActivityKit scaffold is done. Next: add `livehive-ios` SPM. Phone lock screen still unproven.
 
 The product assumes the developer already has a Live Activity. Live Hive does not create it.
 
@@ -76,7 +76,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 - [ ] Register phone UDID; widget App ID; signing succeeds.
 - [x] Local Start in Simulator shows `activity.id` (UUID). That is the HTTP `activity_id` later.
 - [ ] Ignore Xcode `Failed to show Widget '….widget'` / `Failed to get descriptors for extensionBundleID` in Simulator if Start still returned an id. Xcode is trying to open a Home Screen widget on SpringBoard; a Live Activity–only extension has no widget descriptor. Run the **app** scheme, not the widget scheme.
-- [ ] Local Update / End; lock screen (Simulator is flaky — phone is the real check).
+- [x] Local Update / End works in Simulator UI (lock screen on a phone still unproven).
 - [ ] Add package `https://github.com/iangdavis/livehive-ios` from `0.1.0` to the **app** target.
 - [ ] `pushType: .token`, `LiveHive.configure(publicKey:)`, `LiveHive.register(activity)`.
 - [ ] Push Notifications capability on the **app** target.
