@@ -37,7 +37,7 @@ These existed from creating the Live Hive project and Apple credentials:
 A reasonable app before adding the SDK: attributes, widget, Start / Update / End on the UI. No package, no `lh_pub_`, `pushType: nil`.
 
 11. Shared `DeliveryAttributes` (`status: String`, `eta: Int`) — same shape Getting Started will send as `content_state`.
-12. File in **both** app and widget targets (File Inspector → Target Membership).
+12. `DeliveryAttributes` must compile into **both** targets. Either one file with both Target Membership boxes checked, or two identical copies (one per target). Not both — that is `invalid redeclaration`. The Live Activity `.swift` file stays widget-only.
 13. App UI: Start (`Activity.request`), Update (`activity.update`), End (`activity.end`).
 14. App Info: `NSSupportsLiveActivities` = YES.
 15. Run destination: **iPhone** (simulator or device), never **My Mac**. ActivityKit is iOS-only (`no such module ActivityKit` = compiling for Mac).
