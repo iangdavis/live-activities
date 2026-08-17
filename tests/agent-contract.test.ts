@@ -17,7 +17,7 @@ describe('agent contract', () => {
     expect(LLMS_TXT).toContain('Do not look for a server SDK')
     expect(LLMS_TXT).toContain('Do not build a token-forwarding')
     expect(LLMS_TXT).not.toContain('https://livehive.dev/api/v1/activities')
-    expect(LLMS_TXT).toContain('https://github.com/iangdavis/live-activities.git from 0.1.0')
+    expect(LLMS_TXT).toContain('Local package path: sdks/ios')
   })
 
   it('OpenAPI documents the golden-path routes on the canonical host', () => {

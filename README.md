@@ -119,13 +119,9 @@ Documented at `/docs/apns`. Live Hive does not fake successful delivery.
 
 ## iOS SDK
 
-Swift package: `https://github.com/iangdavis/live-activities.git` from `0.1.0`
+`sdks/ios` — add that folder as a local Swift package in Xcode.
 
-```swift
-.package(url: "https://github.com/iangdavis/live-activities.git", from: "0.1.0")
-```
-
-`LiveHive.configure` + `LiveHive.register(activity)`. Source lives in `sdks/ios`.
+`LiveHive.configure` + `LiveHive.register(activity)`.
 
 Your backend updates and ends activities over HTTP
 (`POST https://api.livehive.dev/v1/activities/:id/update` and `/end`).

@@ -10,7 +10,7 @@ export const LLMS_TXT = `# Live Hive
 
 Docs: https://livehive.dev/docs/getting-started
 OpenAPI: https://livehive.dev/openapi.json
-iOS SDK: https://github.com/iangdavis/live-activities (Swift package, from 0.1.0)
+iOS SDK: https://github.com/iangdavis/live-activities/tree/main/sdks/ios
 HTML: https://livehive.dev/docs/for-agents
 
 ## Golden path
@@ -75,7 +75,7 @@ POST /v1/activities — optional legacy create with a secret key and push_token.
 
 ## iOS SDK
 
-Swift package: https://github.com/iangdavis/live-activities.git from 0.1.0
+Local package path: sdks/ios
 LiveHive.configure(publicKey: "lh_pub_...")
 LiveHive.register(activity)
 Default origin: ${CANONICAL_API_ORIGIN}
