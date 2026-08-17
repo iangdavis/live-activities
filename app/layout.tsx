@@ -37,6 +37,8 @@ export const metadata: Metadata = {
     'ActivityKit',
     'APNs',
     'iOS',
+    'iOS SDK',
+    'Node SDK',
     'push notifications',
     'Live Activity backend',
   ],
@@ -47,8 +49,7 @@ export const metadata: Metadata = {
     url: appUrl,
     siteName: site.productName,
     title: `${site.productName} - Live Activity Infrastructure`,
-    description:
-      'One simple API to start, update, and end iOS Live Activities. We handle the APNs, tokens, lifecycle, and delivery infrastructure.',
+    description: site.description,
   },
   twitter: {
     card: 'summary_large_image',

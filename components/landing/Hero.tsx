@@ -13,8 +13,8 @@ export function Hero() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-[var(--color-muted)] sm:text-[18px]">
-            One simple API to start, update, and end iOS Live Activities. We
-            handle the APNs, tokens, lifecycle, and delivery infrastructure.
+            An iOS SDK to register Live Activities, and a Node SDK to update and
+            end them. We handle APNs, tokens, lifecycle, and delivery.
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -26,8 +26,8 @@ export function Hero() {
                 className="transition-transform duration-200 group-hover:translate-x-0.5"
               />
             </Link>
-            <Link href="/docs" className="btn-ghost">
-              Read the Docs
+            <Link href="/#sdk" className="btn-ghost">
+              See the SDK
             </Link>
           </div>
           <p className="mt-3 text-[13px] text-[var(--color-faint)]">

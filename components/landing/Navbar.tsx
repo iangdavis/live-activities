@@ -44,10 +44,10 @@ export function Navbar({ signedIn = false }: { signedIn?: boolean }) {
 
         <div className="hidden items-center gap-8 md:flex">
           <a
-            href="/#api"
+            href="/#sdk"
             className="text-[14px] text-[var(--color-muted)] transition-colors hover:text-[var(--color-ink)]"
           >
-            API
+            SDK
           </a>
           <a
             href="/#infrastructure"

@@ -8,6 +8,7 @@ export function Footer() {
 
   const links: { label: string; href: string; icon?: React.ReactNode }[] = [
     { label: 'Docs', href: '/docs' },
+    { label: 'iOS SDK', href: '/docs/ios' },
     { label: 'Pricing', href: '/pricing' },
   ]
   if (github) links.push({ label: 'GitHub', href: github, icon: <GitHubIcon /> })

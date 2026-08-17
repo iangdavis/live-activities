@@ -37,7 +37,7 @@ const FEATURES: Feature[] = [
   },
   {
     title: 'Lifecycle',
-    body: 'Start, update, expire, and end activities reliably.',
+    body: 'Register, update, expire, and end activities reliably.',
     Icon: LifecycleIcon,
     layout: 'compact',
     span: 'lg:col-span-2',

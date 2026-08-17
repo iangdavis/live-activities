@@ -2,8 +2,8 @@ import { Reveal } from './Reveal'
 import { SectionHeading } from './SectionHeading'
 
 const STEPS = [
-  { from: 'iOS app', to: 'Live Hive register' },
-  { from: 'Your backend', to: 'Live Hive update / end' },
+  { from: 'iOS SDK', to: 'Live Hive register' },
+  { from: 'Node SDK', to: 'Live Hive update / end' },
   { from: 'Live Hive', to: 'APNs' },
   { from: 'APNs', to: 'iPhone Live Activity' },
 ]
@@ -12,8 +12,7 @@ export function Architecture() {
   return (
     <section id="how-it-works" className="container-page py-20 sm:py-28">
       <SectionHeading title="How it works.">
-        You keep your product logic. Live Hive owns the Live Activity
-        infrastructure.
+        You keep ActivityKit and your product logic. The SDKs talk to Live Hive.
       </SectionHeading>
 
       <Reveal className="mx-auto mt-12 max-w-2xl">
@@ -40,7 +39,7 @@ export function Architecture() {
           ))}
         </div>
         <p className="mt-5 text-center text-[14px] text-[var(--color-muted)]">
-          The iOS app registers the push token. Your backend never sees it.
+          The iOS SDK registers the push token. Your backend never sees it.
         </p>
       </Reveal>
     </section>

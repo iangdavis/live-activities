@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { Reveal } from './Reveal'
 
 const c = {
@@ -8,57 +11,206 @@ const c = {
   str: '#8ddb8c',
   varv: '#ffcb8b',
   punc: '#8b949e',
+  cmt: '#6e7681',
+}
+
+type Tab = 'ios' | 'node' | 'curl'
+
+const TABS: { id: Tab; label: string; file: string }[] = [
+  { id: 'ios', label: 'iOS SDK', file: 'App.swift' },
+  { id: 'node', label: 'Node SDK', file: 'update.ts' },
+  { id: 'curl', label: 'HTTP', file: 'POST /v1/activities/:id/update' },
+]
+
+function IosSnippet() {
+  return (
+    <code>
+      <span style={{ color: c.kw }}>import</span>
+      {' ActivityKit\n'}
+      <span style={{ color: c.kw }}>import</span>
+      {' LiveHive\n\n'}
+      <span style={{ color: c.fn }}>LiveHive</span>
+      <span style={{ color: c.punc }}>.</span>
+      <span style={{ color: c.fn }}>configure</span>
+      <span style={{ color: c.punc }}>(</span>
+      {'publicKey: '}
+      <span style={{ color: c.str }}>&quot;lh_pub_...&quot;</span>
+      <span style={{ color: c.punc }}>)</span>
+      {'\n\n'}
+      <span style={{ color: c.kw }}>let</span>
+      {' activity = '}
+      <span style={{ color: c.kw }}>try</span>
+      {' '}
+      <span style={{ color: c.fn }}>Activity</span>
+      <span style={{ color: c.punc }}>.</span>
+      <span style={{ color: c.fn }}>request</span>
+      <span style={{ color: c.punc }}>(</span>
+      {'\n  attributes: '}
+      <span style={{ color: c.fn }}>DeliveryAttributes</span>
+      <span style={{ color: c.punc }}>(),</span>
+      {'\n  content: '}
+      <span style={{ color: c.punc }}>.</span>
+      <span style={{ color: c.fn }}>init</span>
+      <span style={{ color: c.punc }}>(</span>
+      {'state: '}
+      <span style={{ color: c.punc }}>.</span>
+      <span style={{ color: c.fn }}>init</span>
+      <span style={{ color: c.punc }}>(</span>
+      {'status: '}
+      <span style={{ color: c.str }}>&quot;preparing&quot;</span>
+      {', eta: 12'}
+      <span style={{ color: c.punc }}>)),</span>
+      {'\n  pushType: '}
+      <span style={{ color: c.punc }}>.</span>
+      {'token\n'}
+      <span style={{ color: c.punc }}>)</span>
+      {'\n\n'}
+      <span style={{ color: c.fn }}>LiveHive</span>
+      <span style={{ color: c.punc }}>.</span>
+      <span style={{ color: c.fn }}>register</span>
+      <span style={{ color: c.punc }}>(</span>
+      {'activity'}
+      <span style={{ color: c.punc }}>)</span>
+    </code>
+  )
+}
+
+function NodeSnippet() {
+  return (
+    <code>
+      <span style={{ color: c.kw }}>import</span>
+      {' { '}
+      <span style={{ color: c.id }}>LiveHive</span>
+      {' } '}
+      <span style={{ color: c.kw }}>from</span>
+      {' '}
+      <span style={{ color: c.str }}>&apos;livehive&apos;</span>
+      {'\n\n'}
+      <span style={{ color: c.kw }}>const</span>
+      {' livehive = '}
+      <span style={{ color: c.kw }}>new</span>
+      {' '}
+      <span style={{ color: c.fn }}>LiveHive</span>
+      <span style={{ color: c.punc }}>({'{'}</span>
+      {'\n  apiKey: process.env.'}
+      <span style={{ color: c.varv }}>LIVEHIVE_API_KEY</span>
+      {', '}
+      <span style={{ color: c.cmt }}>{'// lh_live_...'}</span>
+      {'\n'}
+      <span style={{ color: c.punc }}>{'})'}</span>
+      {'\n\n'}
+      <span style={{ color: c.kw }}>await</span>
+      {' livehive.activities.'}
+      <span style={{ color: c.fn }}>update</span>
+      <span style={{ color: c.punc }}>(</span>
+      <span style={{ color: c.str }}>&apos;abc123&apos;</span>
+      {', '}
+      <span style={{ color: c.punc }}>{'{'}</span>
+      {'\n  status: '}
+      <span style={{ color: c.str }}>&apos;driver_arriving&apos;</span>
+      {',\n  eta: 4,\n'}
+      <span style={{ color: c.punc }}>{'})'}</span>
+      {'\n\n'}
+      <span style={{ color: c.kw }}>await</span>
+      {' livehive.activities.'}
+      <span style={{ color: c.fn }}>end</span>
+      <span style={{ color: c.punc }}>(</span>
+      <span style={{ color: c.str }}>&apos;abc123&apos;</span>
+      {', '}
+      <span style={{ color: c.punc }}>{'{'}</span>
+      {'\n  status: '}
+      <span style={{ color: c.str }}>&apos;delivered&apos;</span>
+      {',\n  eta: 0,\n'}
+      <span style={{ color: c.punc }}>{'})'}</span>
+    </code>
+  )
+}
+
+function CurlSnippet() {
+  return (
+    <code>
+      <span style={{ color: c.fn }}>curl</span>
+      {' -X POST https://api.livehive.dev/v1/activities/'}
+      <span style={{ color: c.varv }}>abc123</span>
+      {'/update \\\n'}
+      {'  -H "Authorization: Bearer '}
+      <span style={{ color: c.str }}>lh_live_...</span>
+      {'" \\\n'}
+      {'  -H "Content-Type: application/json" \\\n'}
+      {'  -d \''}
+      <span style={{ color: c.punc }}>{'{'}</span>
+      {'\n    '}
+      <span style={{ color: c.prop }}>&quot;content_state&quot;</span>
+      <span style={{ color: c.punc }}>: {'{'}</span>
+      {'\n      '}
+      <span style={{ color: c.prop }}>&quot;status&quot;</span>
+      <span style={{ color: c.punc }}>:</span>{' '}
+      <span style={{ color: c.str }}>&quot;driver_arriving&quot;</span>
+      <span style={{ color: c.punc }}>,</span>
+      {'\n      '}
+      <span style={{ color: c.prop }}>&quot;eta&quot;</span>
+      <span style={{ color: c.punc }}>:</span> 4{'\n    '}
+      <span style={{ color: c.punc }}>{'}'}</span>
+      {'\n  '}
+      <span style={{ color: c.punc }}>{'}'}</span>
+      {"'"}
+    </code>
+  )
 }
 
 function CodeBlock() {
+  const [tab, setTab] = useState<Tab>('ios')
+  const active = TABS.find((item) => item.id === tab) ?? TABS[0]
+
   return (
     <div
       className="surface-card overflow-hidden"
       style={{ background: 'var(--color-surface-2)' }}
     >
-      <div className="flex items-center gap-2 border-b border-[color:var(--color-line)] px-4 py-3">
-        <span className="h-3 w-3 rounded-full bg-white/12" />
-        <span className="h-3 w-3 rounded-full bg-white/12" />
-        <span className="h-3 w-3 rounded-full bg-white/12" />
-        <span className="ml-3 font-mono text-[12px] text-[var(--color-faint)]">
-          POST /v1/activities/:id/update
+      <div className="flex flex-wrap items-center gap-2 border-b border-[color:var(--color-line)] px-4 py-2.5">
+        <span className="hidden h-3 w-3 rounded-full bg-white/12 sm:inline-block" />
+        <span className="hidden h-3 w-3 rounded-full bg-white/12 sm:inline-block" />
+        <span className="hidden h-3 w-3 rounded-full bg-white/12 sm:inline-block" />
+        <div
+          role="tablist"
+          aria-label="SDK snippets"
+          className="flex min-w-0 flex-1 items-center gap-1 sm:ml-3"
+        >
+          {TABS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={tab === item.id}
+              onClick={() => setTab(item.id)}
+              className={`rounded-md px-2.5 py-1 font-mono text-[12px] transition-colors ${
+                tab === item.id
+                  ? 'bg-white/[0.08] text-[var(--color-ink)]'
+                  : 'text-[var(--color-faint)] hover:text-[var(--color-ink-soft)]'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <span className="hidden font-mono text-[12px] text-[var(--color-faint)] md:inline">
+          {active.file}
         </span>
       </div>
 
-      <pre className="overflow-x-auto p-5 font-mono text-[13.5px] leading-[1.7] sm:text-[14.5px]">
-        <code>
-          <span style={{ color: c.fn }}>curl</span>
-          {' -X POST https://livehive.dev/api/v1/activities/'}
-          <span style={{ color: c.varv }}>abc123</span>
-          {'/update \\\n'}
-          {'  -H "Authorization: Bearer '}
-          <span style={{ color: c.str }}>lh_live_...</span>
-          {'" \\\n'}
-          {'  -H "Content-Type: application/json" \\\n'}
-          {'  -d \''}
-          <span style={{ color: c.punc }}>{'{'}</span>
-          {'\n    '}
-          <span style={{ color: c.prop }}>&quot;content_state&quot;</span>
-          <span style={{ color: c.punc }}>: {'{'}</span>
-          {'\n      '}
-          <span style={{ color: c.prop }}>&quot;status&quot;</span>
-          <span style={{ color: c.punc }}>:</span>{' '}
-          <span style={{ color: c.str }}>&quot;driver_arriving&quot;</span>
-          <span style={{ color: c.punc }}>,</span>
-          {'\n      '}
-          <span style={{ color: c.prop }}>&quot;eta&quot;</span>
-          <span style={{ color: c.punc }}>:</span> 4{'\n    '}
-          <span style={{ color: c.punc }}>{'}'}</span>
-          {'\n  '}
-          <span style={{ color: c.punc }}>{'}'}</span>
-          {"'"}
-        </code>
+      <pre
+        role="tabpanel"
+        className="overflow-x-auto p-5 font-mono text-[13.5px] leading-[1.7] sm:text-[14.5px]"
+      >
+        {tab === 'ios' && <IosSnippet />}
+        {tab === 'node' && <NodeSnippet />}
+        {tab === 'curl' && <CurlSnippet />}
       </pre>
     </div>
   )
 }
 
-const LIFECYCLE = ['START', 'UPDATE', 'UPDATE', 'END'] as const
+const LIFECYCLE = ['START', 'REGISTER', 'UPDATE', 'END'] as const
 
 function Lifecycle() {
   return (
@@ -97,11 +249,11 @@ function Lifecycle() {
 
 export function ApiExample() {
   return (
-    <section id="api" className="container-page py-20 sm:py-28">
+    <section id="sdk" className="container-page py-20 sm:py-28">
       <div className="mx-auto max-w-2xl text-center">
         <Reveal>
           <h2 className="text-[28px] leading-tight sm:text-[36px]">
-            One API. That&rsquo;s the idea.
+            Two SDKs. That&rsquo;s the idea.
           </h2>
         </Reveal>
       </div>
@@ -109,8 +261,10 @@ export function ApiExample() {
       <Reveal delay={80} className="mx-auto mt-10 max-w-2xl">
         <CodeBlock />
         <p className="mt-5 text-center text-[16px] text-[var(--color-ink-soft)]">
-          Your backend sends the update.{' '}
-          <span className="text-[var(--color-muted)]">We handle the rest.</span>
+          The iOS SDK registers the token.{' '}
+          <span className="text-[var(--color-muted)]">
+            The Node SDK updates and ends the activity.
+          </span>
         </p>
       </Reveal>
 
