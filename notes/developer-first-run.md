@@ -56,14 +56,15 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 21. Create a **second App ID** for that widget bundle ID. No Push capability on the widget.
 22. Live Hive APNs bundle ID stays **`com.iandavis.livehive`**.
 23. Widget **bundle** (`@main` `WidgetBundle`) must instantiate the **exact struct names** that exist. Xcode generates `YourProduct()` (home screen) and `YourProductLiveActivity()`. If you replace the Live Activity with `DeliveryLiveActivity` and drop the home screen widget, change the bundle to only `DeliveryLiveActivity()` or you get `cannot find … in scope`.
+24. If install fails with **missing its bundle executable** (`….appex` has no binary): the widget target did not produce an executable. Usual cause: Compile Sources empty, or the `@main` `WidgetBundle` file is not in the **widget** target (or the target failed to compile after the rename). The app still embeds an empty `.appex`.
 
 ---
 
 ## Signing (actual blocker)
 
-23. Automatic signing needs **at least one device** on the team. Zero devices → `Communication with Apple failed` / no development profile.
-24. Also: `No profiles for 'com.iandavis.livehive.widget'` until the widget App ID exists.
-25. UDID is **not** in iPhone Settings.
+25. Automatic signing needs **at least one device** on the team. Zero devices → `Communication with Apple failed` / no development profile.
+26. Also: `No profiles for 'com.iandavis.livehive.widget'` until the widget App ID exists.
+27. UDID is **not** in iPhone Settings.
     - Mac you can plug into: Finder → iPhone → click Serial until **UDID** (or Xcode → Devices and Simulators → Identifier).
     - Cloud / rented Mac cannot USB. Get UDID elsewhere, add it at [Devices](https://developer.apple.com/account/resources/devices/list).
 27. Then both targets: Team + Automatically manage signing. Destination = a simulator or that registered phone, not Any iOS Device.
