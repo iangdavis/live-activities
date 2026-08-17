@@ -54,3 +54,5 @@ dist-ssr
 # Swift
 .build
 .swiftpm
+xcuserdata
+*.xcuserstate
