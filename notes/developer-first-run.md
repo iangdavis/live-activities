@@ -55,7 +55,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 20. Widget can be `com.iandavis.livehive.widget` or `com.iandavis.livehive.DeliveryWidget`. Either is fine.
 21. Create a **second App ID** for that widget bundle ID. No Push capability on the widget.
 22. Live Hive APNs bundle ID stays **`com.iandavis.livehive`**.
-23. Widget **bundle** (`@main` `WidgetBundle`) must instantiate the **exact struct names** that exist. Xcode generates `YourProduct()` (home screen) and `YourProductLiveActivity()`. If you replace the Live Activity with `DeliveryLiveActivity` and drop the home screen widget, change the bundle to only `DeliveryLiveActivity()` or you get `cannot find … in scope`.
+23. Widget **bundle** (`@main` `WidgetBundle`) must instantiate the **exact struct names** that exist. Xcode generates `YourProduct()` (home screen) and `YourProductLiveActivity.swift` — there is no file named `DeliveryLiveActivity` unless you add one. Either put the Live Activity UI in the generated `*LiveActivity.swift` and call that struct from the bundle, or add a new Swift file **to the widget target**. If you rename/delete the generated structs, update the bundle or you get `cannot find … in scope`.
 24. If install fails with **missing its bundle executable** (`….appex` has no binary): the widget target did not produce an executable. Usual cause: Compile Sources empty, or the `@main` `WidgetBundle` file is not in the **widget** target (or the target failed to compile after the rename). The app still embeds an empty `.appex`.
 
 ---
@@ -67,7 +67,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 27. UDID is **not** in iPhone Settings.
     - Mac you can plug into: Finder → iPhone → click Serial until **UDID** (or Xcode → Devices and Simulators → Identifier).
     - Cloud / rented Mac cannot USB. Get UDID elsewhere, add it at [Devices](https://developer.apple.com/account/resources/devices/list).
-27. Then both targets: Team + Automatically manage signing. Destination = a simulator or that registered phone, not Any iOS Device.
+28. Then both targets: Team + Automatically manage signing. Destination = a simulator or that registered phone, not Any iOS Device.
 
 ---
 
@@ -94,3 +94,4 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 | No provisioning profile / no devices | Team has no UDID; widget App ID missing. |
 | How do I get UDID? | Not in Settings. Finder/Xcode on a USB Mac. |
 | `cannot find … in scope` in WidgetBundle | Bundle still calls Xcode’s generated `Widget()` / `*LiveActivity()` after you renamed or deleted those structs. |
+| `.appex` missing bundle executable | Widget target built no binary: empty Compile Sources or `@main` not in the widget target. |
