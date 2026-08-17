@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'How to update Live Activities from a server',
   description:
-    'Step-by-step: start an ActivityKit Live Activity, send the push token to a server, and update content-state through APNs.',
+    'Step-by-step: start an ActivityKit Live Activity, register the push token with Live Hive, and update content-state over HTTP.',
   alternates: { canonical: '/guides/update-live-activities-from-a-server' },
 }
 

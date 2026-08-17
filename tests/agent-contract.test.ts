@@ -14,9 +14,10 @@ describe('agent contract', () => {
     expect(LLMS_TXT).toContain('POST /v1/activities/{activity_id}/update')
     expect(LLMS_TXT).toContain('POST /v1/activities/{activity_id}/end')
     expect(LLMS_TXT).toContain('Do not put lh_live_ in the iOS app')
-    expect(LLMS_TXT).toContain('Do not npm install livehive')
+    expect(LLMS_TXT).toContain('Do not look for a server SDK')
     expect(LLMS_TXT).toContain('Do not build a token-forwarding')
     expect(LLMS_TXT).not.toContain('https://livehive.dev/api/v1/activities')
+    expect(LLMS_TXT).not.toContain('npm install livehive')
   })
 
   it('OpenAPI documents the golden-path routes on the canonical host', () => {
@@ -33,5 +34,9 @@ describe('agent contract', () => {
     expect(snippets).toContain(CANONICAL_API_BASE)
     expect(snippets).not.toContain('https://livehive.dev/api/v1')
     expect(snippets).not.toContain("from 'livehive'")
+    expect(snippets).not.toContain('function livehive')
+    expect(snippets).not.toContain('def livehive')
+    expect(snippets).not.toContain('func livehive')
+    expect(snippets).toContain('await fetch("https://api.livehive.dev/v1/activities/abc123/update"')
   })
 })

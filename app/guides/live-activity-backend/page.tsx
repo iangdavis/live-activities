@@ -18,10 +18,11 @@ export default function Page() {
         timers and in-app refreshes are not enough once the process is gone.
       </p>
       <p>
-        The server must hold the activity&rsquo;s push token, sign APNs
-        requests with a .p8 key, set <code>apns-push-type: liveactivity</code>,
-        and send a JSON payload whose <code>content-state</code> matches the
-        widget&rsquo;s <code>Codable</code> state.
+        The server must sign APNs requests with a .p8 key, set{' '}
+        <code>apns-push-type: liveactivity</code>, and send a JSON payload
+        whose <code>content-state</code> matches the widget&rsquo;s{' '}
+        <code>Codable</code> state. Live Hive holds the push token so your
+        backend never sees it.
       </p>
       <p>
         That is the entire job. Live Hive is that backend as an HTTP API:{' '}

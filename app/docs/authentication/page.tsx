@@ -32,10 +32,10 @@ export default function AuthDocsPage() {
         <code>Authorization: Bearer lh_live_...</code>
       </pre>
       <p>
-        Keep this secret. Never put it in your iOS app. POST update and end
-        from your backend over HTTP. Keys are hashed at rest. Live Hive
-        shows the full secret key only when it is created. If you lose it,
-        revoke it and create another.
+        Keep this secret. Never put it in your iOS app. There is no server SDK.
+        POST update and end from your backend over HTTP, any language. Keys are
+        hashed at rest. Live Hive shows the full secret key only when it is
+        created. If you lose it, revoke it and create another.
       </p>
 
       <h2>Where to get a key</h2>

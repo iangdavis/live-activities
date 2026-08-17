@@ -12,33 +12,9 @@ const SNIPPETS: Record<
 > = {
   node: {
     label: 'Node.js',
-    both: `const LIVEHIVE = "https://api.livehive.dev/v1"
-const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
+    both: `const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
 
-async function livehive(path, body) {
-  const res = await fetch(\`\${LIVEHIVE}\${path}\`, {
-    method: "POST",
-    headers: {
-      Authorization: \`Bearer \${KEY}\`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  })
-  if (!res.ok) throw new Error(await res.text())
-  return res.json()
-}
-
-await livehive("/activities/abc123/update", {
-  content_state: { status: "driver_arriving", eta: 4 },
-})
-
-await livehive("/activities/abc123/end", {
-  content_state: { status: "delivered", eta: 0 },
-})`,
-    update: `const LIVEHIVE = "https://api.livehive.dev/v1"
-const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
-
-const res = await fetch(\`\${LIVEHIVE}/activities/abc123/update\`, {
+await fetch("https://api.livehive.dev/v1/activities/abc123/update", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${KEY}\`,
@@ -48,12 +24,8 @@ const res = await fetch(\`\${LIVEHIVE}/activities/abc123/update\`, {
     content_state: { status: "driver_arriving", eta: 4 },
   }),
 })
-if (!res.ok) throw new Error(await res.text())
-await res.json()`,
-    end: `const LIVEHIVE = "https://api.livehive.dev/v1"
-const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
 
-const res = await fetch(\`\${LIVEHIVE}/activities/abc123/end\`, {
+await fetch("https://api.livehive.dev/v1/activities/abc123/end", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${KEY}\`,
@@ -62,9 +34,31 @@ const res = await fetch(\`\${LIVEHIVE}/activities/abc123/end\`, {
   body: JSON.stringify({
     content_state: { status: "delivered", eta: 0 },
   }),
-})
-if (!res.ok) throw new Error(await res.text())
-await res.json()`,
+})`,
+    update: `const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
+
+await fetch("https://api.livehive.dev/v1/activities/abc123/update", {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${KEY}\`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    content_state: { status: "driver_arriving", eta: 4 },
+  }),
+})`,
+    end: `const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
+
+await fetch("https://api.livehive.dev/v1/activities/abc123/end", {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${KEY}\`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    content_state: { status: "delivered", eta: 0 },
+  }),
+})`,
   },
   python: {
     label: 'Python',
@@ -72,114 +66,63 @@ await res.json()`,
 import os
 import urllib.request
 
-LIVEHIVE = "https://api.livehive.dev/v1"
 KEY = os.environ["LIVEHIVE_API_KEY"]  # lh_live_...
+HEADERS = {
+    "Authorization": f"Bearer {KEY}",
+    "Content-Type": "application/json",
+}
 
-def livehive(path, body):
-    req = urllib.request.Request(
-        LIVEHIVE + path,
-        data=json.dumps(body).encode(),
-        headers={
-            "Authorization": f"Bearer {KEY}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    with urllib.request.urlopen(req) as res:
-        return json.load(res)
+req = urllib.request.Request(
+    "https://api.livehive.dev/v1/activities/abc123/update",
+    data=json.dumps({"content_state": {"status": "driver_arriving", "eta": 4}}).encode(),
+    headers=HEADERS,
+    method="POST",
+)
+urllib.request.urlopen(req)
 
-livehive("/activities/abc123/update", {
-    "content_state": {"status": "driver_arriving", "eta": 4},
-})
-
-livehive("/activities/abc123/end", {
-    "content_state": {"status": "delivered", "eta": 0},
-})`,
+req = urllib.request.Request(
+    "https://api.livehive.dev/v1/activities/abc123/end",
+    data=json.dumps({"content_state": {"status": "delivered", "eta": 0}}).encode(),
+    headers=HEADERS,
+    method="POST",
+)
+urllib.request.urlopen(req)`,
     update: `import json
 import os
 import urllib.request
 
-LIVEHIVE = "https://api.livehive.dev/v1"
 KEY = os.environ["LIVEHIVE_API_KEY"]  # lh_live_...
-
 req = urllib.request.Request(
-    LIVEHIVE + "/activities/abc123/update",
-    data=json.dumps({
-        "content_state": {"status": "driver_arriving", "eta": 4},
-    }).encode(),
+    "https://api.livehive.dev/v1/activities/abc123/update",
+    data=json.dumps({"content_state": {"status": "driver_arriving", "eta": 4}}).encode(),
     headers={
         "Authorization": f"Bearer {KEY}",
         "Content-Type": "application/json",
     },
     method="POST",
 )
-with urllib.request.urlopen(req) as res:
-    json.load(res)`,
+urllib.request.urlopen(req)`,
     end: `import json
 import os
 import urllib.request
 
-LIVEHIVE = "https://api.livehive.dev/v1"
 KEY = os.environ["LIVEHIVE_API_KEY"]  # lh_live_...
-
 req = urllib.request.Request(
-    LIVEHIVE + "/activities/abc123/end",
-    data=json.dumps({
-        "content_state": {"status": "delivered", "eta": 0},
-    }).encode(),
+    "https://api.livehive.dev/v1/activities/abc123/end",
+    data=json.dumps({"content_state": {"status": "delivered", "eta": 0}}).encode(),
     headers={
         "Authorization": f"Bearer {KEY}",
         "Content-Type": "application/json",
     },
     method="POST",
 )
-with urllib.request.urlopen(req) as res:
-    json.load(res)`,
+urllib.request.urlopen(req)`,
   },
   go: {
     label: 'Go',
     both: `import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"net/http"
-	"os"
-)
-
-const livehiveBase = "https://api.livehive.dev/v1"
-
-func livehive(path string, body any) error {
-	raw, err := json.Marshal(body)
-	if err != nil {
-		return err
-	}
-	req, err := http.NewRequest(http.MethodPost, livehiveBase+path, bytes.NewReader(raw))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
-	req.Header.Set("Content-Type", "application/json")
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-	if res.StatusCode >= 300 {
-		return fmt.Errorf("livehive %s", res.Status)
-	}
-	return nil
-}
-
-_ = livehive("/activities/abc123/update", map[string]any{
-	"content_state": map[string]any{"status": "driver_arriving", "eta": 4},
-})
-_ = livehive("/activities/abc123/end", map[string]any{
-	"content_state": map[string]any{"status": "delivered", "eta": 0},
-})`,
-    update: `import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 )
@@ -194,18 +137,40 @@ req, _ := http.NewRequest(
 )
 req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
 req.Header.Set("Content-Type", "application/json")
-res, err := http.DefaultClient.Do(req)
-if err != nil {
-	return err
-}
-defer res.Body.Close()
-if res.StatusCode >= 300 {
-	return fmt.Errorf("livehive %s", res.Status)
-}`,
+http.DefaultClient.Do(req)
+
+raw, _ = json.Marshal(map[string]any{
+	"content_state": map[string]any{"status": "delivered", "eta": 0},
+})
+req, _ = http.NewRequest(
+	http.MethodPost,
+	"https://api.livehive.dev/v1/activities/abc123/end",
+	bytes.NewReader(raw),
+)
+req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
+req.Header.Set("Content-Type", "application/json")
+http.DefaultClient.Do(req)`,
+    update: `import (
+	"bytes"
+	"encoding/json"
+	"net/http"
+	"os"
+)
+
+raw, _ := json.Marshal(map[string]any{
+	"content_state": map[string]any{"status": "driver_arriving", "eta": 4},
+})
+req, _ := http.NewRequest(
+	http.MethodPost,
+	"https://api.livehive.dev/v1/activities/abc123/update",
+	bytes.NewReader(raw),
+)
+req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
+req.Header.Set("Content-Type", "application/json")
+http.DefaultClient.Do(req)`,
     end: `import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 )
@@ -220,14 +185,7 @@ req, _ := http.NewRequest(
 )
 req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
 req.Header.Set("Content-Type", "application/json")
-res, err := http.DefaultClient.Do(req)
-if err != nil {
-	return err
-}
-defer res.Body.Close()
-if res.StatusCode >= 300 {
-	return fmt.Errorf("livehive %s", res.Status)
-}`,
+http.DefaultClient.Do(req)`,
   },
   ruby: {
     label: 'Ruby',
@@ -236,24 +194,19 @@ require "net/http"
 
 KEY = ENV.fetch("LIVEHIVE_API_KEY") # lh_live_...
 
-def livehive(path, body)
-  uri = URI("https://api.livehive.dev/v1#{path}")
-  req = Net::HTTP::Post.new(uri)
-  req["Authorization"] = "Bearer #{KEY}"
-  req["Content-Type"] = "application/json"
-  req.body = JSON.generate(body)
-  res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
-  raise res.body unless res.is_a?(Net::HTTPSuccess)
-  JSON.parse(res.body)
-end
+uri = URI("https://api.livehive.dev/v1/activities/abc123/update")
+req = Net::HTTP::Post.new(uri)
+req["Authorization"] = "Bearer #{KEY}"
+req["Content-Type"] = "application/json"
+req.body = JSON.generate({ content_state: { status: "driver_arriving", eta: 4 } })
+Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
 
-livehive("/activities/abc123/update", {
-  content_state: { status: "driver_arriving", eta: 4 },
-})
-
-livehive("/activities/abc123/end", {
-  content_state: { status: "delivered", eta: 0 },
-})`,
+uri = URI("https://api.livehive.dev/v1/activities/abc123/end")
+req = Net::HTTP::Post.new(uri)
+req["Authorization"] = "Bearer #{KEY}"
+req["Content-Type"] = "application/json"
+req.body = JSON.generate({ content_state: { status: "delivered", eta: 0 } })
+Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }`,
     update: `require "json"
 require "net/http"
 
@@ -261,12 +214,8 @@ uri = URI("https://api.livehive.dev/v1/activities/abc123/update")
 req = Net::HTTP::Post.new(uri)
 req["Authorization"] = "Bearer #{ENV.fetch("LIVEHIVE_API_KEY")}"
 req["Content-Type"] = "application/json"
-req.body = JSON.generate({
-  content_state: { status: "driver_arriving", eta: 4 },
-})
-res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
-raise res.body unless res.is_a?(Net::HTTPSuccess)
-JSON.parse(res.body)`,
+req.body = JSON.generate({ content_state: { status: "driver_arriving", eta: 4 } })
+Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }`,
     end: `require "json"
 require "net/http"
 
@@ -274,12 +223,8 @@ uri = URI("https://api.livehive.dev/v1/activities/abc123/end")
 req = Net::HTTP::Post.new(uri)
 req["Authorization"] = "Bearer #{ENV.fetch("LIVEHIVE_API_KEY")}"
 req["Content-Type"] = "application/json"
-req.body = JSON.generate({
-  content_state: { status: "delivered", eta: 0 },
-})
-res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
-raise res.body unless res.is_a?(Net::HTTPSuccess)
-JSON.parse(res.body)`,
+req.body = JSON.generate({ content_state: { status: "delivered", eta: 0 } })
+Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }`,
   },
 }
 

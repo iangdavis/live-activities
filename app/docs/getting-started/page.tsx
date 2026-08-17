@@ -83,9 +83,7 @@ export default function GettingStartedPage() {
       <ul>
         <li>Put <code>lh_live_</code> in the iOS app or widget.</li>
         <li>Build a token-forwarding or token-registration server.</li>
-        <li>
-          Install a Node package named <code>livehive</code>. Backend is HTTP.
-        </li>
+        <li>Look for a server SDK. Backend is HTTP.</li>
         <li>
           Skip <code>pushType: .token</code>, WidgetKit, or matching{' '}
           <code>content_state</code> to <code>ContentState</code>.
@@ -109,8 +107,8 @@ export default function GettingStartedPage() {
       <p>
         POST JSON to <code>{CANONICAL_API_BASE}</code> with{' '}
         <code>lh_live_</code>. The <code>content_state</code> object must match
-        the widget <code>ContentState</code>. Snippets below are examples, not a
-        supported-language list:
+        the widget <code>ContentState</code>. Raw HTTP examples (any language
+        works):
       </p>
       <BackendSnippet />
       <p>

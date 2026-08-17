@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Live Activity push token',
   description:
-    'How ActivityKit push tokens work, where to read them in Swift, and how to send them to a backend.',
+    'How ActivityKit push tokens work, where to read them in Swift, and how the iOS SDK registers them with Live Hive.',
   alternates: { canonical: '/guides/live-activity-push-token' },
 }
 

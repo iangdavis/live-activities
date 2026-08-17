@@ -104,7 +104,7 @@ Delivery can be HTTP 200 with status "failed". Check the dashboard for the APNs 
 
 - Do not put lh_live_ in the iOS app or Widget extension.
 - Do not build a token-forwarding or token-registration server. The iOS SDK registers the token.
-- Do not npm install livehive or use a Node/server SDK. Backend is HTTP only.
+- Do not look for a server SDK or npm package. Backend is HTTP only.
 - Do not skip WidgetKit, Activity.request, or pushType: .token.
 - Do not send content_state that does not match the widget ContentState.
 - Do not use lh_pub_ for update, end, or GET.

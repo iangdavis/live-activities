@@ -3,7 +3,7 @@ import { SectionHeading } from './SectionHeading'
 
 const STEPS = [
   { from: 'iOS SDK', to: 'Live Hive register' },
-  { from: 'Your backend', to: 'Live Hive update / end' },
+  { from: 'Your backend (HTTP)', to: 'Live Hive update / end' },
   { from: 'Live Hive', to: 'APNs' },
   { from: 'APNs', to: 'iPhone Live Activity' },
 ]
