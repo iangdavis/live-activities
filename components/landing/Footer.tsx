@@ -8,6 +8,7 @@ export function Footer() {
 
   const links: { label: string; href: string; icon?: React.ReactNode }[] = [
     { label: 'Docs', href: '/docs' },
+    { label: 'For agents', href: '/docs/for-agents' },
     { label: 'iOS SDK', href: '/docs/ios' },
     { label: 'Pricing', href: '/pricing' },
   ]

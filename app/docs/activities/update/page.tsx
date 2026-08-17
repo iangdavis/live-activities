@@ -18,7 +18,7 @@ export default function UpdateDocsPage() {
         requires a server API key (<code>lh_live_...</code>).
       </p>
       <pre>
-        <code>{`POST /api/v1/activities/customer-activity-123/update
+        <code>{`POST /v1/activities/customer-activity-123/update
 
 {
   "content_state": {
@@ -27,7 +27,10 @@ export default function UpdateDocsPage() {
   }
 }`}</code>
       </pre>
-      <p>From your backend:</p>
+      <p>
+        POST JSON to <code>https://api.livehive.dev/v1</code> with a secret key.
+        Example snippets (any language works):
+      </p>
       <BackendSnippet example="update" />
       <p>Response:</p>
       <pre>

@@ -12,7 +12,7 @@ const SNIPPETS: Record<
 > = {
   node: {
     label: 'Node.js',
-    both: `const LIVEHIVE = "https://livehive.dev/api/v1"
+    both: `const LIVEHIVE = "https://api.livehive.dev/v1"
 const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
 
 async function livehive(path, body) {
@@ -35,7 +35,7 @@ await livehive("/activities/abc123/update", {
 await livehive("/activities/abc123/end", {
   content_state: { status: "delivered", eta: 0 },
 })`,
-    update: `const LIVEHIVE = "https://livehive.dev/api/v1"
+    update: `const LIVEHIVE = "https://api.livehive.dev/v1"
 const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
 
 const res = await fetch(\`\${LIVEHIVE}/activities/abc123/update\`, {
@@ -50,7 +50,7 @@ const res = await fetch(\`\${LIVEHIVE}/activities/abc123/update\`, {
 })
 if (!res.ok) throw new Error(await res.text())
 await res.json()`,
-    end: `const LIVEHIVE = "https://livehive.dev/api/v1"
+    end: `const LIVEHIVE = "https://api.livehive.dev/v1"
 const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
 
 const res = await fetch(\`\${LIVEHIVE}/activities/abc123/end\`, {
@@ -72,7 +72,7 @@ await res.json()`,
 import os
 import urllib.request
 
-LIVEHIVE = "https://livehive.dev/api/v1"
+LIVEHIVE = "https://api.livehive.dev/v1"
 KEY = os.environ["LIVEHIVE_API_KEY"]  # lh_live_...
 
 def livehive(path, body):
@@ -99,7 +99,7 @@ livehive("/activities/abc123/end", {
 import os
 import urllib.request
 
-LIVEHIVE = "https://livehive.dev/api/v1"
+LIVEHIVE = "https://api.livehive.dev/v1"
 KEY = os.environ["LIVEHIVE_API_KEY"]  # lh_live_...
 
 req = urllib.request.Request(
@@ -119,7 +119,7 @@ with urllib.request.urlopen(req) as res:
 import os
 import urllib.request
 
-LIVEHIVE = "https://livehive.dev/api/v1"
+LIVEHIVE = "https://api.livehive.dev/v1"
 KEY = os.environ["LIVEHIVE_API_KEY"]  # lh_live_...
 
 req = urllib.request.Request(
@@ -146,7 +146,7 @@ with urllib.request.urlopen(req) as res:
 	"os"
 )
 
-const livehiveBase = "https://livehive.dev/api/v1"
+const livehiveBase = "https://api.livehive.dev/v1"
 
 func livehive(path string, body any) error {
 	raw, err := json.Marshal(body)
@@ -189,7 +189,7 @@ raw, _ := json.Marshal(map[string]any{
 })
 req, _ := http.NewRequest(
 	http.MethodPost,
-	"https://livehive.dev/api/v1/activities/abc123/update",
+	"https://api.livehive.dev/v1/activities/abc123/update",
 	bytes.NewReader(raw),
 )
 req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
@@ -215,7 +215,7 @@ raw, _ := json.Marshal(map[string]any{
 })
 req, _ := http.NewRequest(
 	http.MethodPost,
-	"https://livehive.dev/api/v1/activities/abc123/end",
+	"https://api.livehive.dev/v1/activities/abc123/end",
 	bytes.NewReader(raw),
 )
 req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
@@ -237,7 +237,7 @@ require "net/http"
 KEY = ENV.fetch("LIVEHIVE_API_KEY") # lh_live_...
 
 def livehive(path, body)
-  uri = URI("https://livehive.dev/api/v1#{path}")
+  uri = URI("https://api.livehive.dev/v1#{path}")
   req = Net::HTTP::Post.new(uri)
   req["Authorization"] = "Bearer #{KEY}"
   req["Content-Type"] = "application/json"
@@ -257,7 +257,7 @@ livehive("/activities/abc123/end", {
     update: `require "json"
 require "net/http"
 
-uri = URI("https://livehive.dev/api/v1/activities/abc123/update")
+uri = URI("https://api.livehive.dev/v1/activities/abc123/update")
 req = Net::HTTP::Post.new(uri)
 req["Authorization"] = "Bearer #{ENV.fetch("LIVEHIVE_API_KEY")}"
 req["Content-Type"] = "application/json"
@@ -270,7 +270,7 @@ JSON.parse(res.body)`,
     end: `require "json"
 require "net/http"
 
-uri = URI("https://livehive.dev/api/v1/activities/abc123/end")
+uri = URI("https://api.livehive.dev/v1/activities/abc123/end")
 req = Net::HTTP::Post.new(uri)
 req["Authorization"] = "Bearer #{ENV.fetch("LIVEHIVE_API_KEY")}"
 req["Content-Type"] = "application/json"
@@ -305,7 +305,7 @@ export function BackendSnippet({ example = 'both' }: { example?: BackendExample 
     <div>
       <div
         role="tablist"
-        aria-label="Backend language"
+        aria-label="Example HTTP snippets"
         id={tablistId}
         className="mt-4 mb-2 flex flex-wrap gap-1"
       >

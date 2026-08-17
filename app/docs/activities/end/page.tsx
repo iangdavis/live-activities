@@ -16,7 +16,7 @@ export default function EndDocsPage() {
         requires a server API key (<code>lh_live_...</code>).
       </p>
       <pre>
-        <code>{`POST /api/v1/activities/customer-activity-123/end
+        <code>{`POST /v1/activities/customer-activity-123/end
 
 {
   "content_state": {
@@ -25,7 +25,10 @@ export default function EndDocsPage() {
   }
 }`}</code>
       </pre>
-      <p>From your backend:</p>
+      <p>
+        POST JSON to <code>https://api.livehive.dev/v1</code> with a secret key.
+        Example snippets (any language works):
+      </p>
       <BackendSnippet example="end" />
       <p>
         The body may be empty. If APNs accepts the end event, the activity is

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Errors',
@@ -23,38 +24,41 @@ export default function ErrorsDocsPage() {
       </pre>
       <ul>
         <li>
-          <code>unauthorized</code> / <code>invalid_api_key</code> — missing,
-          wrong, or revoked Bearer token
+          <code>400</code> <code>invalid_json</code> / <code>invalid_request</code>{' '}
+          / <code>apns_not_configured</code> — bad JSON, failed validation, or
+          missing Apple credentials
         </li>
         <li>
-          <code>forbidden</code> — a public iOS key was used for a server-only
-          operation (update, end, or read)
+          <code>401</code> <code>unauthorized</code> / <code>invalid_api_key</code>{' '}
+          — missing, wrong, or revoked Bearer token
         </li>
         <li>
-          <code>invalid_request</code> — JSON or field validation failed
+          <code>403</code> <code>forbidden</code> / <code>plan_limit</code> — a
+          public iOS key was used for a server-only operation, or a free-tier
+          cap was hit
         </li>
         <li>
-          <code>activity_not_found</code> — that activity ID is not in this
-          project
+          <code>404</code> <code>activity_not_found</code> — that activity ID is
+          not in this project
         </li>
         <li>
-          <code>activity_ended</code> — updates are rejected after end
+          <code>409</code> <code>activity_ended</code> — updates are rejected
+          after end
         </li>
         <li>
-          <code>apns_not_configured</code> — add Apple credentials first
+          <code>429</code> <code>rate_limited</code> — slow down
         </li>
         <li>
-          <code>plan_limit</code> — free-tier project or monthly update cap
-        </li>
-        <li>
-          <code>rate_limited</code> — slow down
+          <code>500</code> <code>internal_error</code>
         </li>
       </ul>
       <p>
-        Delivery failures after a valid request still return a delivery object
-        with <code>status: "failed"</code>. Check the dashboard for the APNs
-        reason (<code>BadDeviceToken</code>, <code>ExpiredProviderToken</code>,
-        and so on). Live Hive does not invent a successful delivery.
+        Delivery failures after a valid request still return HTTP 200 with a
+        delivery object <code>status: &quot;failed&quot;</code>. Check the
+        dashboard for the APNs reason (<code>BadDeviceToken</code>,{' '}
+        <code>ExpiredProviderToken</code>, and so on). Live Hive does not invent
+        a successful delivery. Machine copy:{' '}
+        <Link href="/llms.txt">/llms.txt</Link>.
       </p>
     </>
   )

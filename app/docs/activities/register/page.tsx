@@ -43,9 +43,9 @@ LiveHive.register(activity)`}</code>
       </pre>
       <p>
         A secret <code>lh_live_</code> key can still create activities at{' '}
-        <code>POST /v1/activities</code> for older backends. Public keys cannot
-        call that route, and they cannot update or end activities. See{' '}
-        <Link href="/docs/ios">iOS SDK</Link>.
+        <code>POST /v1/activities</code>. That is a legacy path. Do not use it
+        in new integrations. Public keys cannot call it, and they cannot update
+        or end activities. See <Link href="/docs/ios">iOS SDK</Link>.
       </p>
     </>
   )

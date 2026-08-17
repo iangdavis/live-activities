@@ -5,6 +5,7 @@ import { TrackDocs } from '@/components/TrackPage'
 
 const DOCS_NAV = [
   { href: '/docs/getting-started', label: 'Getting started' },
+  { href: '/docs/for-agents', label: 'For agents' },
   { href: '/docs/authentication', label: 'Authentication' },
   { href: '/docs/ios', label: 'iOS SDK' },
   { href: '/docs/activities', label: 'Activities' },

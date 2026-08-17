@@ -38,6 +38,7 @@ describe('iOS SDK sources', () => {
     expect(combined).toContain('pushTokenUpdates')
     expect(combined).toContain('%02x')
     expect(combined).toContain('/v1/activities/register')
+    expect(combined).toContain('There is no server SDK')
     expect(combined).not.toMatch(/Alamofire|Moya|AFNetworking/)
   })
 

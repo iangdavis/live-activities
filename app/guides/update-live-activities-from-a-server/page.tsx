@@ -35,7 +35,9 @@ export default function Page() {
         <Link href="/docs/activities/register">register</Link> and steps 4–5 are{' '}
         <Link href="/docs/activities/update">update</Link> and{' '}
         <Link href="/docs/activities/end">end</Link>. You still own ActivityKit
-        and WidgetKit setup in the iOS app.
+        and WidgetKit setup in the iOS app. Machine-readable:{' '}
+        <Link href="/llms.txt">/llms.txt</Link>,{' '}
+        <Link href="/openapi.json">/openapi.json</Link>.
       </p>
     </>
   )

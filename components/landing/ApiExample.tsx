@@ -212,6 +212,15 @@ export function ApiExample() {
             Your server POSTs updates and ends the activity.
           </span>
         </p>
+        <p className="mt-2 text-center text-[13px] text-[var(--color-faint)]">
+          <a href="/llms.txt" className="underline-offset-2 hover:underline">
+            llms.txt
+          </a>
+          {' · '}
+          <a href="/openapi.json" className="underline-offset-2 hover:underline">
+            OpenAPI
+          </a>
+        </p>
       </Reveal>
 
       <Reveal delay={140} className="mt-12">

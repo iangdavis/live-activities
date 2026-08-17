@@ -9,6 +9,8 @@ APNs and records whether Apple accepted the push.
 
 This repository is a single [Next.js](https://nextjs.org/) application
 (marketing, docs, dashboard, and `/api/v1`) plus the iOS SDK in `sdks/ios`.
+Agents should read [`/llms.txt`](https://livehive.dev/llms.txt) and
+[`/openapi.json`](https://livehive.dev/openapi.json).
 
 ## Product flow
 
@@ -119,7 +121,11 @@ Documented at `/docs/apns`. Live Hive does not fake successful delivery.
 
 `sdks/ios` — `LiveHive.configure` + `LiveHive.register(activity)`
 
-Your backend updates and ends activities with HTTP (`POST /v1/activities/:id/update` and `/end`). Docs include Node.js, Python, Go, and Ruby examples.
+Your backend updates and ends activities over HTTP
+(`POST https://api.livehive.dev/v1/activities/:id/update` and `/end`).
+Any language. There is no server SDK.
+
+Machine-readable contract: `/llms.txt` and `/openapi.json`.
 
 ## What this MVP does not include
 

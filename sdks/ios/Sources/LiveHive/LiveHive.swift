@@ -225,10 +225,15 @@ final class LiveHiveRuntime: @unchecked Sendable {
 /// Minimal iOS SDK for registering ActivityKit push tokens with Live Hive.
 ///
 /// The SDK does not create Live Activities, define attributes, or send updates.
+/// Your backend updates and ends activities over HTTP with a secret `lh_live_` key.
+/// There is no server SDK.
 public enum LiveHive {
     public static let defaultBaseURL = URL(string: "https://api.livehive.dev")!
 
     /// Configures the SDK with a public project key (`lh_pub_...`).
+    ///
+    /// Call this once at launch, before `register`.
+    /// Default `baseURL` is `https://api.livehive.dev`. Override only for local development.
     /// Never pass a server API key (`lh_live_...`).
     public static func configure(publicKey: String, baseURL: URL = defaultBaseURL) {
         do {
@@ -260,7 +265,10 @@ import ActivityKit
 
 @available(iOS 16.1, *)
 public extension LiveHive {
-    /// Observes `activity.pushTokenUpdates` and POSTs each token to Live Hive.
+    /// Observes `activity.pushTokenUpdates` and POSTs each token to
+    /// `POST /v1/activities/register`.
+    ///
+    /// Does not create, update, or end the Live Activity. Call `Activity.request(..., pushType: .token)` first.
     @discardableResult
     static func register<Attributes: ActivityAttributes>(
         _ activity: Activity<Attributes>,

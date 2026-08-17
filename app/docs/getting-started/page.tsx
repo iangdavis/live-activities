@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BackendSnippet } from '@/components/docs/BackendSnippet'
+import { CANONICAL_API_BASE } from '@/lib/api-contract'
 
 export const metadata: Metadata = {
   title: 'Getting started',
   description:
-    'Register an iOS Live Activity with the Live Hive SDK, then update and end it from your backend. No token-registration server required.',
+    'Register an iOS Live Activity with the Live Hive SDK, then update and end it over HTTP. No token-registration server required.',
   alternates: { canonical: '/docs/getting-started' },
 }
 
@@ -39,9 +40,10 @@ export default function GettingStartedPage() {
     <>
       <h1 className="text-[32px]">Getting started</h1>
       <p className="mt-4">
-        The iOS app starts the Live Activity and sends the push token directly
-        to Live Hive. Your backend never sees the token. Do not put an{' '}
-        <code>lh_live_</code> server key in the app.
+        iOS SDK on the device. HTTP from your backend, any language. There is no
+        server SDK. Machine-readable contract:{' '}
+        <Link href="/llms.txt">/llms.txt</Link> and{' '}
+        <Link href="/openapi.json">/openapi.json</Link>.
       </p>
       <ol className="mt-6 list-decimal space-y-3 pl-5">
         <li>
@@ -56,21 +58,40 @@ export default function GettingStartedPage() {
           is safe to include in your iOS app.
         </li>
         <li>
-          Add the Live Hive iOS SDK and call{' '}
-          <code>LiveHive.configure</code> then <code>LiveHive.register(activity)</code>.
+          Add the Live Hive iOS SDK from <code>sdks/ios</code>. Call{' '}
+          <code>Activity.request(..., pushType: .token)</code>, then{' '}
+          <code>LiveHive.configure</code> and <code>LiveHive.register(activity)</code>.
         </li>
         <li>
           Copy the <strong>Server API Key</strong> (<code>lh_live_...</code>).
-          Keep it secret.
+          Keep it secret. Never put it in the app.
         </li>
-        <li>From your backend, POST an update. When it is done, POST end.</li>
+        <li>
+          From your backend, POST{' '}
+          <code>{CANONICAL_API_BASE}/activities/:id/update</code>. When it is
+          done, POST <code>.../end</code>.
+        </li>
       </ol>
       <p>
-        No token-registration server is required. The SDK observes{' '}
-        <code>pushTokenUpdates</code>, converts the token to hex, and registers
-        it with Live Hive. You still need ActivityKit, a WidgetKit extension,
-        and <code>NSSupportsLiveActivities</code>.
+        You still need ActivityKit, a WidgetKit extension, and{' '}
+        <code>NSSupportsLiveActivities</code>. The SDK observes{' '}
+        <code>pushTokenUpdates</code> and registers the hex token. Your backend
+        never sees it.
       </p>
+
+      <h2>Do not</h2>
+      <ul>
+        <li>Put <code>lh_live_</code> in the iOS app or widget.</li>
+        <li>Build a token-forwarding or token-registration server.</li>
+        <li>
+          Install a Node package named <code>livehive</code>. Backend is HTTP.
+        </li>
+        <li>
+          Skip <code>pushType: .token</code>, WidgetKit, or matching{' '}
+          <code>content_state</code> to <code>ContentState</code>.
+        </li>
+        <li>Use the public key for update or end.</li>
+      </ul>
 
       <h2>1. Start and register the activity (iOS)</h2>
       <p>
@@ -86,9 +107,10 @@ export default function GettingStartedPage() {
 
       <h2>2. Update and end from your backend</h2>
       <p>
-        Keep <code>lh_live_</code> in server env and POST JSON. The{' '}
-        <code>content_state</code> object must match the widget{' '}
-        <code>ContentState</code>. Examples in Node.js, Python, Go, and Ruby:
+        POST JSON to <code>{CANONICAL_API_BASE}</code> with{' '}
+        <code>lh_live_</code>. The <code>content_state</code> object must match
+        the widget <code>ContentState</code>. Snippets below are examples, not a
+        supported-language list:
       </p>
       <BackendSnippet />
       <p>

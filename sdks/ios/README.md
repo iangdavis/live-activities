@@ -2,45 +2,37 @@
 
 Minimal Swift package that registers ActivityKit push tokens with Live Hive.
 
-The SDK does **not** create Live Activities, define `ActivityAttributes`, or send updates. ActivityKit and WidgetKit remain your responsibility.
+The SDK does **not** create Live Activities, define `ActivityAttributes`, or send updates. ActivityKit and WidgetKit remain your responsibility. Your backend updates and ends activities over HTTP. There is no server SDK.
+
+Canonical API: `https://api.livehive.dev/v1`
 
 ## Install
 
-Add the package to your Xcode project (File → Add Package Dependencies) once it is published, or add a local package path to `sdks/ios`.
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/your-org/livehive-ios.git", from: "0.1.0")
-]
-```
-
-Until the package is published, point Swift Package Manager at this directory:
+In Xcode: File → Add Package Dependencies → Add Local, and choose this directory:
 
 ```text
 sdks/ios
 ```
 
-## Usage
+The package is not published to Swift Package Manager yet. Do not invent a different package URL.
+
+## Golden path
 
 ```swift
 import ActivityKit
 import LiveHive
 
-try? LiveHive.configure(
-    publicKey: "lh_pub_..."
-    // baseURL: URL(string: "http://localhost:3000") // optional, for development
-)
+// Requires a public key (lh_pub_...). Never pass lh_live_.
+LiveHive.configure(publicKey: "lh_pub_...")
 
 let activity = try Activity.request(
-    attributes: MyAttributes(),
-    content: ...,
+    attributes: DeliveryAttributes(),
+    content: .init(state: .init(status: "preparing", eta: 12), staleDate: nil),
     pushType: .token
 )
 
 LiveHive.register(activity)
 ```
-
-`configure` requires a public key (`lh_pub_...`). Do not pass a server API key (`lh_live_...`).
 
 `register` observes `activity.pushTokenUpdates`, converts each token to lowercase hex, and POSTs it to:
 
@@ -51,10 +43,12 @@ Authorization: Bearer lh_pub_...
 
 Token rotation is handled automatically. Transient HTTP failures (429, 5xx) are retried.
 
-## Publishing
+Override `baseURL` only for local development.
 
-1. Move or mirror `sdks/ios` into its own git repository.
-2. Tag a release (`0.1.0`).
-3. Add the repository URL in Xcode as a Swift Package.
+## Do not
 
-No secret credentials belong in this package.
+- Do not pass a server key (`lh_live_...`) to `configure`.
+- Do not use this SDK to update or end activities. POST HTTP from your backend with `lh_live_`.
+- Do not skip `pushType: .token`, WidgetKit, or `NSSupportsLiveActivities`.
+
+See https://livehive.dev/llms.txt and https://livehive.dev/openapi.json.

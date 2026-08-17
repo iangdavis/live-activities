@@ -28,9 +28,10 @@ export default function Page() {
         <Link href="/docs/activities/register">register</Link>,{' '}
         <Link href="/docs/activities/update">update</Link>,{' '}
         <Link href="/docs/activities/end">end</Link>. The iOS app registers the
-        token. You keep order logic, ETAs, and auth in your own service. Update
-        and end from Node.js, Python, Go, or Ruby — see{' '}
-        <Link href="/docs/getting-started">Getting started</Link>.
+        token. You keep order logic, ETAs, and auth in your own service. Any
+        backend language works — HTTP only. See{' '}
+        <Link href="/docs/getting-started">Getting started</Link> or{' '}
+        <Link href="/llms.txt">/llms.txt</Link>.
       </p>
       <p>
         Related: <Link href="/guides/activitykit-server">ActivityKit server</Link>

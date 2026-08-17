@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: ['/', '/llms.txt', '/openapi.json', '/v1/openapi.json'],
         disallow: [
           '/dashboard',
           '/projects',
@@ -22,5 +22,6 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: `${base}/sitemap.xml`,
+    host: base,
   }
 }

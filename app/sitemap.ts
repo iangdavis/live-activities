@@ -6,7 +6,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const paths = [
     '/',
     '/pricing',
+    '/llms.txt',
+    '/openapi.json',
     '/docs',
+    '/docs/for-agents',
     '/docs/getting-started',
     '/docs/authentication',
     '/docs/ios',
@@ -27,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ]
   return paths.map((path) => ({
     url: `${base}${path}`,
-    changeFrequency: path.startsWith('/docs') || path.startsWith('/guides') ? 'weekly' : 'monthly',
-    priority: path === '/' ? 1 : 0.7,
+    changeFrequency: path.startsWith('/docs') || path.startsWith('/guides') || path === '/llms.txt' || path === '/openapi.json' ? 'weekly' : 'monthly',
+    priority: path === '/' ? 1 : path === '/llms.txt' || path === '/openapi.json' || path === '/docs/for-agents' ? 0.9 : 0.7,
   }))
 }
