@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { BackendSnippet } from '@/components/docs/BackendSnippet'
 
 export const metadata: Metadata = {
   title: 'Update a Live Activity',
@@ -26,6 +27,8 @@ export default function UpdateDocsPage() {
   }
 }`}</code>
       </pre>
+      <p>From your backend:</p>
+      <BackendSnippet example="update" />
       <p>Response:</p>
       <pre>
         <code>{`{

@@ -11,15 +11,13 @@ const c = {
   str: '#8ddb8c',
   varv: '#ffcb8b',
   punc: '#8b949e',
-  cmt: '#6e7681',
 }
 
-type Tab = 'ios' | 'node' | 'curl'
+type Tab = 'ios' | 'http'
 
 const TABS: { id: Tab; label: string; file: string }[] = [
   { id: 'ios', label: 'iOS SDK', file: 'App.swift' },
-  { id: 'node', label: 'Node SDK', file: 'update.ts' },
-  { id: 'curl', label: 'HTTP', file: 'POST /v1/activities/:id/update' },
+  { id: 'http', label: 'HTTP', file: 'POST /v1/activities/:id/update' },
 ]
 
 function IosSnippet() {
@@ -75,58 +73,7 @@ function IosSnippet() {
   )
 }
 
-function NodeSnippet() {
-  return (
-    <code>
-      <span style={{ color: c.kw }}>import</span>
-      {' { '}
-      <span style={{ color: c.id }}>LiveHive</span>
-      {' } '}
-      <span style={{ color: c.kw }}>from</span>
-      {' '}
-      <span style={{ color: c.str }}>&apos;livehive&apos;</span>
-      {'\n\n'}
-      <span style={{ color: c.kw }}>const</span>
-      {' livehive = '}
-      <span style={{ color: c.kw }}>new</span>
-      {' '}
-      <span style={{ color: c.fn }}>LiveHive</span>
-      <span style={{ color: c.punc }}>({'{'}</span>
-      {'\n  apiKey: process.env.'}
-      <span style={{ color: c.varv }}>LIVEHIVE_API_KEY</span>
-      {', '}
-      <span style={{ color: c.cmt }}>{'// lh_live_...'}</span>
-      {'\n'}
-      <span style={{ color: c.punc }}>{'})'}</span>
-      {'\n\n'}
-      <span style={{ color: c.kw }}>await</span>
-      {' livehive.activities.'}
-      <span style={{ color: c.fn }}>update</span>
-      <span style={{ color: c.punc }}>(</span>
-      <span style={{ color: c.str }}>&apos;abc123&apos;</span>
-      {', '}
-      <span style={{ color: c.punc }}>{'{'}</span>
-      {'\n  status: '}
-      <span style={{ color: c.str }}>&apos;driver_arriving&apos;</span>
-      {',\n  eta: 4,\n'}
-      <span style={{ color: c.punc }}>{'})'}</span>
-      {'\n\n'}
-      <span style={{ color: c.kw }}>await</span>
-      {' livehive.activities.'}
-      <span style={{ color: c.fn }}>end</span>
-      <span style={{ color: c.punc }}>(</span>
-      <span style={{ color: c.str }}>&apos;abc123&apos;</span>
-      {', '}
-      <span style={{ color: c.punc }}>{'{'}</span>
-      {'\n  status: '}
-      <span style={{ color: c.str }}>&apos;delivered&apos;</span>
-      {',\n  eta: 0,\n'}
-      <span style={{ color: c.punc }}>{'})'}</span>
-    </code>
-  )
-}
-
-function CurlSnippet() {
+function HttpSnippet() {
   return (
     <code>
       <span style={{ color: c.fn }}>curl</span>
@@ -173,7 +120,7 @@ function CodeBlock() {
         <span className="hidden h-3 w-3 rounded-full bg-white/12 sm:inline-block" />
         <div
           role="tablist"
-          aria-label="SDK snippets"
+          aria-label="iOS SDK and HTTP snippets"
           className="flex min-w-0 flex-1 items-center gap-1 sm:ml-3"
         >
           {TABS.map((item) => (
@@ -203,8 +150,7 @@ function CodeBlock() {
         className="overflow-x-auto p-5 font-mono text-[13.5px] leading-[1.7] sm:text-[14.5px]"
       >
         {tab === 'ios' && <IosSnippet />}
-        {tab === 'node' && <NodeSnippet />}
-        {tab === 'curl' && <CurlSnippet />}
+        {tab === 'http' && <HttpSnippet />}
       </pre>
     </div>
   )
@@ -253,7 +199,7 @@ export function ApiExample() {
       <div className="mx-auto max-w-2xl text-center">
         <Reveal>
           <h2 className="text-[28px] leading-tight sm:text-[36px]">
-            Two SDKs. That&rsquo;s the idea.
+            iOS SDK. HTTP from your backend.
           </h2>
         </Reveal>
       </div>
@@ -263,7 +209,7 @@ export function ApiExample() {
         <p className="mt-5 text-center text-[16px] text-[var(--color-ink-soft)]">
           The iOS SDK registers the token.{' '}
           <span className="text-[var(--color-muted)]">
-            The Node SDK updates and ends the activity.
+            Your server POSTs updates and ends the activity.
           </span>
         </p>
       </Reveal>

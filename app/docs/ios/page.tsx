@@ -37,9 +37,10 @@ LiveHive.register(activity)`}</code>
         <li>Rejects server keys (<code>lh_live_...</code>).</li>
       </ul>
       <p>
-        Your backend still uses a secret key to{' '}
+        Your backend still POSTs{' '}
         <Link href="/docs/activities/update">update</Link> and{' '}
-        <Link href="/docs/activities/end">end</Link>.
+        <Link href="/docs/activities/end">end</Link> with a secret key. There is
+        no server SDK.
       </p>
     </>
   )

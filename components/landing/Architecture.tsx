@@ -3,7 +3,7 @@ import { SectionHeading } from './SectionHeading'
 
 const STEPS = [
   { from: 'iOS SDK', to: 'Live Hive register' },
-  { from: 'Node SDK', to: 'Live Hive update / end' },
+  { from: 'Your backend', to: 'Live Hive update / end' },
   { from: 'Live Hive', to: 'APNs' },
   { from: 'APNs', to: 'iPhone Live Activity' },
 ]
@@ -12,7 +12,8 @@ export function Architecture() {
   return (
     <section id="how-it-works" className="container-page py-20 sm:py-28">
       <SectionHeading title="How it works.">
-        You keep ActivityKit and your product logic. The SDKs talk to Live Hive.
+        You keep ActivityKit and your product logic. The iOS SDK registers the
+        token. Your backend talks HTTP.
       </SectionHeading>
 
       <Reveal className="mx-auto mt-12 max-w-2xl">

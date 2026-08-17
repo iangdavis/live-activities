@@ -2,13 +2,13 @@
 
 Live Activities, without the backend headache.
 
-Live Hive is an HTTP API, dashboard, and small SDKs for iOS Live Activities.
+Live Hive is an HTTP API, dashboard, and iOS SDK for Live Activities.
 The iOS app registers the ActivityKit push token directly with Live Hive. Your
 backend updates and ends activities with a secret API key. Live Hive talks to
 APNs and records whether Apple accepted the push.
 
 This repository is a single [Next.js](https://nextjs.org/) application
-(marketing, docs, dashboard, and `/api/v1`) plus SDKs in `sdks/`.
+(marketing, docs, dashboard, and `/api/v1`) plus the iOS SDK in `sdks/ios`.
 
 ## Product flow
 
@@ -115,10 +115,11 @@ Each project needs:
 
 Documented at `/docs/apns`. Live Hive does not fake successful delivery.
 
-## SDKs
+## iOS SDK
 
-- iOS: `sdks/ios` — `LiveHive.configure` + `LiveHive.register(activity)`
-- Node: `sdks/node` — `livehive.activities.update` / `end`
+`sdks/ios` — `LiveHive.configure` + `LiveHive.register(activity)`
+
+Your backend updates and ends activities with HTTP (`POST /v1/activities/:id/update` and `/end`). Docs include Node.js, Python, Go, and Ruby examples.
 
 ## What this MVP does not include
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { BackendSnippet } from '@/components/docs/BackendSnippet'
 
 export const metadata: Metadata = {
   title: 'End a Live Activity',
@@ -24,6 +25,8 @@ export default function EndDocsPage() {
   }
 }`}</code>
       </pre>
+      <p>From your backend:</p>
+      <BackendSnippet example="end" />
       <p>
         The body may be empty. If APNs accepts the end event, the activity is
         marked ended and the dashboard records <code>ended_at</code> plus the

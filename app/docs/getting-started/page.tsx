@@ -86,8 +86,9 @@ export default function GettingStartedPage() {
 
       <h2>2. Update and end from your backend</h2>
       <p>
-        Keep <code>lh_live_</code> in server env. The object you pass is the
-        widget <code>ContentState</code>.
+        Keep <code>lh_live_</code> in server env and POST JSON. The{' '}
+        <code>content_state</code> object must match the widget{' '}
+        <code>ContentState</code>. Examples in Node.js, Python, Go, and Ruby:
       </p>
       <BackendSnippet />
       <p>

@@ -13,8 +13,9 @@ export function Hero() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-[var(--color-muted)] sm:text-[18px]">
-            An iOS SDK to register Live Activities, and a Node SDK to update and
-            end them. We handle APNs, tokens, lifecycle, and delivery.
+            An iOS SDK to register Live Activities. Your backend updates and
+            ends them over HTTP. We handle APNs, tokens, lifecycle, and
+            delivery.
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

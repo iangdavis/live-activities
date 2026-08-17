@@ -17,7 +17,7 @@ export function FinalCTA() {
             Build your next Live Activity in minutes.
           </h2>
           <p className="mx-auto mt-5 max-w-lg text-[16px] leading-relaxed text-[var(--color-muted)] sm:text-[18px]">
-            Create a project, drop in the SDKs, and send your first update.
+            Create a project, drop in the iOS SDK, and POST your first update.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link href="/signup" className="btn-primary group">

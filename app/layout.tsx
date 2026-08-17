@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     'APNs',
     'iOS',
     'iOS SDK',
-    'Node SDK',
+    'HTTP API',
     'push notifications',
     'Live Activity backend',
   ],

@@ -2,7 +2,7 @@ export const site = {
   productName: 'Live Hive',
   tagline: 'Live Activities, without the backend headache.',
   description:
-    'An iOS SDK to register Live Activities, and a Node SDK to update and end them. We handle APNs, tokens, lifecycle, and delivery.',
+    'An iOS SDK to register Live Activities. Your backend updates and ends them over HTTP. We handle APNs, tokens, lifecycle, and delivery.',
   contactEmail: 'iandavis2@me.com',
   links: {
     github: '',

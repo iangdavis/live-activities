@@ -15,7 +15,8 @@ export default function ActivitiesDocsPage() {
       <p className="mt-4">
         You own the activity ID. Live Hive stores an internal record, the push
         token, and every delivery attempt. The iOS app registers the token; your
-        backend only updates and ends.
+        backend only updates and ends over HTTP. Node.js, Python, Go, and Ruby
+        examples are on the update and end pages.
       </p>
       <ul>
         <li>

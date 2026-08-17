@@ -25,7 +25,7 @@ export default function Page() {
           (the iOS SDK does this; no token-forwarding server is required).
         </li>
         <li>
-          When your domain state changes, your backend sends a Live Hive
+          When your domain state changes, your backend POSTs a Live Hive
           update whose <code>content_state</code> matches that struct.
         </li>
         <li>When the job is done, send an end event.</li>
