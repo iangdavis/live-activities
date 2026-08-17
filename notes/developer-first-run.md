@@ -75,6 +75,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 
 - [ ] Register phone UDID; widget App ID; signing succeeds.
 - [x] Local Start in Simulator shows `activity.id` (UUID). That is the HTTP `activity_id` later.
+- [ ] Ignore Xcode `Failed to show Widget '….widget'` / `Failed to get descriptors for extensionBundleID` in Simulator if Start still returned an id. Xcode is trying to open a Home Screen widget on SpringBoard; a Live Activity–only extension has no widget descriptor. Run the **app** scheme, not the widget scheme.
 - [ ] Local Update / End; lock screen (Simulator is flaky — phone is the real check).
 - [ ] Add package `https://github.com/iangdavis/livehive-ios` from `0.1.0` to the **app** target.
 - [ ] `pushType: .token`, `LiveHive.configure(publicKey:)`, `LiveHive.register(activity)`.
@@ -97,3 +98,4 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 | `cannot find … in scope` in WidgetBundle | Bundle still calls Xcode’s generated `Widget()` / `*LiveActivity()` after you renamed or deleted those structs. |
 | `.appex` missing bundle executable | Widget target built no binary: empty Compile Sources or `@main` not in the widget target. |
 | Start: target does not include `NSSupportsLiveActivities` | Missing on the **app**. Info tab may only show macOS properties; set `INFOPLIST_KEY_NSSupportsLiveActivities` = YES in Build Settings, and confirm iPhone is a destination. |
+| Xcode: Failed to show Widget / get descriptors for extensionBundleID | Simulator + debugger trying to preview a Home Screen widget. Live Activity–only bundle has no descriptor. Harmless if `activity.id` appeared. |
