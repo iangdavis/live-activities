@@ -55,7 +55,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 20. Widget can be `com.iandavis.livehive.widget` or `com.iandavis.livehive.DeliveryWidget`. Either is fine.
 21. Create a **second App ID** for that widget bundle ID. No Push capability on the widget.
 22. Live Hive APNs bundle ID stays **`com.iandavis.livehive`**.
-23. Widget **bundle** (`@main` `WidgetBundle`) must instantiate the **exact struct names** that exist. Xcode generates `YourProduct()` (home screen) and `YourProductLiveActivity.swift` — there is no file named `DeliveryLiveActivity` unless you add one. Either put the Live Activity UI in the generated `*LiveActivity.swift` and call that struct from the bundle, or add a new Swift file **to the widget target**. If you rename/delete the generated structs, update the bundle or you get `cannot find … in scope`.
+23. Widget **bundle** (`@main` `WidgetBundle`) must instantiate the **exact struct names** that exist. Xcode generates `YourProduct()` (home screen) and `YourProductLiveActivity.swift` — there is no file named `DeliveryLiveActivity` unless you add one. Open `*LiveActivity.swift`, copy the `struct … : Widget` name into the bundle (`Foo()`). Guessing `widgetLiveActivity()` still fails if the struct is `deliverywidgetLiveActivity`. The Live Activity file must be in the **widget** target.
 24. If install fails with **missing its bundle executable** (`….appex` has no binary): the widget target did not produce an executable. Usual cause: Compile Sources empty, or the `@main` `WidgetBundle` file is not in the **widget** target (or the target failed to compile after the rename). The app still embeds an empty `.appex`.
 
 ---
