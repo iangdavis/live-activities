@@ -1,10 +1,15 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import {
+  CANONICAL_API_BASE,
+  IOS_SDK_PACKAGE_URL,
+  IOS_SDK_VERSION,
+} from '@/lib/api-contract'
 
 export const metadata: Metadata = {
   title: 'iOS SDK',
   description:
-    'Configure the Live Hive iOS SDK with a public key and register ActivityKit Live Activities. No token-registration server required.',
+    'Install Live Hive with Swift Package Manager. Configure a public key and register ActivityKit Live Activities.',
   alternates: { canonical: '/docs/ios' },
 }
 
@@ -23,20 +28,20 @@ export default function IosSdkDocsPage() {
 LiveHive.configure(publicKey: "lh_pub_...")
 LiveHive.register(activity)`}</code>
       </pre>
+      <h2>Install</h2>
       <p>
-        In Xcode: File → Add Package Dependencies, add{' '}
-        <code>https://github.com/iangdavis/livehive-ios</code>, version{' '}
-        <code>0.1.0</code> or later. Add the <code>LiveHive</code> library to
-        your app target.
+        In Xcode: File → Add Package Dependencies. Paste{' '}
+        <code>{IOS_SDK_PACKAGE_URL.replace(/\.git$/, '')}</code>. Choose{' '}
+        <code>{IOS_SDK_VERSION}</code> or later. Add the <code>LiveHive</code>{' '}
+        library to your app target.
       </p>
       <pre>
-        <code>{`.package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.1.0")`}</code>
+        <code>{`.package(url: "${IOS_SDK_PACKAGE_URL}", from: "${IOS_SDK_VERSION}")`}</code>
       </pre>
       <p>
         Production posts to{' '}
-        <code>https://api.livehive.dev/v1/activities/register</code>. Override{' '}
-        <code>baseURL</code> only for local development. Source in this repo is{' '}
-        <code>sdks/ios</code>.
+        <code>{CANONICAL_API_BASE}/activities/register</code>. Override{' '}
+        <code>baseURL</code> only for local development.
       </p>
       <ul>
         <li>Uses <code>URLSession</code> — no extra networking library.</li>
@@ -49,7 +54,8 @@ LiveHive.register(activity)`}</code>
         Your backend still POSTs{' '}
         <Link href="/docs/activities/update">update</Link> and{' '}
         <Link href="/docs/activities/end">end</Link> with a secret key. There is
-        no server SDK.
+        no server SDK. Walkthrough:{' '}
+        <Link href="/docs/getting-started">Getting started</Link>.
       </p>
     </>
   )

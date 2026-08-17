@@ -1,18 +1,23 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BackendSnippet } from '@/components/docs/BackendSnippet'
-import { CANONICAL_API_BASE } from '@/lib/api-contract'
+import {
+  CANONICAL_API_BASE,
+  IOS_SDK_PACKAGE_URL,
+  IOS_SDK_VERSION,
+} from '@/lib/api-contract'
 
 export const metadata: Metadata = {
   title: 'Getting started',
   description:
-    'Register an iOS Live Activity with the Live Hive SDK, then update and end it over HTTP. No token-registration server required.',
+    'Add the Live Hive iOS SDK with Swift Package Manager, register a Live Activity, then update and end it over HTTP.',
   alternates: { canonical: '/docs/getting-started' },
 }
 
 const SWIFT = `import ActivityKit
 import LiveHive
 
+// Put DeliveryAttributes in a file shared by the app and the widget.
 struct DeliveryAttributes: ActivityAttributes {
   public struct ContentState: Codable, Hashable {
     var status: String
@@ -22,7 +27,7 @@ struct DeliveryAttributes: ActivityAttributes {
 
 LiveHive.configure(publicKey: "lh_pub_...")
 
-func startDelivery() async throws {
+func startDelivery() throws {
   let activity = try Activity.request(
     attributes: DeliveryAttributes(),
     content: .init(
@@ -33,7 +38,53 @@ func startDelivery() async throws {
   )
 
   LiveHive.register(activity)
+  print(activity.id) // this is the activity_id in the HTTP URL
 }`
+
+const WIDGET = `import ActivityKit
+import SwiftUI
+import WidgetKit
+
+struct DeliveryLiveActivity: Widget {
+  var body: some WidgetConfiguration {
+    ActivityConfiguration(for: DeliveryAttributes.self) { context in
+      HStack {
+        Text(context.state.status)
+        Spacer()
+        Text("\\(context.state.eta) min")
+      }
+      .padding()
+    } dynamicIsland: { context in
+      DynamicIsland {
+        DynamicIslandExpandedRegion(.bottom) {
+          Text(context.state.status)
+        }
+      } compactLeading: {
+        Text("LH")
+      } compactTrailing: {
+        Text("\\(context.state.eta)m")
+      } minimal: {
+        Text("\\(context.state.eta)")
+      }
+    }
+  }
+}`
+
+const PLIST = `<key>NSSupportsLiveActivities</key>
+<true/>`
+
+const CURL = `export LIVEHIVE_API_KEY='lh_live_...'
+export ACTIVITY_ID='paste-activity.id-from-the-phone'
+
+curl -sS -X POST "${CANONICAL_API_BASE}/activities/\${ACTIVITY_ID}/update" \\
+  -H "Authorization: Bearer \${LIVEHIVE_API_KEY}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"content_state":{"status":"driver_arriving","eta":4}}'
+
+curl -sS -X POST "${CANONICAL_API_BASE}/activities/\${ACTIVITY_ID}/end" \\
+  -H "Authorization: Bearer \${LIVEHIVE_API_KEY}" \\
+  -H "Content-Type: application/json" \\
+  -d '{"content_state":{"status":"delivered","eta":0}}'`
 
 export default function GettingStartedPage() {
   return (
@@ -50,35 +101,96 @@ export default function GettingStartedPage() {
           <Link href="/signup">Create a Live Hive account</Link> and a project.
         </li>
         <li>
-          Configure Apple credentials on the project page. See{' '}
-          <Link href="/docs/apns">APNs setup</Link>.
+          On the project page, add Apple credentials. See{' '}
+          <Link href="/docs/apns">APNs setup</Link>. Use{' '}
+          <strong>sandbox</strong> for an Xcode-installed debug build,{' '}
+          <strong>production</strong> for TestFlight or App Store. Mixing them
+          is the usual <code>BadDeviceToken</code>.
         </li>
         <li>
           Copy the <strong>iOS Public Key</strong> (<code>lh_pub_...</code>). It
           is safe to include in your iOS app.
         </li>
         <li>
-          Add the Live Hive iOS SDK (
-          <code>https://github.com/iangdavis/livehive-ios</code>, from{' '}
-          <code>0.1.0</code>). Call{' '}
-          <code>Activity.request(..., pushType: .token)</code>, then{' '}
-          <code>LiveHive.configure</code> and <code>LiveHive.register(activity)</code>.
-        </li>
-        <li>
           Copy the <strong>Server API Key</strong> (<code>lh_live_...</code>).
           Keep it secret. Never put it in the app.
         </li>
-        <li>
-          From your backend, POST{' '}
-          <code>{CANONICAL_API_BASE}/activities/:id/update</code>. When it is
-          done, POST <code>.../end</code>.
-        </li>
+        <li>Add the Swift package, start a Live Activity, then POST updates.</li>
       </ol>
+
+      <h2>1. Add the iOS SDK</h2>
       <p>
-        You still need ActivityKit, a WidgetKit extension, and{' '}
-        <code>NSSupportsLiveActivities</code>. The SDK observes{' '}
-        <code>pushTokenUpdates</code> and registers the hex token. Your backend
-        never sees it.
+        In Xcode: File → Add Package Dependencies. Paste:
+      </p>
+      <pre>
+        <code>{IOS_SDK_PACKAGE_URL.replace(/\.git$/, '')}</code>
+      </pre>
+      <p>
+        Choose version <code>{IOS_SDK_VERSION}</code> or later (Up to Next
+        Major). Add the <code>LiveHive</code> library to your <strong>app</strong>{' '}
+        target, not the widget.
+      </p>
+      <pre>
+        <code>{`.package(url: "${IOS_SDK_PACKAGE_URL}", from: "${IOS_SDK_VERSION}")`}</code>
+      </pre>
+      <p>
+        Details: <Link href="/docs/ios">iOS SDK</Link>.
+      </p>
+
+      <h2>2. App, widget, and register</h2>
+      <p>
+        Live Hive does not create the Live Activity. You still need ActivityKit,
+        a WidgetKit extension, Push Notifications, and a physical iPhone.
+        Simulator will not prove APNs.
+      </p>
+      <p>
+        Put <code>DeliveryAttributes</code> in a file (or small framework)
+        shared by the app and the widget. In the app Info.plist:
+      </p>
+      <pre>
+        <code>{PLIST}</code>
+      </pre>
+      <p>
+        Enable the Push Notifications capability on the app target. Then:
+      </p>
+      <pre>
+        <code>{SWIFT}</code>
+      </pre>
+      <p>
+        Widget (same <code>ContentState</code> keys you will send over HTTP):
+      </p>
+      <pre>
+        <code>{WIDGET}</code>
+      </pre>
+      <p>
+        Run on a device. After Start, copy <code>activity.id</code>. Wait a few
+        seconds so the SDK can POST the push token.
+      </p>
+
+      <h2>3. Update and end (HTTP)</h2>
+      <p>
+        Replace <code>ACTIVITY_ID</code> with <code>activity.id</code>. POST JSON
+        to <code>{CANONICAL_API_BASE}</code> with <code>lh_live_</code>.{' '}
+        <code>content_state</code> must match the widget{' '}
+        <code>ContentState</code>.
+      </p>
+      <pre>
+        <code>{CURL}</code>
+      </pre>
+      <p>Same calls in a backend (any language works):</p>
+      <BackendSnippet />
+      <p>
+        Routes:{' '}
+        <Link href="/docs/activities/register">register</Link>,{' '}
+        <Link href="/docs/activities/update">update</Link>,{' '}
+        <Link href="/docs/activities/end">end</Link>.
+      </p>
+
+      <h2>4. Confirm delivery</h2>
+      <p>
+        Lock the phone. The Live Activity should change after the update POST.
+        The dashboard activity page shows the last APNs result. If Apple
+        rejected the push, the reason is there.
       </p>
 
       <h2>Do not</h2>
@@ -91,41 +203,8 @@ export default function GettingStartedPage() {
           <code>content_state</code> to <code>ContentState</code>.
         </li>
         <li>Use the public key for update or end.</li>
+        <li>Depend on this GitHub repo as a Swift package. Use livehive-ios.</li>
       </ul>
-
-      <h2>1. Start and register the activity (iOS)</h2>
-      <p>
-        <code>content_state</code> later must match this{' '}
-        <code>ContentState</code>. Use the public key only.
-      </p>
-      <pre>
-        <code>{SWIFT}</code>
-      </pre>
-      <p>
-        See <Link href="/docs/ios">iOS SDK</Link> for installation.
-      </p>
-
-      <h2>2. Update and end from your backend</h2>
-      <p>
-        POST JSON to <code>{CANONICAL_API_BASE}</code> with{' '}
-        <code>lh_live_</code>. The <code>content_state</code> object must match
-        the widget <code>ContentState</code>. Raw HTTP examples (any language
-        works):
-      </p>
-      <BackendSnippet />
-      <p>
-        Same routes:{' '}
-        <Link href="/docs/activities/register">register</Link>,{' '}
-        <Link href="/docs/activities/update">update</Link>,{' '}
-        <Link href="/docs/activities/end">end</Link>.
-      </p>
-
-      <h2>3. Confirm delivery</h2>
-      <p>
-        Open the app. The activity should appear with a last delivery
-        result. If APNs rejected the push, the error reason is on the activity
-        page.
-      </p>
     </>
   )
 }

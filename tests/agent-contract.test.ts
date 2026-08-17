@@ -39,4 +39,14 @@ describe('agent contract', () => {
     expect(snippets).not.toContain('func livehive')
     expect(snippets).toContain('await fetch("https://api.livehive.dev/v1/activities/abc123/update"')
   })
+
+  it('getting started installs the published Swift package, not this repo', () => {
+    const page = readFileSync('app/docs/getting-started/page.tsx', 'utf8')
+    expect(page).toContain('IOS_SDK_PACKAGE_URL')
+    expect(page).toContain('IOS_SDK_VERSION')
+    expect(page).toContain('File → Add Package Dependencies')
+    expect(page).toContain('print(activity.id)')
+    expect(page).not.toContain('from sdks/ios')
+    expect(page).not.toContain('Add Local')
+  })
 })
