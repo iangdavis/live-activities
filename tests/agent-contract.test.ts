@@ -17,7 +17,7 @@ describe('agent contract', () => {
     expect(LLMS_TXT).toContain('Do not look for a server SDK')
     expect(LLMS_TXT).toContain('Do not build a token-forwarding')
     expect(LLMS_TXT).not.toContain('https://livehive.dev/api/v1/activities')
-    expect(LLMS_TXT).toContain('https://github.com/iangdavis/livehive-ios.git from 0.1.0')
+    expect(LLMS_TXT).toContain('https://github.com/iangdavis/livehive-ios.git from 0.1.1')
   })
 
   it('OpenAPI documents the golden-path routes on the canonical host', () => {
@@ -37,7 +37,7 @@ describe('agent contract', () => {
     expect(snippets).not.toContain('function livehive')
     expect(snippets).not.toContain('def livehive')
     expect(snippets).not.toContain('func livehive')
-    expect(snippets).toContain('await fetch("https://api.livehive.dev/v1/activities/abc123/update"')
+    expect(snippets).toContain('await fetch("https://www.livehive.dev/v1/activities/abc123/update"')
   })
 
   it('getting started installs the published Swift package, not this repo', () => {

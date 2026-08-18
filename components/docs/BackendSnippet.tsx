@@ -14,7 +14,7 @@ const SNIPPETS: Record<
     label: 'Node.js',
     both: `const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
 
-await fetch("https://api.livehive.dev/v1/activities/abc123/update", {
+await fetch("https://www.livehive.dev/v1/activities/abc123/update", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${KEY}\`,
@@ -25,7 +25,7 @@ await fetch("https://api.livehive.dev/v1/activities/abc123/update", {
   }),
 })
 
-await fetch("https://api.livehive.dev/v1/activities/abc123/end", {
+await fetch("https://www.livehive.dev/v1/activities/abc123/end", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${KEY}\`,
@@ -37,7 +37,7 @@ await fetch("https://api.livehive.dev/v1/activities/abc123/end", {
 })`,
     update: `const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
 
-await fetch("https://api.livehive.dev/v1/activities/abc123/update", {
+await fetch("https://www.livehive.dev/v1/activities/abc123/update", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${KEY}\`,
@@ -49,7 +49,7 @@ await fetch("https://api.livehive.dev/v1/activities/abc123/update", {
 })`,
     end: `const KEY = process.env.LIVEHIVE_API_KEY // lh_live_...
 
-await fetch("https://api.livehive.dev/v1/activities/abc123/end", {
+await fetch("https://www.livehive.dev/v1/activities/abc123/end", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${KEY}\`,
@@ -73,7 +73,7 @@ HEADERS = {
 }
 
 req = urllib.request.Request(
-    "https://api.livehive.dev/v1/activities/abc123/update",
+    "https://www.livehive.dev/v1/activities/abc123/update",
     data=json.dumps({"content_state": {"status": "driver_arriving", "eta": 4}}).encode(),
     headers=HEADERS,
     method="POST",
@@ -81,7 +81,7 @@ req = urllib.request.Request(
 urllib.request.urlopen(req)
 
 req = urllib.request.Request(
-    "https://api.livehive.dev/v1/activities/abc123/end",
+    "https://www.livehive.dev/v1/activities/abc123/end",
     data=json.dumps({"content_state": {"status": "delivered", "eta": 0}}).encode(),
     headers=HEADERS,
     method="POST",
@@ -93,7 +93,7 @@ import urllib.request
 
 KEY = os.environ["LIVEHIVE_API_KEY"]  # lh_live_...
 req = urllib.request.Request(
-    "https://api.livehive.dev/v1/activities/abc123/update",
+    "https://www.livehive.dev/v1/activities/abc123/update",
     data=json.dumps({"content_state": {"status": "driver_arriving", "eta": 4}}).encode(),
     headers={
         "Authorization": f"Bearer {KEY}",
@@ -108,7 +108,7 @@ import urllib.request
 
 KEY = os.environ["LIVEHIVE_API_KEY"]  # lh_live_...
 req = urllib.request.Request(
-    "https://api.livehive.dev/v1/activities/abc123/end",
+    "https://www.livehive.dev/v1/activities/abc123/end",
     data=json.dumps({"content_state": {"status": "delivered", "eta": 0}}).encode(),
     headers={
         "Authorization": f"Bearer {KEY}",
@@ -132,7 +132,7 @@ raw, _ := json.Marshal(map[string]any{
 })
 req, _ := http.NewRequest(
 	http.MethodPost,
-	"https://api.livehive.dev/v1/activities/abc123/update",
+	"https://www.livehive.dev/v1/activities/abc123/update",
 	bytes.NewReader(raw),
 )
 req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
@@ -144,7 +144,7 @@ raw, _ = json.Marshal(map[string]any{
 })
 req, _ = http.NewRequest(
 	http.MethodPost,
-	"https://api.livehive.dev/v1/activities/abc123/end",
+	"https://www.livehive.dev/v1/activities/abc123/end",
 	bytes.NewReader(raw),
 )
 req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
@@ -162,7 +162,7 @@ raw, _ := json.Marshal(map[string]any{
 })
 req, _ := http.NewRequest(
 	http.MethodPost,
-	"https://api.livehive.dev/v1/activities/abc123/update",
+	"https://www.livehive.dev/v1/activities/abc123/update",
 	bytes.NewReader(raw),
 )
 req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
@@ -180,7 +180,7 @@ raw, _ := json.Marshal(map[string]any{
 })
 req, _ := http.NewRequest(
 	http.MethodPost,
-	"https://api.livehive.dev/v1/activities/abc123/end",
+	"https://www.livehive.dev/v1/activities/abc123/end",
 	bytes.NewReader(raw),
 )
 req.Header.Set("Authorization", "Bearer "+os.Getenv("LIVEHIVE_API_KEY"))
@@ -194,14 +194,14 @@ require "net/http"
 
 KEY = ENV.fetch("LIVEHIVE_API_KEY") # lh_live_...
 
-uri = URI("https://api.livehive.dev/v1/activities/abc123/update")
+uri = URI("https://www.livehive.dev/v1/activities/abc123/update")
 req = Net::HTTP::Post.new(uri)
 req["Authorization"] = "Bearer #{KEY}"
 req["Content-Type"] = "application/json"
 req.body = JSON.generate({ content_state: { status: "driver_arriving", eta: 4 } })
 Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }
 
-uri = URI("https://api.livehive.dev/v1/activities/abc123/end")
+uri = URI("https://www.livehive.dev/v1/activities/abc123/end")
 req = Net::HTTP::Post.new(uri)
 req["Authorization"] = "Bearer #{KEY}"
 req["Content-Type"] = "application/json"
@@ -210,7 +210,7 @@ Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }`
     update: `require "json"
 require "net/http"
 
-uri = URI("https://api.livehive.dev/v1/activities/abc123/update")
+uri = URI("https://www.livehive.dev/v1/activities/abc123/update")
 req = Net::HTTP::Post.new(uri)
 req["Authorization"] = "Bearer #{ENV.fetch("LIVEHIVE_API_KEY")}"
 req["Content-Type"] = "application/json"
@@ -219,7 +219,7 @@ Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }`
     end: `require "json"
 require "net/http"
 
-uri = URI("https://api.livehive.dev/v1/activities/abc123/end")
+uri = URI("https://www.livehive.dev/v1/activities/abc123/end")
 req = Net::HTTP::Post.new(uri)
 req["Authorization"] = "Bearer #{ENV.fetch("LIVEHIVE_API_KEY")}"
 req["Content-Type"] = "application/json"

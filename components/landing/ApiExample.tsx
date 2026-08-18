@@ -77,7 +77,7 @@ function HttpSnippet() {
   return (
     <code>
       <span style={{ color: c.fn }}>curl</span>
-      {' -X POST https://api.livehive.dev/v1/activities/'}
+      {' -X POST https://www.livehive.dev/v1/activities/'}
       <span style={{ color: c.varv }}>abc123</span>
       {'/update \\\n'}
       {'  -H "Authorization: Bearer '}

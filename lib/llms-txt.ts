@@ -1,4 +1,4 @@
-import { CANONICAL_API_BASE, CANONICAL_API_ORIGIN } from './api-contract'
+import { CANONICAL_API_BASE, CANONICAL_API_ORIGIN, IOS_SDK_VERSION } from './api-contract'
 
 /**
  * Machine-readable product contract for coding agents.
@@ -10,7 +10,7 @@ export const LLMS_TXT = `# Live Hive
 
 Docs: https://livehive.dev/docs/getting-started
 OpenAPI: https://livehive.dev/openapi.json
-iOS SDK: https://github.com/iangdavis/livehive-ios (Swift package, from 0.1.0)
+iOS SDK: https://github.com/iangdavis/livehive-ios (Swift package, from ${IOS_SDK_VERSION})
 HTML: https://livehive.dev/docs/for-agents
 
 ## Golden path
@@ -75,7 +75,7 @@ POST /v1/activities — optional legacy create with a secret key and push_token.
 
 ## iOS SDK
 
-Swift package: https://github.com/iangdavis/livehive-ios.git from 0.1.0
+Swift package: https://github.com/iangdavis/livehive-ios.git from ${IOS_SDK_VERSION}
 LiveHive.configure(publicKey: "lh_pub_...")
 LiveHive.register(activity)
 Default origin: ${CANONICAL_API_ORIGIN}

@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
-      // api.livehive.dev/v1/... and livehive.dev/v1/... both hit the versioned API.
+      // www.livehive.dev/v1/... and livehive.dev/v1/... both hit the versioned API.
       { source: '/v1/:path*', destination: '/api/v1/:path*' },
     ]
   },

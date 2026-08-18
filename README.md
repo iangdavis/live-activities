@@ -29,7 +29,7 @@ POST /v1/activities/:id/update       # server API key (lh_live_...)
 POST /v1/activities/:id/end          # server API key
 ```
 
-Also served at `/api/v1/*`. `api.livehive.dev/v1/*` rewrites to the same routes.
+Also served at `/api/v1/*`. `www.livehive.dev/v1/*` rewrites to the same routes.
 
 `POST /v1/activities` remains available as a secret-key create endpoint for
 existing backends.
@@ -94,7 +94,7 @@ Never commit `.p8` files, API keys, or `.env`.
 3. Set the environment variables above.
 4. Attach domains:
    - `livehive.dev` → the Next.js deployment
-   - `api.livehive.dev` → the same deployment (`/v1/*` rewrites to `/api/v1/*`)
+   - `www.livehive.dev` → the Next.js deployment (`/v1/*` rewrites to `/api/v1/*`)
 5. Deploy. `postinstall` runs `prisma generate`. Run `prisma migrate deploy`
    against production (Vercel build command can be
    `prisma migrate deploy && prisma generate && next build`).
@@ -119,10 +119,10 @@ Documented at `/docs/apns`. Live Hive does not fake successful delivery.
 
 ## iOS SDK
 
-Swift package: [`iangdavis/livehive-ios`](https://github.com/iangdavis/livehive-ios) from `0.1.0`.
+Swift package: [`iangdavis/livehive-ios`](https://github.com/iangdavis/livehive-ios) from `0.1.1`.
 
 ```swift
-.package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.1.0")
+.package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.1.1")
 ```
 
 Source in this repo: `sdks/ios`. Publish with `scripts/publish-ios-sdk.sh`.
@@ -130,7 +130,7 @@ Source in this repo: `sdks/ios`. Publish with `scripts/publish-ios-sdk.sh`.
 `LiveHive.configure` + `LiveHive.register(activity)`.
 
 Your backend updates and ends activities over HTTP
-(`POST https://api.livehive.dev/v1/activities/:id/update` and `/end`).
+(`POST https://www.livehive.dev/v1/activities/:id/update` and `/end`).
 Any language. There is no server SDK.
 
 Machine-readable contract: `/llms.txt` and `/openapi.json`.

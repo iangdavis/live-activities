@@ -63,7 +63,7 @@ export const openApiDocument = {
     version: '1.0.0',
     summary: 'Register iOS Live Activities from the app. Update and end them over HTTP.',
     description:
-      'iOS SDK registers push tokens. Backends call update and end with a secret key. There is no server SDK. Canonical base: https://api.livehive.dev/v1. See https://livehive.dev/llms.txt',
+      'iOS SDK registers push tokens. Backends call update and end with a secret key. There is no server SDK. Canonical base: https://www.livehive.dev/v1. See https://livehive.dev/llms.txt',
   },
   servers: [{ url: CANONICAL_API_BASE }],
   tags: [

@@ -57,9 +57,8 @@ export default function AuthDocsPage() {
 
       <h2>Base URL</h2>
       <p>
-        Canonical host: <code>https://api.livehive.dev/v1</code>. Use that in
-        new code. <code>https://livehive.dev/api/v1</code> is the same API on
-        the app origin — optional, not a second product.
+        Canonical host: <code>https://www.livehive.dev/v1</code>. Use that in
+        new code. <code>https://www.livehive.dev/api/v1</code> is the same API.
       </p>
     </>
   )

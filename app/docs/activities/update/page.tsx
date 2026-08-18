@@ -28,7 +28,7 @@ export default function UpdateDocsPage() {
 }`}</code>
       </pre>
       <p>
-        POST JSON to <code>https://api.livehive.dev/v1</code> with a secret key.
+        POST JSON to <code>https://www.livehive.dev/v1</code> with a secret key.
         Example snippets (any language works):
       </p>
       <BackendSnippet example="update" />
