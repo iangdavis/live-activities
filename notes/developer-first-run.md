@@ -78,7 +78,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 - [ ] Ignore Xcode `Failed to show Widget '….widget'` / `Failed to get descriptors for extensionBundleID` in Simulator if Start still returned an id. Xcode is trying to open a Home Screen widget on SpringBoard; a Live Activity–only extension has no widget descriptor. Run the **app** scheme, not the widget scheme.
 - [x] Local Update / End works in Simulator UI (lock screen on a phone still unproven).
 - [ ] Add package `https://github.com/iangdavis/livehive-ios` from `0.1.0` to the **app** target.
-  - Do not name the app module `livehive` / `LiveHive` — `cannot load module 'livehive' as 'LiveHive'`. App **Product Module Name** = `LiveHiveApp` (bundle ID can stay `com.iandavis.livehive`).
+  - Do not name the app module `livehive` / `LiveHive` — `cannot load module 'livehive' as 'LiveHive'`. Display name **My Delivery App**, Product Module Name **`MyDeliveryApp`**. Bundle ID stays `com.iandavis.livehive`.
   - `unable to open dependencies file`: Build Settings **All** (not Basic); user-defined `SWIFT_ENABLE_EXPLICIT_MODULES` = `NO` on app and widget; wipe DerivedData; build once.
   - After a DerivedData wipe, `missing package product LiveHive` means Resolve Packages / confirm LiveHive is in the app’s Frameworks list.
 - [ ] `pushType: .token`, `LiveHive.configure(publicKey:)`, `LiveHive.register(activity)`.
