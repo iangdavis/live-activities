@@ -83,7 +83,7 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
   - After a DerivedData wipe, `missing package product LiveHive` means Resolve Packages / confirm LiveHive is in the app’s Frameworks list.
 - [x] `pushType: .token`, `LiveHive.configure(publicKey:)`, `LiveHive.register(activity)`. Start/Update/End still work locally in Simulator.
 - [ ] Push Notifications capability on the **app** target.
-- [ ] Copy `activity.id`; wait a few seconds; POST update/end with `lh_live_` to `https://api.livehive.dev/v1`.
+- [ ] Copy `activity.id`; wait a few seconds; POST update/end with `lh_live_`. **`api.livehive.dev` is NXDOMAIN** (docs/SDK default). Use `https://www.livehive.dev/api/v1` (or `/v1` rewrite). iOS: `LiveHive.configure(publicKey:baseURL:)` with `https://www.livehive.dev` until DNS exists.
 - [ ] Confirm dashboard delivery / APNs errors (`BadDeviceToken` = sandbox vs production mismatch).
 
 ---
