@@ -15,7 +15,7 @@ Start only. The server in `../my-delivery-api` updates at 10s and ends at 20s.
 ## Run the demo
 
 1. `LIVEHIVE_API_KEY='lh_live_...' node ../my-delivery-api/server.mjs`
-2. Simulator: API URL `http://127.0.0.1:8787`
+2. Simulator: API URL `http://127.0.0.1:8787` **or** production `https://www.livehive.dev/api/demo/delivery` once `LIVEHIVE_DEMO_API_KEY` is set on Vercel.
 3. Paste `lh_pub_...`, tap **Start**, lock / use Dynamic Island.
 4. ~10s → `driver_arriving` / 4 min. ~20s → ended.
 

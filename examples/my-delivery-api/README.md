@@ -1,41 +1,44 @@
 # My Delivery API
 
-Demo backend for **My Delivery App**. The iOS app only **starts** a Live Activity and registers the token with Live Hive. This server updates at T+10s and ends at T+20s over HTTP with `lh_live_`.
+Demo backend for **My Delivery App**. iOS **Start** only. Secret `lh_live_` stays on the server. Update at T+10s, end at T+20s.
 
-The Live Hive iOS SDK does not update or end.
+Production path is the Live Hive Vercel app (not this Node process):
 
-## Run
+```
+POST https://www.livehive.dev/api/demo/delivery/start
+{ "activity_id": "<uuid>" }
+```
+
+## Vercel (same project as livehive.dev)
+
+1. Vercel → live-activities → **Settings → Environment Variables**
+2. Add **`LIVEHIVE_DEMO_API_KEY`** = your project **Server API Key** (`lh_live_...`)
+   - Production (and Preview if you want)
+3. **Redeploy** (env vars do not apply to the last build until you redeploy)
+4. Optional: `LIVEHIVE_DEMO_STEP_MS` = `10000` (Hobby max duration is 10s — if the delayed jobs never run, set this to `3000` or use Pro)
+
+Check:
+
+```bash
+curl -sS https://www.livehive.dev/api/demo/delivery/health
+```
+
+`key_configured` should be `true`. Then in My Delivery App set the API field to:
+
+`https://www.livehive.dev/api/demo/delivery`
+
+## Local Node (optional)
 
 ```bash
 cd examples/my-delivery-api
-export LIVEHIVE_API_KEY='lh_live_...'   # Server API Key from the Live Hive project
+export LIVEHIVE_API_KEY='lh_live_...'
 node server.mjs
 ```
 
-Default: `http://127.0.0.1:8787`, Live Hive `https://www.livehive.dev/v1`.
-
-Simulator can reach that URL. A physical iPhone cannot — use your Mac’s LAN IP (`http://192.168.x.x:8787`) or a tunnel, and allow HTTP in ATS if needed.
-
-## Check
-
-```bash
-curl -sS http://127.0.0.1:8787/health
-```
-
-## iOS
-
-After Start, the app POSTs:
-
-```bash
-curl -sS -X POST http://127.0.0.1:8787/demo/start \
-  -H 'Content-Type: application/json' \
-  -d '{"activity_id":"THE-UUID-FROM-START"}'
-```
-
-You should get `202` immediately. ~10s later Live Hive logs show **update** `sent`. ~10s after that, **end** `sent`.
+Simulator: `http://127.0.0.1:8787`. A physical iPhone cannot reach localhost.
 
 Do not use `https://livehive.dev` (no www). Apex 308 breaks POST.
 
 ## TestFlight
 
-Set the Live Hive project APNs environment to **production**. Keep bundle ID `com.iandavis.livehive`. Deploy this API to a public HTTPS host and point the app’s API field at that URL.
+Live Hive project APNs environment = **production**. Bundle ID `com.iandavis.livehive`. Use the Vercel URL above, not localhost.
