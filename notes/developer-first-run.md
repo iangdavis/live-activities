@@ -101,4 +101,4 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 | `cannot find … in scope` in WidgetBundle | Bundle still calls Xcode’s generated `Widget()` / `*LiveActivity()` after you renamed or deleted those structs. |
 | `.appex` missing bundle executable | Widget target built no binary: empty Compile Sources or `@main` not in the widget target. |
 | Start: target does not include `NSSupportsLiveActivities` | Missing on the **app**. Info tab may only show macOS properties; set `INFOPLIST_KEY_NSSupportsLiveActivities` = YES in Build Settings, and confirm iPhone is a destination. |
-| Xcode: Failed to show Widget / get descriptors for extensionBundleID | Simulator + debugger trying to preview a Home Screen widget. Live Activity–only bundle has no descriptor. Harmless if `activity.id` appeared. |
+| `could not resolve host: api.livehive.dev` | Hostname is **NXDOMAIN**. API is on `www.livehive.dev` (`/api/v1` and `/v1`). Docs and SDK default are ahead of DNS. |
