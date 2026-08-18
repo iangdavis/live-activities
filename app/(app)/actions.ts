@@ -2,10 +2,17 @@
 
 import { redirect, unstable_rethrow } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { after } from 'next/server'
 import { getSession } from '@/lib/session'
 import { createProject, updateProjectApns } from '@/lib/projects'
 import { createApiKey, revokeApiKey } from '@/lib/api-keys'
 import { ApiError } from '@/lib/errors'
+import {
+  endDashboardActivity,
+  loadOwnedActivity,
+  runDeliveryDriveTail,
+  sendDashboardTestUpdate,
+} from '@/lib/demo'
 
 async function sessionOrLogin() {
   const session = await getSession()
@@ -93,4 +100,75 @@ export async function revokeApiKeyAction(formData: FormData) {
   await revokeApiKey({ accountId: session.accountId, projectId, apiKeyId })
   revalidatePath(`/projects/${projectId}`)
   redirect(`/projects/${projectId}`)
+}
+
+function activityRedirect(activityId: string, query: string) {
+  redirect(`/activities/${activityId}?${query}`)
+}
+
+function demoErrorQuery(error: unknown) {
+  const message =
+    error instanceof ApiError ? error.message : 'Could not send that update.'
+  return `error=${encodeURIComponent(message)}`
+}
+
+export async function sendTestUpdateAction(formData: FormData) {
+  const session = await sessionOrLogin()
+  const activityId = String(formData.get('activityId') || '')
+  try {
+    await sendDashboardTestUpdate({
+      accountId: session.accountId,
+      userId: session.id,
+      activityId,
+    })
+    revalidatePath(`/activities/${activityId}`)
+    activityRedirect(activityId, 'demo=update')
+  } catch (error) {
+    unstable_rethrow(error)
+    activityRedirect(activityId, demoErrorQuery(error))
+  }
+}
+
+export async function endActivityAction(formData: FormData) {
+  const session = await sessionOrLogin()
+  const activityId = String(formData.get('activityId') || '')
+  try {
+    await endDashboardActivity({
+      accountId: session.accountId,
+      userId: session.id,
+      activityId,
+    })
+    revalidatePath(`/activities/${activityId}`)
+    activityRedirect(activityId, 'demo=end')
+  } catch (error) {
+    unstable_rethrow(error)
+    activityRedirect(activityId, demoErrorQuery(error))
+  }
+}
+
+export async function driveDeliveryDemoAction(formData: FormData) {
+  const session = await sessionOrLogin()
+  const activityId = String(formData.get('activityId') || '')
+  try {
+    const { activity, project } = await loadOwnedActivity(
+      session.accountId,
+      activityId,
+    )
+    await sendDashboardTestUpdate({
+      accountId: session.accountId,
+      userId: session.id,
+      activityId,
+    })
+    after(() =>
+      runDeliveryDriveTail({
+        project,
+        externalActivityId: activity.externalActivityId,
+      }).catch(() => {}),
+    )
+    revalidatePath(`/activities/${activityId}`)
+    activityRedirect(activityId, 'demo=drive')
+  } catch (error) {
+    unstable_rethrow(error)
+    activityRedirect(activityId, demoErrorQuery(error))
+  }
 }

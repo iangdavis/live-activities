@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="${1:-0.1.0}"
+VERSION="${1:-0.2.0}"
 REMOTE="${LIVEHIVE_IOS_REMOTE:-https://github.com/iangdavis/livehive-ios.git}"
 STAGE="$(mktemp -d)"
 cleanup() { rm -rf "$STAGE"; }

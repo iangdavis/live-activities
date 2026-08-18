@@ -1,5 +1,10 @@
 import { NextRequest } from 'next/server'
-import { authenticateApiRequest, corsPreflight, requireSecretApiKey } from '@/lib/api-auth'
+import {
+  authenticateApiRequest,
+  corsPreflight,
+  requirePathActivityId,
+  requireSecretApiKey,
+} from '@/lib/api-auth'
 import { getActivityPublic } from '@/lib/activities'
 import { jsonError, jsonOk } from '@/lib/errors'
 
@@ -15,7 +20,10 @@ export async function GET(
     const auth = await authenticateApiRequest(request)
     requireSecretApiKey(auth)
     const { activityId } = await context.params
-    const activity = await getActivityPublic(auth.project.id, activityId)
+    const activity = await getActivityPublic(
+      auth.project.id,
+      requirePathActivityId(activityId),
+    )
     return jsonOk(activity)
   } catch (error) {
     return jsonError(error instanceof Error ? error : new Error('unknown'))

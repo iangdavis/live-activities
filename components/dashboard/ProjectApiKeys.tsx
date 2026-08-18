@@ -101,7 +101,7 @@ export function ProjectApiKeys({
         <h2 className="text-[16px] text-[var(--color-ink)]">iOS Public Key</h2>
         <p className="mt-1 text-[13px] text-[var(--color-muted)]">
           Safe to include in your iOS app. Used only to register Live Activity
-          push tokens. It cannot update, end, or read activities.
+          push tokens. Never put a server key (<code>lh_live_</code>) here.
         </p>
         <CreateApiKeyForm
           projectId={projectId}
@@ -121,7 +121,8 @@ export function ProjectApiKeys({
         <h2 className="text-[16px] text-[var(--color-ink)]">Server API Key</h2>
         <p className="mt-1 text-[13px] text-[var(--color-muted)]">
           Keep this secret. Never put it in your iOS app. Use it from your
-          backend to update and end activities.
+          backend to update and end activities — or skip it until after a
+          dashboard test update.
         </p>
         <CreateApiKeyForm
           projectId={projectId}

@@ -3,9 +3,10 @@
 Live Activities, without the backend headache.
 
 Live Hive is an HTTP API, dashboard, and iOS SDK for Live Activities.
-The iOS app registers the ActivityKit push token directly with Live Hive. Your
-backend updates and ends activities with a secret API key. Live Hive talks to
-APNs and records whether Apple accepted the push.
+The iOS SDK starts a Live Activity and registers the push token. First update
+can come from the dashboard. Your backend updates and ends activities with a
+secret API key when you are ready. Live Hive talks to APNs and records whether
+Apple accepted the push.
 
 This repository is a single [Next.js](https://nextjs.org/) application
 (marketing, docs, dashboard, and `/api/v1`) plus the iOS SDK in `sdks/ios`.
@@ -15,8 +16,8 @@ Agents should read [`/llms.txt`](https://livehive.dev/llms.txt) and
 ## Product flow
 
 ```
-iOS app  →  Live Hive register  →  stored push token
-Your backend  →  Live Hive update/end  →  APNs  →  iPhone
+iOS app  →  LiveHive.start()  →  Live Hive register
+Dashboard test update  (or your backend HTTP)  →  APNs  →  iPhone
 ```
 
 No token-registration server is required. Do not put `lh_live_...` in the iOS app.
@@ -119,26 +120,29 @@ Documented at `/docs/apns`. Live Hive does not fake successful delivery.
 
 ## iOS SDK
 
-Swift package: [`iangdavis/livehive-ios`](https://github.com/iangdavis/livehive-ios) from `0.1.1`.
+Swift package: [`iangdavis/livehive-ios`](https://github.com/iangdavis/livehive-ios) from `0.2.0`.
 
 ```swift
-.package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.1.1")
+.package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.2.0")
 ```
 
 Source in this repo: `sdks/ios`. Publish with `scripts/publish-ios-sdk.sh`.
 
-`LiveHive.configure` + `LiveHive.register(activity)`.
+`LiveHive.configure` + `LiveHive.start()`. The package includes
+`DeliveryAttributes` and `DeliveryLiveActivity`. Paste the GitHub URL in
+Xcode; do not search the Apple package list.
 
 Your backend updates and ends activities over HTTP
-(`POST https://www.livehive.dev/v1/activities/:id/update` and `/end`).
-Any language. There is no server SDK.
+(`POST https://www.livehive.dev/v1/activities/:id/update` and `/end`), or skip
+that until after a dashboard test update. Any language. There is no server SDK.
 
 Machine-readable contract: `/llms.txt` and `/openapi.json`.
 
 ## Examples
 
-Server-driven demo (iOS Start only; **separate** My Delivery API updates at 10s and ends at 20s):
-`examples/my-delivery-api` (own Vercel project) and `examples/my-delivery-app`.
+Server-driven demo is optional. First success is dashboard **Send test update**.
+`examples/my-delivery-app` (Start via `LiveHive.start()`) and
+`examples/my-delivery-api` (own Vercel project if you want HTTP to drive it).
 
 ## What this MVP does not include
 

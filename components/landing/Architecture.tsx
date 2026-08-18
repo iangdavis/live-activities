@@ -2,8 +2,8 @@ import { Reveal } from './Reveal'
 import { SectionHeading } from './SectionHeading'
 
 const STEPS = [
-  { from: 'iOS SDK', to: 'Live Hive register' },
-  { from: 'Your backend (HTTP)', to: 'Live Hive update / end' },
+  { from: 'iOS SDK start()', to: 'Live Hive register' },
+  { from: 'Dashboard test update', to: 'or your backend HTTP' },
   { from: 'Live Hive', to: 'APNs' },
   { from: 'APNs', to: 'iPhone Live Activity' },
 ]
@@ -12,8 +12,9 @@ export function Architecture() {
   return (
     <section id="how-it-works" className="container-page py-20 sm:py-28">
       <SectionHeading title="How it works.">
-        You keep ActivityKit and your product logic. The iOS SDK registers the
-        token. Your backend talks HTTP.
+        You keep a Widget Extension and your product logic. The iOS SDK starts
+        the Live Activity and registers the token. First update can come from
+        the dashboard. Your backend talks HTTP when you are ready.
       </SectionHeading>
 
       <Reveal className="mx-auto mt-12 max-w-2xl">
@@ -41,6 +42,7 @@ export function Architecture() {
         </div>
         <p className="mt-5 text-center text-[14px] text-[var(--color-muted)]">
           The iOS SDK registers the push token. Your backend never sees it.
+          First success does not require a backend.
         </p>
       </Reveal>
     </section>

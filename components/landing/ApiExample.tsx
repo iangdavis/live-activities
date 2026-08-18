@@ -24,8 +24,6 @@ function IosSnippet() {
   return (
     <code>
       <span style={{ color: c.kw }}>import</span>
-      {' ActivityKit\n'}
-      <span style={{ color: c.kw }}>import</span>
       {' LiveHive\n\n'}
       <span style={{ color: c.fn }}>LiveHive</span>
       <span style={{ color: c.punc }}>.</span>
@@ -39,36 +37,10 @@ function IosSnippet() {
       {' activity = '}
       <span style={{ color: c.kw }}>try</span>
       {' '}
-      <span style={{ color: c.fn }}>Activity</span>
-      <span style={{ color: c.punc }}>.</span>
-      <span style={{ color: c.fn }}>request</span>
-      <span style={{ color: c.punc }}>(</span>
-      {'\n  attributes: '}
-      <span style={{ color: c.fn }}>DeliveryAttributes</span>
-      <span style={{ color: c.punc }}>(),</span>
-      {'\n  content: '}
-      <span style={{ color: c.punc }}>.</span>
-      <span style={{ color: c.fn }}>init</span>
-      <span style={{ color: c.punc }}>(</span>
-      {'state: '}
-      <span style={{ color: c.punc }}>.</span>
-      <span style={{ color: c.fn }}>init</span>
-      <span style={{ color: c.punc }}>(</span>
-      {'status: '}
-      <span style={{ color: c.str }}>&quot;preparing&quot;</span>
-      {', eta: 12'}
-      <span style={{ color: c.punc }}>)),</span>
-      {'\n  pushType: '}
-      <span style={{ color: c.punc }}>.</span>
-      {'token\n'}
-      <span style={{ color: c.punc }}>)</span>
-      {'\n\n'}
       <span style={{ color: c.fn }}>LiveHive</span>
       <span style={{ color: c.punc }}>.</span>
-      <span style={{ color: c.fn }}>register</span>
-      <span style={{ color: c.punc }}>(</span>
-      {'activity'}
-      <span style={{ color: c.punc }}>)</span>
+      <span style={{ color: c.fn }}>start</span>
+      <span style={{ color: c.punc }}>()</span>
     </code>
   )
 }
@@ -199,7 +171,7 @@ export function ApiExample() {
       <div className="mx-auto max-w-2xl text-center">
         <Reveal>
           <h2 className="text-[28px] leading-tight sm:text-[36px]">
-            iOS SDK. HTTP from your backend.
+          iOS SDK. First update from the dashboard.
           </h2>
         </Reveal>
       </div>
@@ -207,9 +179,9 @@ export function ApiExample() {
       <Reveal delay={80} className="mx-auto mt-10 max-w-2xl">
         <CodeBlock />
         <p className="mt-5 text-center text-[16px] text-[var(--color-ink-soft)]">
-          The iOS SDK registers the token.{' '}
+          The iOS SDK starts the activity and registers the token.{' '}
           <span className="text-[var(--color-muted)]">
-            Your server POSTs updates and ends the activity.
+            Send a test update from the dashboard, then POST from your server.
           </span>
         </p>
         <p className="mt-2 text-center text-[13px] text-[var(--color-faint)]">

@@ -3,9 +3,12 @@ import { redirect } from 'next/navigation'
 import { getOwnedProject } from '@/lib/projects'
 import { listApiKeys } from '@/lib/api-keys'
 import { encryptionKeyStatus } from '@/lib/env'
+import { prisma } from '@/lib/db'
 import { updateApnsAction } from '../../actions'
 import { Notice, PageHeader } from '@/components/dashboard/ui'
 import { ProjectApiKeys } from '@/components/dashboard/ProjectApiKeys'
+import { SetupChecklist } from '@/components/dashboard/SetupChecklist'
+import { XcodeSetupCard } from '@/components/dashboard/XcodeSetupCard'
 
 export default async function ProjectDetailPage({
   params,
@@ -22,6 +25,15 @@ export default async function ProjectDetailPage({
   const keys = await listApiKeys(session.accountId, project.id)
   const apnsConfigured = Boolean(project.apnsKeyEncrypted)
   const encryption = encryptionKeyStatus()
+  const publicKeys = keys.filter((key) => key.type === 'PUBLIC' && !key.revokedAt)
+  const revealedPublicKey = publicKeys.find((key) => key.revealedKey)?.revealedKey ?? null
+  const latestActivity = await prisma.activity.findFirst({
+    where: { projectId: project.id },
+    orderBy: { createdAt: 'desc' },
+    select: { id: true },
+  })
+  const hasDelivery =
+    (await prisma.delivery.count({ where: { projectId: project.id } })) > 0
 
   return (
     <div>
@@ -31,20 +43,15 @@ export default async function ProjectDetailPage({
         saved={saved === '1'}
       />
 
-      <ol className="mb-6 grid gap-3 text-[13px] text-[var(--color-muted)] sm:grid-cols-3">
-        <li className="surface-card px-4 py-3">
-          <span className="font-mono text-[11px] text-[var(--color-faint)]">01</span>
-          <p className="mt-1 text-[var(--color-ink)]">Configure Apple credentials</p>
-        </li>
-        <li className="surface-card px-4 py-3">
-          <span className="font-mono text-[11px] text-[var(--color-faint)]">02</span>
-          <p className="mt-1 text-[var(--color-ink)]">Copy the iOS public key</p>
-        </li>
-        <li className="surface-card px-4 py-3">
-          <span className="font-mono text-[11px] text-[var(--color-faint)]">03</span>
-          <p className="mt-1 text-[var(--color-ink)]">Copy the server API key</p>
-        </li>
-      </ol>
+      <SetupChecklist
+        apnsConfigured={apnsConfigured}
+        hasPublicKey={publicKeys.length > 0}
+        hasActivity={Boolean(latestActivity)}
+        hasDelivery={hasDelivery}
+        latestActivityHref={
+          latestActivity ? `/activities/${latestActivity.id}` : undefined
+        }
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="surface-card p-6">
@@ -158,6 +165,11 @@ export default async function ProjectDetailPage({
           </form>
         </section>
       </div>
+
+      <XcodeSetupCard
+        bundleId={project.bundleId}
+        publicKey={revealedPublicKey}
+      />
 
       <ProjectApiKeys projectId={project.id} keys={keys} />
     </div>

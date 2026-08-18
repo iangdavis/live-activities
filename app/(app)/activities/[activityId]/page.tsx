@@ -2,18 +2,30 @@ import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import { tokenPreview } from '@/lib/crypto'
-import { PageHeader, StatusPill } from '@/components/dashboard/ui'
+import { Notice, PageHeader, StatusPill } from '@/components/dashboard/ui'
+import { ActivityDemoControls } from '@/components/dashboard/ActivityDemoControls'
+import { CopyButton } from '@/components/dashboard/CopyButton'
+import { httpEndCurl, httpUpdateCurl } from '@/lib/xcode-setup'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+const DEMO_OK: Record<string, string> = {
+  update: 'Test update sent. Lock the phone — status should become driver_arriving.',
+  end: 'End sent. The Live Activity should dismiss.',
+  drive: 'Demo started. Another update in ~4s, then end. Stay on this page.',
+}
+
 export default async function ActivityDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ activityId: string }>
+  searchParams: Promise<{ error?: string; demo?: string }>
 }) {
   const session = await getSession()
   if (!session) redirect('/login')
   const { activityId } = await params
+  const { error, demo } = await searchParams
   const activity = await prisma.activity.findFirst({
     where: {
       id: activityId,
@@ -25,6 +37,10 @@ export default async function ActivityDetailPage({
     },
   })
   if (!activity) notFound()
+
+  const updateCurl = httpUpdateCurl(activity.externalActivityId)
+  const endCurl = httpEndCurl(activity.externalActivityId)
+  const ended = activity.status === 'ended'
 
   return (
     <div>
@@ -39,7 +55,22 @@ export default async function ActivityDetailPage({
         </Link>
       </p>
 
-      <section className="surface-card grid gap-4 p-6 sm:grid-cols-2">
+      <Notice error={error} ok={demo ? DEMO_OK[demo] : undefined} />
+
+      <section className="surface-card p-6">
+        <h2 className="text-[16px] text-[var(--color-ink)]">First success</h2>
+        <p className="mt-1 text-[13px] text-[var(--color-muted)]">
+          Live Hive pushes from here with your APNs key. The phone never sees{' '}
+          <code>lh_live_</code>. Uses the delivery template{' '}
+          <code>status</code> + <code>eta</code>. Your own backend can take over
+          later.
+        </p>
+        <div className="mt-4">
+          <ActivityDemoControls activityId={activity.id} ended={ended} />
+        </div>
+      </section>
+
+      <section className="surface-card mt-6 grid gap-4 p-6 sm:grid-cols-2">
         <div>
           <div className="text-[12px] text-[var(--color-faint)]">Status</div>
           <div className="mt-1">
@@ -75,6 +106,32 @@ export default async function ActivityDetailPage({
           <div className="mt-1 text-[14px] text-[var(--color-ink)]">
             {activity.endedAt?.toISOString() ?? '—'}
           </div>
+        </div>
+      </section>
+
+      <section className="surface-card mt-6 p-6">
+        <h2 className="text-[16px] text-[var(--color-ink)]">Your backend later</h2>
+        <p className="mt-1 text-[13px] text-[var(--color-muted)]">
+          Same JSON Live Hive just sent. Host is www — no trailing slash, UUID
+          already in the path. <code>$LIVEHIVE_API_KEY</code> is your server key.
+        </p>
+        <div className="mt-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[12px] text-[var(--color-faint)]">Update</p>
+            <CopyButton value={updateCurl} />
+          </div>
+          <pre className="mt-1 overflow-x-auto rounded-lg bg-black/30 p-3 font-mono text-[12px] text-[var(--color-ink-soft)]">
+            {updateCurl}
+          </pre>
+        </div>
+        <div className="mt-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[12px] text-[var(--color-faint)]">End</p>
+            <CopyButton value={endCurl} />
+          </div>
+          <pre className="mt-1 overflow-x-auto rounded-lg bg-black/30 p-3 font-mono text-[12px] text-[var(--color-ink-soft)]">
+            {endCurl}
+          </pre>
         </div>
       </section>
 

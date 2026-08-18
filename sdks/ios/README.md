@@ -1,24 +1,22 @@
 # Live Hive iOS SDK
 
-Minimal Swift package that registers ActivityKit push tokens with Live Hive.
-
-The SDK does **not** create Live Activities, define `ActivityAttributes`, or send updates. ActivityKit and WidgetKit remain your responsibility. Your backend updates and ends activities over HTTP. There is no server SDK.
+Start a Live Activity, register its push token with Live Hive. The SDK does **not** update or end activities — do that from the Live Hive dashboard (test update) or over HTTP with `lh_live_`. There is no server SDK.
 
 Canonical API: `https://www.livehive.dev/v1`
 
 ## Install
 
-In Xcode: File → Add Package Dependencies, paste:
+In Xcode: File → Add Package Dependencies. **Paste** this URL. Do not search “Live Hive” in the Apple package list.
 
 ```text
 https://github.com/iangdavis/livehive-ios
 ```
 
-Choose version **0.1.1** or later. Add the `LiveHive` library to your app target.
+Choose version **0.2.0** or later. Add the `LiveHive` library to the **app** and the **widget** targets. Do not name your app module `LiveHive` or `livehive`.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.1.1")
+    .package(url: "https://github.com/iangdavis/livehive-ios.git", from: "0.2.0")
 ]
 ```
 
@@ -26,27 +24,39 @@ This folder is also the source copy inside the Live Hive app repo (`sdks/ios`). 
 
 ## Golden path
 
+App target (`NSSupportsLiveActivities` = YES, Push Notifications capability):
+
 ```swift
-import ActivityKit
 import LiveHive
 
-// Requires a public key (lh_pub_...). Never pass lh_live_.
 LiveHive.configure(publicKey: "lh_pub_...")
 
-let activity = try Activity.request(
-    attributes: DeliveryAttributes(),
-    content: .init(state: .init(status: "preparing", eta: 12), staleDate: nil),
-    pushType: .token
-)
-
-LiveHive.register(activity)
+let activity = try LiveHive.start()
+print(activity.id)
 ```
 
-`register` observes `activity.pushTokenUpdates`, converts each token to lowercase hex, and POSTs it to:
+`start()` is `Activity.request(..., pushType: .token)` plus token registration.
+
+Widget extension (`WidgetBundle` — you still create the target):
+
+```swift
+import LiveHive
+import SwiftUI
+import WidgetKit
+
+@main
+struct DeliveryWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        DeliveryLiveActivity()
+    }
+}
+```
+
+Open the activity in the Live Hive dashboard and tap **Send test update**. Your backend can POST later:
 
 ```text
-POST https://www.livehive.dev/v1/activities/register
-Authorization: Bearer lh_pub_...
+POST https://www.livehive.dev/v1/activities/{activity.id}/update
+Authorization: Bearer lh_live_...
 ```
 
 Token rotation is handled automatically. Transient HTTP failures (429, 5xx) are retried.
@@ -56,7 +66,7 @@ Override `baseURL` only for local development.
 ## Do not
 
 - Do not pass a server key (`lh_live_...`) to `configure`.
-- Do not use this SDK to update or end activities. POST HTTP from your backend with `lh_live_`.
-- Do not skip `pushType: .token`, WidgetKit, or `NSSupportsLiveActivities`.
+- Do not use this SDK to update or end activities.
+- Do not skip the Widget Extension, `NSSupportsLiveActivities`, or `pushType: .token`.
 
 See https://livehive.dev/llms.txt and https://livehive.dev/openapi.json.

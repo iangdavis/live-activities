@@ -18,11 +18,12 @@ export default function Page() {
           that your Lock Screen UI can render.
         </li>
         <li>
-          Start the activity on device with <code>Activity.request</code>.
+          Start the activity on device with <code>LiveHive.start()</code> (or{' '}
+          <code>Activity.request</code> + <code>LiveHive.register</code>).
         </li>
         <li>
-          Read the Live Activity push token and register it with Live Hive
-          (the iOS SDK does this; no token-forwarding server is required).
+          For first success, open the activity in the Live Hive dashboard and
+          tap Send test update. No backend required.
         </li>
         <li>
           When your domain state changes, your backend POSTs a Live Hive
@@ -32,10 +33,10 @@ export default function Page() {
       </ol>
       <p>
         With Live Hive, token registration is{' '}
-        <Link href="/docs/activities/register">register</Link> and steps 4–5 are{' '}
-        <Link href="/docs/activities/update">update</Link> and{' '}
-        <Link href="/docs/activities/end">end</Link>. You still own ActivityKit
-        and WidgetKit setup in the iOS app. Machine-readable:{' '}
+        <Link href="/docs/activities/register">register</Link> and HTTP updates
+        are <Link href="/docs/activities/update">update</Link> and{' '}
+        <Link href="/docs/activities/end">end</Link>. You still add a Widget
+        Extension. Machine-readable:{' '}
         <Link href="/llms.txt">/llms.txt</Link>,{' '}
         <Link href="/openapi.json">/openapi.json</Link>.
       </p>

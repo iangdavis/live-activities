@@ -51,8 +51,8 @@ export default async function ActivitiesPage({
       {activities.length === 0 ? (
         <EmptyState
           title="No activities in this project"
-          body="POST /api/v1/activities with your API key to create one."
-          actionHref="/docs/activities/register"
+          body="Start a Live Activity with LiveHive.start(). It shows up here."
+          actionHref="/docs/getting-started"
           actionLabel="Create docs"
         />
       ) : (

@@ -8,4 +8,4 @@ export const PUBLIC_KEY_PREFIX = 'lh_pub_'
 export const SECRET_KEY_PREFIX = 'lh_live_'
 
 export const IOS_SDK_PACKAGE_URL = 'https://github.com/iangdavis/livehive-ios.git'
-export const IOS_SDK_VERSION = '0.1.1'
+export const IOS_SDK_VERSION = '0.2.0'

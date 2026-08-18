@@ -3,6 +3,7 @@ import {
   authenticateApiRequest,
   corsPreflight,
   readJson,
+  requirePathActivityId,
   requireSecretApiKey,
   updateActivitySchema,
 } from '@/lib/api-auth'
@@ -25,7 +26,7 @@ export async function POST(
     const body = await readJson(request, updateActivitySchema)
     const result = await updateActivity({
       project: auth.project,
-      externalActivityId: activityId,
+      externalActivityId: requirePathActivityId(activityId),
       contentState: body.content_state,
       alert: body.alert,
       staleDate: body.stale_date,

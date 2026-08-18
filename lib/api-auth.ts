@@ -9,6 +9,18 @@ import type { Project } from '@prisma/client'
 
 const bearerRe = /^Bearer\s+(.+)$/i
 
+export function requirePathActivityId(activityId: string | undefined) {
+  const id = activityId?.trim()
+  if (!id) {
+    throw new ApiError(
+      400,
+      'invalid_request',
+      'activity_id is required in the URL path. Example: /v1/activities/YOUR-UUID/update',
+    )
+  }
+  return id
+}
+
 export type ApiAuth = {
   project: Project
   apiKeyId: string

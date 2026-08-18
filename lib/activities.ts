@@ -325,6 +325,7 @@ export async function updateActivity(input: {
   alert?: { title?: string; body?: string; sound?: string }
   staleDate?: number
   relevanceScore?: number
+  userId?: string
 }) {
   const activity = await findProjectActivity(input.project.id, input.externalActivityId)
   if (activity.status === 'ended') {
@@ -338,6 +339,7 @@ export async function updateActivity(input: {
     alert: input.alert,
     staleDate: input.staleDate,
     relevanceScore: input.relevanceScore,
+    userId: input.userId,
   })
 }
 

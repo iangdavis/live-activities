@@ -33,9 +33,11 @@ export default function AuthDocsPage() {
       </pre>
       <p>
         Keep this secret. Never put it in your iOS app. There is no server SDK.
-        POST update and end from your backend over HTTP, any language. Keys are
-        hashed at rest. Live Hive shows the full secret key only when it is
-        created. If you lose it, revoke it and create another.
+        The dashboard can send a test update without this key leaving the
+        server. POST update and end from your backend over HTTP when you have
+        one, any language. Keys are hashed at rest. Live Hive shows the full
+        secret key only when it is created. If you lose it, revoke it and
+        create another.
       </p>
 
       <h2>Where to get a key</h2>

@@ -3,6 +3,7 @@ import {
   authenticateApiRequest,
   corsPreflight,
   endActivitySchema,
+  requirePathActivityId,
   requireSecretApiKey,
 } from '@/lib/api-auth'
 import { endActivity } from '@/lib/activities'
@@ -41,7 +42,7 @@ export async function POST(
     }
     const result = await endActivity({
       project: auth.project,
-      externalActivityId: activityId,
+      externalActivityId: requirePathActivityId(activityId),
       contentState: body.content_state,
       dismissalDate: body.dismissal_date,
     })

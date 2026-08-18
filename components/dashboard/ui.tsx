@@ -58,14 +58,23 @@ export function PageHeader({
 export function Notice({
   error,
   saved,
+  ok,
 }: {
   error?: string
   saved?: boolean
+  ok?: string
 }) {
   if (error) {
     return (
       <p className="mb-4 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-[14px] text-red-300">
         {error}
+      </p>
+    )
+  }
+  if (ok) {
+    return (
+      <p className="mb-4 rounded-lg border border-[color:var(--color-accent)]/25 bg-[color:var(--color-accent)]/10 px-3 py-2 text-[14px] text-[var(--color-accent-soft)]">
+        {ok}
       </p>
     )
   }

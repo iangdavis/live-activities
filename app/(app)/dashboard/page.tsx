@@ -68,7 +68,7 @@ export default async function DashboardHome() {
           <Link href="/docs/getting-started" className="text-[var(--color-accent-soft)]">
             getting started guide
           </Link>
-          .
+          , then send a test update from the activity page.
         </p>
       ) : (
         <div className="mt-4 overflow-x-auto">

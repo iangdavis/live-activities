@@ -1,4 +1,4 @@
-import { CANONICAL_API_BASE } from '@/lib/api-contract'
+import { CANONICAL_API_BASE, IOS_SDK_VERSION } from '@/lib/api-contract'
 import { LLMS_TXT } from '@/lib/llms-txt'
 import { openApiDocument } from '@/lib/openapi'
 import { existsSync, readFileSync } from 'node:fs'
@@ -17,7 +17,10 @@ describe('agent contract', () => {
     expect(LLMS_TXT).toContain('Do not look for a server SDK')
     expect(LLMS_TXT).toContain('Do not build a token-forwarding')
     expect(LLMS_TXT).not.toContain('https://livehive.dev/api/v1/activities')
-    expect(LLMS_TXT).toContain('https://github.com/iangdavis/livehive-ios.git from 0.1.1')
+    expect(LLMS_TXT).toContain(`https://github.com/iangdavis/livehive-ios.git from ${IOS_SDK_VERSION}`)
+    expect(LLMS_TXT).toContain('LiveHive.start()')
+    expect(LLMS_TXT).toContain('Send test update')
+    expect(LLMS_TXT).toContain('Do not search Xcode')
   })
 
   it('OpenAPI documents the golden-path routes on the canonical host', () => {
@@ -42,10 +45,14 @@ describe('agent contract', () => {
 
   it('getting started installs the published Swift package, not this repo', () => {
     const page = readFileSync('app/docs/getting-started/page.tsx', 'utf8')
+    const snippets = readFileSync('lib/xcode-setup.ts', 'utf8')
     expect(page).toContain('IOS_SDK_PACKAGE_URL')
     expect(page).toContain('IOS_SDK_VERSION')
     expect(page).toContain('File → Add Package Dependencies')
-    expect(page).toContain('print(activity.id)')
+    expect(page).toContain('LiveHive.start()')
+    expect(page).toContain('Send test update')
+    expect(snippets).toContain('print(activity.id)')
+    expect(snippets).toContain('LiveHive.start()')
     expect(page).not.toContain('from sdks/ios')
     expect(page).not.toContain('Add Local')
   })

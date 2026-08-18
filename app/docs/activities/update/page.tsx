@@ -27,10 +27,12 @@ export default function UpdateDocsPage() {
   }
 }`}</code>
       </pre>
-      <p>
-        POST JSON to <code>https://www.livehive.dev/v1</code> with a secret key.
-        Example snippets (any language works):
-      </p>
+        <p>
+          POST JSON to <code>https://www.livehive.dev/v1</code> with a secret key.
+          First success can skip this: the activity page has{' '}
+          <strong>Send test update</strong>. Example snippets when you do have a
+          backend (any language works):
+        </p>
       <BackendSnippet example="update" />
       <p>Response:</p>
       <pre>
