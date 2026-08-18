@@ -27,7 +27,8 @@ describe('xcode setup helpers', () => {
   it('embeds the public key and real activity id in copy-paste snippets', () => {
     expect(SPM_PACKAGE_URL).toBe('https://github.com/iangdavis/livehive-ios')
     const start = appStartSnippet('lh_pub_testkeyvalue1234567')
-    expect(start).toContain('LiveHive.start()')
+    expect(start).toContain('LiveHive.start(')
+    expect(start).toContain('DeliveryAttributes()')
     expect(start).toContain('lh_pub_testkeyvalue1234567')
     expect(start).not.toContain('lh_live_')
     const curl = httpUpdateCurl('516AF584-1A18-43E2-B3FF-2295AE0D6FA2')

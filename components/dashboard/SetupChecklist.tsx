@@ -24,13 +24,13 @@ export function SetupChecklist({
       n: '02',
       title: 'iOS public key',
       done: hasPublicKey,
-      body: 'lh_pub_ goes in the app. Never paste lh_live_ there.',
+      body: 'lh_pub_ goes in the app. lh_live_ stays on your server.',
     },
     {
       n: '03',
-      title: 'Xcode + LiveHive.start()',
+      title: 'Xcode + start',
       done: hasActivity,
-      body: 'Paste the package URL. Widget target + plist flag. Start in the app.',
+      body: 'Widget extension, paste the package URL, LiveHive.start with your attributes.',
     },
     {
       n: '04',

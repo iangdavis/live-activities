@@ -15,14 +15,14 @@ HTML: https://livehive.dev/docs/for-agents
 
 ## Golden path
 
-1. Create a project at https://livehive.dev. Add APNs credentials. Copy the iOS public key (lh_pub_).
-2. Xcode: new iOS app (not multiplatform). Paste https://github.com/iangdavis/livehive-ios — do not search “Live Hive”. Add LiveHive to the app and widget targets. Do not name the app module LiveHive.
-3. Widget Extension with Include Live Activity. WidgetBundle instantiates DeliveryLiveActivity() from the package. App: NSSupportsLiveActivities = YES.
-4. iOS: LiveHive.configure(publicKey:) then LiveHive.start() (Activity.request + register).
-5. Dashboard activity page: Send test update. No backend required for first success.
-6. Later, backend: POST ${CANONICAL_API_BASE}/activities/{activity_id}/update and /end with lh_live_.
+1. Existing iOS app. In Apple Developer, enable Push Notifications and Live Activities on the App ID. Create an APNs key (.p8).
+2. Live Hive project: paste Team ID, Key ID, .p8, app bundle ID. Copy lh_pub_ for the app, lh_live_ for the API.
+3. Xcode: Widget Extension (Include Live Activity). NSSupportsLiveActivities on the app. Paste https://github.com/iangdavis/livehive-ios. LiveHive on the app target.
+4. Stock snippets in the app: DeliveryAttributes (shared with the widget), DeliveryLiveActivity UI, LiveHive.start(attributes:contentState:). Customize the SwiftUI later; keep content_state keys in sync.
+5. Dashboard activity page: Send test update. Sample content_state is { status, eta }.
+6. Backend: POST ${CANONICAL_API_BASE}/activities/{activity_id}/update and /end with lh_live_.
 
-You still create the Widget Extension target and call start() on device. The SDK does not update or end. Dashboard test updates use session auth, not a public HTTP route.
+You add the Widget Extension and call start() on device. The SDK registers the token. It does not update or end. Dashboard test updates use session auth, not a public HTTP route.
 
 ## Keys
 
@@ -44,7 +44,7 @@ Do not POST to the apex livehive.dev (308). No trailing slash. activity_id must 
 
 activity_id is yours (Activity.id from start(), or an order ID). Unique per project. Re-registering the same ID replaces the push token.
 
-content_state is an opaque JSON object. The shipped DeliveryAttributes keys are status (string) and eta (int). Live Hive does not transform it.
+content_state is an opaque JSON object. The getting-started sample uses status (string) and eta (int). Live Hive does not transform it.
 
 ## Routes
 
@@ -82,12 +82,11 @@ Empty activity_id returns 400 JSON (invalid_request), not a redirect.
 
 Swift package: https://github.com/iangdavis/livehive-ios.git from ${IOS_SDK_VERSION}
 LiveHive.configure(publicKey: "lh_pub_...")
-let activity = try LiveHive.start()
-DeliveryAttributes and DeliveryLiveActivity ship in the package.
+let activity = try LiveHive.start(attributes:contentState:)
+Getting started has stock DeliveryAttributes + widget UI in the app (customizable).
 Default origin: ${CANONICAL_API_ORIGIN}
 Override baseURL only for local development.
-Do not pass lh_live_ to the SDK.
-start() throws if NSSupportsLiveActivities is missing.
+configure takes lh_pub_. start() throws if NSSupportsLiveActivities is missing.
 
 ## Errors
 
