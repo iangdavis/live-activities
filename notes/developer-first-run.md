@@ -2,7 +2,7 @@
 
 Walkthrough: a new iOS developer integrating Live Hive for the first time (Ian, Aug 2026). Append as we go. This is what actually happened, not polished docs.
 
-**Status:** HTTP update **sent** (`upd_t7AGY5PmeT7J` for activity `516AF584-1A18-43E2-B3FF-2295AE0D6FA2`). Register + APNs path works from Simulator. Next: confirm UI/dashboard, then HTTP **end**. Phone lock screen still the stronger proof.
+**Status:** Golden path complete in Simulator. HTTP update **and** end `sent`. Live Hive dashboard shows the activity. Dynamic Island opens My Delivery App. Phone lock screen still nicer-to-have, not required to prove the API.
 
 The product assumes the developer already has a Live Activity. Live Hive does not create it.
 
@@ -84,8 +84,8 @@ A reasonable app before adding the SDK: attributes, widget, Start / Update / End
 - [x] `pushType: .token`, `LiveHive.configure(publicKey:)`, `LiveHive.register(activity)`. Start/Update/End still work locally in Simulator.
 - [x] Push Notifications capability on the **app** target.
 - [x] HTTP POST update with `lh_live_` to `https://www.livehive.dev/v1/activities/{id}/update` returned `"status":"sent"`. Host must be **www**, no trailing slash, activity UUID in the path (empty id → `Redirecting...`). Apex `livehive.dev` 308s. `api.livehive.dev` is NXDOMAIN; 0.1.0 needs `baseURL: https://www.livehive.dev`.
-- [ ] Confirm dashboard + Live Activity UI changed to `driver_arriving` / 4 min.
-- [ ] HTTP **end** with the same host/key/id.
+- [x] Confirm dashboard + Live Activity UI (Dynamic Island opens My Delivery App).
+- [x] HTTP **end** with the same host/key/id. Update and end both visible in Live Hive logs.
 
 ---
 
