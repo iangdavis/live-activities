@@ -1,18 +1,13 @@
 #!/usr/bin/env node
 /**
- * My Delivery API — server-driven Live Hive demo.
+ * Local My Delivery API. Production is a separate Vercel project (this folder).
  * POST /demo/start { activity_id } → 202, then update at T+10s, end at T+20s.
- * Secret key stays here. The iOS SDK does not update or end.
  */
 import http from 'node:http'
+import { demoStepMs, keyConfigured, liveHiveBase, runLifecycle } from './lib/lifecycle.mjs'
 
 const PORT = Number(process.env.PORT || 8787)
-const KEY = process.env.LIVEHIVE_API_KEY || ''
-const BASE = (process.env.LIVEHIVE_API_BASE || 'https://www.livehive.dev/v1').replace(
-  /\/$/,
-  ''
-)
-const DELAY_MS = Number(process.env.DEMO_STEP_MS || 10_000)
+const DELAY_MS = demoStepMs()
 
 const CORS = {
   'access-control-allow-origin': '*',
@@ -27,38 +22,6 @@ function send(res, status, body) {
     'content-type': 'application/json',
   })
   res.end(payload)
-}
-
-async function livehive(activityId, action, contentState) {
-  const url = `${BASE}/activities/${encodeURIComponent(activityId)}/${action}`
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ content_state: contentState }),
-    redirect: 'error',
-  })
-  const text = await res.text()
-  let parsed
-  try {
-    parsed = JSON.parse(text)
-  } catch {
-    parsed = { raw: text }
-  }
-  console.log(`[livehive] ${action} ${res.status}`, parsed)
-  return parsed
-}
-
-async function runLifecycle(activityId) {
-  console.log(`[demo] ${activityId} update in ${DELAY_MS}ms`)
-  await new Promise((resolve) => setTimeout(resolve, DELAY_MS))
-  await livehive(activityId, 'update', { status: 'driver_arriving', eta: 4 })
-  console.log(`[demo] ${activityId} end in ${DELAY_MS}ms`)
-  await new Promise((resolve) => setTimeout(resolve, DELAY_MS))
-  await livehive(activityId, 'end', { status: 'delivered', eta: 0 })
-  console.log(`[demo] ${activityId} done`)
 }
 
 async function readJson(req) {
@@ -80,15 +43,15 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && url.pathname === '/health') {
     send(res, 200, {
       ok: true,
-      base: BASE,
+      base: liveHiveBase(),
       delay_ms: DELAY_MS,
-      key_configured: KEY.startsWith('lh_live_'),
+      key_configured: keyConfigured(),
     })
     return
   }
 
   if (req.method === 'POST' && url.pathname === '/demo/start') {
-    if (!KEY.startsWith('lh_live_')) {
+    if (!keyConfigured()) {
       send(res, 500, { error: 'Set LIVEHIVE_API_KEY to a lh_live_ server key' })
       return
     }
@@ -116,6 +79,8 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`My Delivery API http://127.0.0.1:${PORT}`)
-  console.log(`Live Hive base ${BASE}`)
-  console.log(`POST /demo/start { "activity_id": "<uuid>" } → update +${DELAY_MS}ms, end +${DELAY_MS * 2}ms`)
+  console.log(`Live Hive base ${liveHiveBase()}`)
+  console.log(
+    `POST /demo/start { "activity_id": "<uuid>" } → update +${DELAY_MS}ms, end +${DELAY_MS * 2}ms`,
+  )
 })

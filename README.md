@@ -137,8 +137,8 @@ Machine-readable contract: `/llms.txt` and `/openapi.json`.
 
 ## Examples
 
-Server-driven demo (iOS Start only; backend updates at 10s and ends at 20s):
-`examples/my-delivery-api` and `examples/my-delivery-app`.
+Server-driven demo (iOS Start only; **separate** My Delivery API updates at 10s and ends at 20s):
+`examples/my-delivery-api` (own Vercel project) and `examples/my-delivery-app`.
 
 ## What this MVP does not include
 

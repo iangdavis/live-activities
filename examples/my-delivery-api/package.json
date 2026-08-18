@@ -3,11 +3,14 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Demo backend: after Start, update a Live Activity at T+10s and end at T+20s via Live Hive HTTP.",
+  "description": "Customer-style backend: Start from iOS, then update/end via Live Hive HTTP.",
   "scripts": {
     "start": "node server.mjs"
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@vercel/functions": "^2.2.13"
   }
 }

@@ -1,4 +1,4 @@
 # Examples
 
-- [`my-delivery-api`](./my-delivery-api) — server-driven update (T+10s) and end (T+20s)
+- [`my-delivery-api`](./my-delivery-api) — **separate** Vercel backend (not livehive.dev)
 - [`my-delivery-app`](./my-delivery-app) — iOS Start-only sources for My Delivery App

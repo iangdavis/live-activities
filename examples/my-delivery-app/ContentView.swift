@@ -4,7 +4,7 @@ import SwiftUI
 
 struct ContentView: View {
     @AppStorage("livehive.publicKey") private var publicKey = ""
-    @AppStorage("mydelivery.apiBase") private var apiBase = "https://www.livehive.dev/api/demo/delivery"
+    @AppStorage("mydelivery.apiBase") private var apiBase = "http://127.0.0.1:8787"
     @State private var activityId = ""
     @State private var message = "Start. The server updates in 10s and ends in 20s."
 
@@ -18,7 +18,7 @@ struct ContentView: View {
                         .font(.system(.body, design: .monospaced))
                 }
                 Section("My Delivery API") {
-                    TextField("https://www.livehive.dev/api/demo/delivery", text: $apiBase)
+                    TextField("https://your-delivery-api.vercel.app", text: $apiBase)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .font(.system(.footnote, design: .monospaced))
