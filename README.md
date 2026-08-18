@@ -135,6 +135,11 @@ Any language. There is no server SDK.
 
 Machine-readable contract: `/llms.txt` and `/openapi.json`.
 
+## Examples
+
+Server-driven demo (iOS Start only; backend updates at 10s and ends at 20s):
+`examples/my-delivery-api` and `examples/my-delivery-app`.
+
 ## What this MVP does not include
 
 Design Studio, Android, SSO, team permissions, billing automation,
