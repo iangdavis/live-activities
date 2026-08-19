@@ -334,7 +334,7 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
         deliveryId: delivery.publicId,
         errorCode: error.code,
         errorMessage: error.message,
-        errorData: error.data,
+        errorData: (error as ApiError & { data?: unknown }).data,
       })
     }
 
