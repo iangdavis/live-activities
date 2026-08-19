@@ -25,6 +25,23 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+function redactSecrets(value: string) {
+  return value
+    .replace(/(key_id|team_id|bundle_id|token|secret|password)=[^\s,}]+/gi, '$1=[redacted]')
+    .replace(/(Authorization:|authorization:).*/g, '$1 [redacted]')
+}
+
+function serializeError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return { name: 'UnknownError', message: String(error) }
+  }
+  return {
+    name: error.name,
+    message: error.message,
+    stack: error.stack ? redactSecrets(error.stack) : undefined,
+  }
+}
+
 export function activityRegistrationWaitMs() {
   const raw = Number(process.env.LIVEHIVE_ACTIVITY_REGISTRATION_WAIT_MS ?? 10_000)
   if (!Number.isFinite(raw) || raw < 0) return 10_000
@@ -327,6 +344,7 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
       activityId: delivery.activity.externalActivityId,
       projectId: delivery.project.publicId,
       apnsEnvironment: delivery.project.apnsEnvironment,
+      error: serializeError(error),
     })
 
     if (error instanceof ApiError) {
