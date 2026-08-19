@@ -44,13 +44,82 @@ function fingerprint(creds: ApnsCredentials): string {
   return `${creds.teamId}:${creds.keyId}:${creds.environment}`
 }
 
+function sanitizeKeyInput(input: string): string {
+  return input.trim().replace(/^['"]|['"]$/g, '')
+}
+
+function decodeMaybeBase64(input: string): string | null {
+  const compact = input.replace(/\s+/g, '')
+  if (!compact || compact.length % 4 !== 0) return null
+  if (!/^[A-Za-z0-9+/=]+$/.test(compact)) return null
+  try {
+    const decoded = Buffer.from(compact, 'base64').toString('utf8').trim()
+    return decoded.length > 0 ? decoded : null
+  } catch {
+    return null
+  }
+}
+
+function toPemBody(input: string): string {
+  const compact = input.replace(/\s+/g, '')
+  const lines = compact.match(/.{1,64}/g)?.join('\n') ?? compact
+  return `-----BEGIN PRIVATE KEY-----\n${lines}\n-----END PRIVATE KEY-----`
+}
+
+function candidatePrivateKeys(raw: string): string[] {
+  const cleaned = sanitizeKeyInput(raw)
+  const candidates = new Set<string>()
+
+  candidates.add(cleaned)
+  candidates.add(cleaned.replace(/\\n/g, '\n'))
+
+  const decoded = decodeMaybeBase64(cleaned)
+  if (decoded) {
+    candidates.add(decoded)
+    candidates.add(decoded.replace(/\\n/g, '\n'))
+  }
+
+  for (const candidate of Array.from(candidates)) {
+    if (candidate.includes('BEGIN PRIVATE KEY') || candidate.includes('BEGIN EC PRIVATE KEY')) {
+      candidates.add(candidate)
+      candidates.add(candidate.replace(/\r\n/g, '\n'))
+    } else {
+      candidates.add(toPemBody(candidate))
+    }
+  }
+
+  return Array.from(candidates)
+}
+
+async function importSigningKey(rawPrivateKey: string): Promise<CryptoKey> {
+  let lastError: unknown
+  for (const candidate of candidatePrivateKeys(rawPrivateKey)) {
+    try {
+      return await importPKCS8(candidate, 'ES256')
+    } catch (error) {
+      lastError = error
+    }
+  }
+
+  log.error('apns private key import failed', {
+    keyShape: {
+      startsWithBeginMarker: rawPrivateKey.includes('BEGIN PRIVATE KEY') || rawPrivateKey.includes('BEGIN EC PRIVATE KEY'),
+      hasLiteralNewlines: rawPrivateKey.includes('\n'),
+      hasRealNewlines: rawPrivateKey.includes('\n') && rawPrivateKey.includes('\r') ? false : rawPrivateKey.includes('\n'),
+      length: rawPrivateKey.length,
+    },
+    error: lastError instanceof Error ? { name: lastError.name, message: lastError.message } : { name: 'UnknownError' },
+  })
+  throw lastError instanceof Error ? lastError : new Error('Invalid APNs private key')
+}
+
 export async function createApnsJwt(creds: ApnsCredentials): Promise<string> {
   const now = Math.floor(Date.now() / 1000)
   const fp = fingerprint(creds)
   if (jwtCache && jwtCache.fingerprint === fp && jwtCache.expiresAt - 60 > now) {
     return jwtCache.token
   }
-  const key = await importPKCS8(normalizePem(creds.privateKeyPem), 'ES256')
+  const key = await importSigningKey(creds.privateKeyPem)
   const token = await new SignJWT({})
     .setProtectedHeader({ alg: 'ES256', kid: creds.keyId })
     .setIssuer(creds.teamId)
