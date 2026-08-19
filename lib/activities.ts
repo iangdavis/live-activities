@@ -173,12 +173,19 @@ async function incrementUsage(projectId: string) {
 }
 
 function projectCredentials(project: Project): ApnsCredentials {
-  if (
-    !project.appleTeamId ||
-    !project.appleKeyId ||
-    !project.bundleId ||
-    !project.apnsKeyEncrypted
-  ) {
+  const missing = {
+    appleTeamId: !project.appleTeamId,
+    appleKeyId: !project.appleKeyId,
+    bundleId: !project.bundleId,
+    apnsKeyEncrypted: !project.apnsKeyEncrypted,
+  }
+  if (missing.appleTeamId || missing.appleKeyId || missing.bundleId || missing.apnsKeyEncrypted) {
+    log.error('apns credentials missing', {
+      projectId: project.id,
+      projectPublicId: project.publicId,
+      missing,
+      apnsEnvironment: project.apnsEnvironment,
+    })
     throw new ApiError(
       400,
       'apns_not_configured',
@@ -322,10 +329,27 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
 
     return updated
   } catch (error) {
-    const message =
-      error instanceof ApiError ? error.message : 'Delivery failed before reaching APNs.'
+    const message = error instanceof ApiError ? error.message : 'Delivery failed before reaching APNs.'
     const code = error instanceof ApiError ? error.code : 'delivery_error'
-    log.error('delivery processing error', { deliveryId: delivery.publicId, code })
+
+    log.error('delivery processing error', {
+      deliveryId: delivery.publicId,
+      code,
+      message,
+      activityId: delivery.activity.externalActivityId,
+      projectId: delivery.project.publicId,
+      apnsEnvironment: delivery.project.apnsEnvironment,
+    })
+
+    if (error instanceof ApiError) {
+      log.error('delivery api error details', {
+        deliveryId: delivery.publicId,
+        errorCode: error.code,
+        errorMessage: error.message,
+        errorData: error.data,
+      })
+    }
+
     const updated = await prisma.delivery.update({
       where: { id: delivery.id },
       data: {
