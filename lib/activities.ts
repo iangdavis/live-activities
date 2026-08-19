@@ -173,11 +173,15 @@ async function incrementUsage(projectId: string) {
 }
 
 function projectCredentials(project: Project): ApnsCredentials {
+  const appleTeamId = project.appleTeamId?.trim()
+  const appleKeyId = project.appleKeyId?.trim()
+  const bundleId = project.bundleId?.trim()
+  const apnsKeyEncrypted = project.apnsKeyEncrypted
   const missing = {
-    appleTeamId: !project.appleTeamId,
-    appleKeyId: !project.appleKeyId,
-    bundleId: !project.bundleId,
-    apnsKeyEncrypted: !project.apnsKeyEncrypted,
+    appleTeamId: !appleTeamId,
+    appleKeyId: !appleKeyId,
+    bundleId: !bundleId,
+    apnsKeyEncrypted: !apnsKeyEncrypted,
   }
   if (missing.appleTeamId || missing.appleKeyId || missing.bundleId || missing.apnsKeyEncrypted) {
     log.error('apns credentials missing', {
@@ -193,11 +197,11 @@ function projectCredentials(project: Project): ApnsCredentials {
     )
   }
   return {
-    teamId: project.appleTeamId,
-    keyId: project.appleKeyId,
-    bundleId: project.bundleId,
+    teamId: appleTeamId!,
+    keyId: appleKeyId!,
+    bundleId: bundleId!,
     environment: project.apnsEnvironment,
-    privateKeyPem: decryptSecret(project.apnsKeyEncrypted),
+    privateKeyPem: decryptSecret(apnsKeyEncrypted!),
   }
 }
 
@@ -302,22 +306,6 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
         ...(delivery.type === 'end' && !result.ok ? { status: 'failed' } : {}),
       },
     })
-
-    if (delivery.type === 'update' && result.ok) {
-      await trackOnce({
-        name: EVENTS.FIRST_SUCCESSFUL_LIVE_ACTIVITY_UPDATE,
-        accountId: delivery.project.accountId,
-        projectId: delivery.project.id,
-      })
-    }
-    if (delivery.type === 'end' && result.ok) {
-      await track({
-        name: EVENTS.ACTIVITY_ENDED,
-        accountId: delivery.project.accountId,
-        projectId: delivery.project.id,
-        properties: { activity_id: delivery.activity.externalActivityId },
-      })
-    }
 
     if (!result.ok) {
       log.warn('apns delivery failed', {
