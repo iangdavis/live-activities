@@ -6,7 +6,7 @@ import {
   requirePathActivityId,
   requireSecretApiKey,
 } from '@/lib/api-auth'
-import { endActivity } from '@/lib/activities'
+import { activityRegistrationWaitMs, endActivity } from '@/lib/activities'
 import { ApiError, jsonError, jsonOk } from '@/lib/errors'
 import { log } from '@/lib/logger'
 
@@ -45,6 +45,7 @@ export async function POST(
       externalActivityId: requirePathActivityId(activityId),
       contentState: body.content_state,
       dismissalDate: body.dismissal_date,
+      waitForRegistrationMs: activityRegistrationWaitMs(),
     })
     return jsonOk(result)
   } catch (error) {
