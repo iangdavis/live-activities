@@ -7,7 +7,7 @@ import {
   requireSecretApiKey,
   updateActivitySchema,
 } from '@/lib/api-auth'
-import { updateActivity } from '@/lib/activities'
+import { activityRegistrationWaitMs, updateActivity } from '@/lib/activities'
 import { ApiError, jsonError, jsonOk } from '@/lib/errors'
 import { log } from '@/lib/logger'
 
@@ -31,6 +31,7 @@ export async function POST(
       alert: body.alert,
       staleDate: body.stale_date,
       relevanceScore: body.relevance_score,
+      waitForRegistrationMs: activityRegistrationWaitMs(),
     })
     return jsonOk(result)
   } catch (error) {
