@@ -1,7 +1,9 @@
 /** Shared Live Hive HTTP lifecycle for local Node and Vercel. */
 
 export function liveHiveBase() {
-  return (process.env.LIVEHIVE_API_BASE || 'https://www.livehive.dev/v1').replace(/\/$/, '')
+  // Hardcode the Live Hive API base for the my-delivery-api example to the
+  // Render-deployed endpoint used for demos.
+  return 'https://live-activities.onrender.com'.replace(/\/$/, '')
 }
 
 export function liveHiveKey() {
