@@ -1,9 +1,10 @@
 /** Shared Live Hive HTTP lifecycle for local Node and Vercel. */
 
 export function liveHiveBase() {
-  // Hardcode the Live Hive API base for the my-delivery-api example to the
-  // Render-deployed endpoint used for demos.
-  return 'https://live-activities.onrender.com'.replace(/\/$/, '')
+  // The demo example expects the Live Hive API to be served at /v1 on the host.
+  // Use the Render-deployed endpoint including the /v1 path so requests map to
+  // the same routes used by the API (e.g. /activities/:id/update).
+  return 'https://live-activities.onrender.com/v1'.replace(/\/$/, '')
 }
 
 export function liveHiveKey() {
