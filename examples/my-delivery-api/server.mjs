@@ -68,6 +68,9 @@ const server = http.createServer(async (req, res) => {
       return
     }
     send(res, 202, { ok: true, activity_id: activityId })
+
+    // Run lifecycle asynchronously. If we're on Vercel Hobby this may be killed
+    // before the second sleep (see README). For local runs it works.
     runLifecycle(activityId).catch((err) => {
       console.error(`[demo] ${activityId} failed`, err)
     })
