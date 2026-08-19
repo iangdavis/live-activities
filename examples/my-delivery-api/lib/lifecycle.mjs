@@ -9,8 +9,11 @@ export function liveHiveKey() {
 }
 
 export function demoStepMs() {
-  const raw = Number(process.env.DEMO_STEP_MS || process.env.LIVEHIVE_DEMO_STEP_MS || 10_000)
-  if (!Number.isFinite(raw) || raw < 0) return 10_000
+  // Default to 3000ms for demos so serverless platforms (Vercel Hobby) can
+  // complete both update+end within short-lived function limits. Override with
+  // DEMO_STEP_MS or LIVEHIVE_DEMO_STEP_MS if you need a different timing.
+  const raw = Number(process.env.DEMO_STEP_MS || process.env.LIVEHIVE_DEMO_STEP_MS || 3_000)
+  if (!Number.isFinite(raw) || raw < 0) return 3_000
   return raw
 }
 
