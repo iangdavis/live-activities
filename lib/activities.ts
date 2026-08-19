@@ -21,6 +21,16 @@ function toDeliveryResponse(delivery: Delivery, externalActivityId: string): Del
   }
 }
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export function activityRegistrationWaitMs() {
+  const raw = Number(process.env.LIVEHIVE_ACTIVITY_REGISTRATION_WAIT_MS ?? 10_000)
+  if (!Number.isFinite(raw) || raw < 0) return 10_000
+  return Math.min(raw, 30_000)
+}
+
 export async function registerActivity(input: {
   project: Project
   externalActivityId: string
@@ -105,6 +115,36 @@ export async function findProjectActivity(projectId: string, externalActivityId:
     throw new ApiError(404, 'activity_not_found', 'Activity not found for this project.')
   }
   return activity
+}
+
+export async function waitForProjectActivity(
+  projectId: string,
+  externalActivityId: string,
+  waitMs = 0,
+) {
+  const startedAt = Date.now()
+  let delayMs = 100
+
+  while (true) {
+    const activity = await prisma.activity.findUnique({
+      where: {
+        projectId_externalActivityId: {
+          projectId,
+          externalActivityId,
+        },
+      },
+    })
+    if (activity) return activity
+
+    const elapsedMs = Date.now() - startedAt
+    const remainingMs = waitMs - elapsedMs
+    if (remainingMs <= 0) {
+      throw new ApiError(404, 'activity_not_found', 'Activity not found for this project.')
+    }
+
+    await sleep(Math.min(delayMs, remainingMs))
+    delayMs = Math.min(delayMs * 2, 1_000)
+  }
 }
 
 async function assertUpdateQuota(projectId: string) {
@@ -326,8 +366,13 @@ export async function updateActivity(input: {
   staleDate?: number
   relevanceScore?: number
   userId?: string
+  waitForRegistrationMs?: number
 }) {
-  const activity = await findProjectActivity(input.project.id, input.externalActivityId)
+  const activity = await waitForProjectActivity(
+    input.project.id,
+    input.externalActivityId,
+    input.waitForRegistrationMs ?? 0,
+  )
   if (activity.status === 'ended') {
     throw new ApiError(409, 'activity_ended', 'This activity has already ended.')
   }
@@ -348,8 +393,13 @@ export async function endActivity(input: {
   externalActivityId: string
   contentState?: Record<string, unknown>
   dismissalDate?: number
+  waitForRegistrationMs?: number
 }) {
-  const activity = await findProjectActivity(input.project.id, input.externalActivityId)
+  const activity = await waitForProjectActivity(
+    input.project.id,
+    input.externalActivityId,
+    input.waitForRegistrationMs ?? 0,
+  )
   if (activity.status === 'ended') {
     throw new ApiError(409, 'activity_ended', 'This activity has already ended.')
   }
