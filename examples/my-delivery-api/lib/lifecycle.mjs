@@ -1,10 +1,10 @@
 /** Shared Live Hive HTTP lifecycle for local Node and Vercel. */
 
 export function liveHiveBase() {
-  // The demo example expects the Live Hive API to be served at /v1 on the host.
-  // Use the Render-deployed endpoint including the /v1 path so requests map to
-  // the same routes used by the API (e.g. /activities/:id/update).
-  return 'https://live-activities.onrender.com/v1'.replace(/\/$/, '')
+  // For demo runs, use the canonical Live Hive public API so iOS-registered
+  // activities (which use the public SDK host) are visible to our demo server.
+  // Allow override via LIVEHIVE_API_BASE if needed.
+  return (process.env.LIVEHIVE_API_BASE || 'https://www.livehive.dev/v1').replace(/\/$/, '')
 }
 
 export function liveHiveKey() {
