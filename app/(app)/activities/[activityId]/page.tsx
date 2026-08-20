@@ -110,32 +110,6 @@ export default async function ActivityDetailPage({
         </div>
       </section>
 
-      <section className="surface-card mt-6 p-6">
-        <h2 className="text-[16px] text-[var(--color-ink)]">Your backend later</h2>
-        <p className="mt-1 text-[13px] text-[var(--color-muted)]">
-          Same JSON Live Hive just sent. Host is www — no trailing slash, UUID
-          already in the path. <code>$LIVEHIVE_API_KEY</code> is your server key.
-        </p>
-        <div className="mt-4">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[12px] text-[var(--color-faint)]">Update</p>
-            <CopyButton value={updateCurl} />
-          </div>
-          <pre className="mt-1 overflow-x-auto rounded-lg bg-black/30 p-3 font-mono text-[12px] text-[var(--color-ink-soft)]">
-            {updateCurl}
-          </pre>
-        </div>
-        <div className="mt-4">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[12px] text-[var(--color-faint)]">End</p>
-            <CopyButton value={endCurl} />
-          </div>
-          <pre className="mt-1 overflow-x-auto rounded-lg bg-black/30 p-3 font-mono text-[12px] text-[var(--color-ink-soft)]">
-            {endCurl}
-          </pre>
-        </div>
-      </section>
-
       <h2 className="mt-10 text-[16px] text-[var(--color-ink)]">Update log</h2>
       {activity.deliveries.length === 0 ? (
         <p className="mt-3 text-[14px] text-[var(--color-muted)]">No updates yet.</p>
