@@ -34,7 +34,21 @@ type LogRow =
       data: null
     }
 
-function rowSearchText(row: LogRow) {
+type ParsedQuery = {
+  terms: string[]
+  filters: {
+    activity?: string
+    type?: string
+    status?: string
+    apns?: string
+  }
+}
+
+function normalize(value: unknown) {
+  return String(value ?? '').toLowerCase().trim()
+}
+
+function stringifyRow(row: LogRow) {
   return JSON.stringify({
     activityId: row.activityId,
     activityName: row.activityName,
@@ -49,10 +63,72 @@ function rowSearchText(row: LogRow) {
   }).toLowerCase()
 }
 
+function parseQuery(query: string): ParsedQuery {
+  const parsed: ParsedQuery = { terms: [], filters: {} }
+  for (const rawToken of query.trim().split(/\s+/).filter(Boolean)) {
+    const colon = rawToken.indexOf(':')
+    if (colon > 0) {
+      const key = rawToken.slice(0, colon).toLowerCase()
+      const value = rawToken.slice(colon + 1).trim()
+      if (!value) {
+        parsed.terms.push(rawToken)
+        continue
+      }
+      if (key === 'activity') parsed.filters.activity = value
+      else if (key === 'type') parsed.filters.type = value
+      else if (key === 'status') parsed.filters.status = value
+      else if (key === 'apns') parsed.filters.apns = value
+      else parsed.terms.push(rawToken)
+    } else {
+      parsed.terms.push(rawToken)
+    }
+  }
+  return parsed
+}
+
 function rowMatchesQuery(row: LogRow, query: string) {
-  const q = query.trim().toLowerCase()
-  if (!q) return true
-  return rowSearchText(row).includes(q)
+  const { terms, filters } = parseQuery(query)
+  if (filters.activity && !normalize(row.activityId).includes(normalize(filters.activity))) return false
+  if (filters.type) {
+    const rowType = row.kind === 'activity' ? 'register' : row.type
+    if (!normalize(rowType).includes(normalize(filters.type))) return false
+  }
+  if (filters.status && !normalize(row.status).includes(normalize(filters.status))) return false
+  if (filters.apns) {
+    const apnsText = row.kind === 'delivery' ? `${row.apnsStatus ?? ''} ${row.apnsReason ?? ''}` : ''
+    if (!normalize(apnsText).includes(normalize(filters.apns))) return false
+  }
+  if (terms.length === 0) return true
+
+  const haystack = stringifyRow(row)
+  return terms.every((term) => haystack.includes(term.toLowerCase()))
+}
+
+function highlightMatches(row: LogRow, query: string) {
+  const { terms, filters } = parseQuery(query)
+  const matches: string[] = []
+  const rowText = stringifyRow(row)
+
+  if (filters.activity && normalize(row.activityId).includes(normalize(filters.activity))) {
+    matches.push(`activity:${filters.activity}`)
+  }
+  if (filters.type) {
+    const rowType = row.kind === 'activity' ? 'register' : row.type
+    if (normalize(rowType).includes(normalize(filters.type))) matches.push(`type:${filters.type}`)
+  }
+  if (filters.status && normalize(row.status).includes(normalize(filters.status))) {
+    matches.push(`status:${filters.status}`)
+  }
+  if (filters.apns) {
+    const apnsText = row.kind === 'delivery' ? `${row.apnsStatus ?? ''} ${row.apnsReason ?? ''}` : ''
+    if (normalize(apnsText).includes(normalize(filters.apns))) matches.push(`apns:${filters.apns}`)
+  }
+
+  for (const term of terms) {
+    if (rowText.includes(term.toLowerCase())) matches.push(term)
+  }
+
+  return [...new Set(matches)]
 }
 
 export default async function LogsPage({
@@ -143,11 +219,27 @@ export default async function LogsPage({
             className="field"
             placeholder="Search anything in the log"
           />
+          <div className="mt-2 text-[12px] text-[var(--color-faint)]">
+            Try `activity:...`, `type:register`, `status:failed`, or plain words.
+          </div>
           <button type="submit" className="btn-primary mt-3">
             Search
           </button>
         </form>
       </div>
+
+      {q ? (
+        <div className="mb-4 flex flex-wrap gap-2 text-[12px] text-[var(--color-faint)]">
+          {highlightMatches(filteredRows[0] ?? rows[0], q).map((match) => (
+            <span
+              key={match}
+              className="rounded-full border border-[color:var(--color-line)] bg-[color:var(--color-surface-2)] px-2 py-1 font-mono"
+            >
+              matched {match}
+            </span>
+          ))}
+        </div>
+      ) : null}
 
       {filteredRows.length === 0 ? (
         <EmptyState
