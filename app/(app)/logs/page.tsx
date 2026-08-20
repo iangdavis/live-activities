@@ -18,6 +18,7 @@ type LogRow =
       apnsStatus: number | null
       apnsReason: string | null
       error: string | null
+      data: unknown
     }
   | {
       id: string
@@ -30,6 +31,7 @@ type LogRow =
       apnsStatus: null
       apnsReason: null
       error: null
+      data: null
     }
 
 export default async function LogsPage({
@@ -84,6 +86,7 @@ export default async function LogsPage({
       apnsStatus: delivery.apnsStatus,
       apnsReason: delivery.apnsReason,
       error: delivery.error,
+      data: delivery.payload,
     })),
     ...activities.map((activity) => ({
       id: `activity-${activity.id}`,
@@ -96,6 +99,7 @@ export default async function LogsPage({
       apnsStatus: null,
       apnsReason: null,
       error: null,
+      data: null,
     })),
   ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
@@ -118,12 +122,13 @@ export default async function LogsPage({
                 <th className="pb-2 font-medium">Type</th>
                 <th className="pb-2 font-medium">Status</th>
                 <th className="pb-2 font-medium">APNs</th>
+                <th className="pb-2 font-medium">Data</th>
                 <th className="pb-2 font-medium">Error</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="border-t border-[color:var(--color-line)]">
+                <tr key={row.id} className="border-t border-[color:var(--color-line)] align-top">
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
                     {formatDateTime(row.createdAt)}
                   </td>
@@ -135,14 +140,24 @@ export default async function LogsPage({
                       {row.activityName}
                     </Link>
                   </td>
-                  <td className="py-3">
-                    {row.kind === 'activity' ? 'register / start' : row.type}
-                  </td>
+                  <td className="py-3">{row.kind === 'activity' ? 'register' : row.type}</td>
                   <td className="py-3">
                     <StatusPill status={row.status} />
                   </td>
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
                     {row.kind === 'delivery' ? `${row.apnsStatus ?? '—'} ${row.apnsReason ?? ''}` : '—'}
+                  </td>
+                  <td className="py-3 text-[13px] text-[var(--color-muted)]">
+                    {row.kind === 'delivery' && row.data ? (
+                      <details>
+                        <summary className="cursor-pointer select-none">View data</summary>
+                        <pre className="mt-2 overflow-x-auto rounded-md bg-[color:var(--color-surface-2)] p-2 font-mono text-[11px] leading-5 text-[var(--color-ink)]">
+                          {JSON.stringify(row.data, null, 2)}
+                        </pre>
+                      </details>
+                    ) : (
+                      '—'
+                    )}
                   </td>
                   <td className="py-3 text-[13px] text-red-300">{row.error ?? ''}</td>
                 </tr>
