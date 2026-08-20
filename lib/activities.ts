@@ -42,6 +42,27 @@ function serializeError(error: unknown) {
   }
 }
 
+function deliveryDiagnostics(input: {
+  project: Project
+  event: 'update' | 'end'
+  status: 'sent' | 'failed'
+  apnsStatus?: number | null
+  apnsReason?: string | null
+  error?: string | null
+  apnsError?: unknown
+}) {
+  return {
+    projectId: input.project.publicId,
+    apnsEnvironment: input.project.apnsEnvironment,
+    event: input.event,
+    status: input.status,
+    apnsStatus: input.apnsStatus ?? null,
+    apnsReason: input.apnsReason ?? null,
+    error: input.error ?? null,
+    apnsError: input.apnsError ? serializeError(input.apnsError) : null,
+  }
+}
+
 export function activityRegistrationWaitMs() {
   const raw = Number(process.env.LIVEHIVE_ACTIVITY_REGISTRATION_WAIT_MS ?? 10_000)
   if (!Number.isFinite(raw) || raw < 0) return 10_000
@@ -301,6 +322,15 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
     })
 
     const status = result.ok ? 'sent' : 'failed'
+    const diagnostics = deliveryDiagnostics({
+      project: delivery.project,
+      event: delivery.type,
+      status,
+      apnsStatus: result.status,
+      apnsReason: result.reason,
+      error: result.ok ? null : result.error ?? null,
+      apnsError: result.ok ? null : result.error,
+    })
     const updated = await prisma.delivery.update({
       where: { id: delivery.id },
       data: {
@@ -308,6 +338,7 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
         apnsStatus: result.status,
         apnsReason: result.ok ? null : result.reason,
         error: result.ok ? null : result.error,
+        diagnostics: diagnostics as Prisma.InputJsonValue,
         completedAt: new Date(),
       },
     })
@@ -356,11 +387,20 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
       })
     }
 
+    const diagnostics = deliveryDiagnostics({
+      project: delivery.project,
+      event: delivery.type,
+      status: 'failed',
+      error: message,
+      apnsError: error,
+    })
+
     const updated = await prisma.delivery.update({
       where: { id: delivery.id },
       data: {
         status: 'failed',
         error: message,
+        diagnostics: diagnostics as Prisma.InputJsonValue,
         completedAt: new Date(),
       },
     })
