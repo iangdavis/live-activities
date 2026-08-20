@@ -134,7 +134,6 @@ model Delivery {
   status       DeliveryStatus @default(queued)
   contentState Json?
   payload      Json?
-  diagnostics  Json?
   apnsStatus   Int?
   apnsReason   String?
   error        String?
