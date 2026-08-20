@@ -6,6 +6,7 @@ import { Notice, PageHeader, StatusPill } from '@/components/dashboard/ui'
 import { ActivityDemoControls } from '@/components/dashboard/ActivityDemoControls'
 import { CopyButton } from '@/components/dashboard/CopyButton'
 import { httpEndCurl, httpUpdateCurl } from '@/lib/xcode-setup'
+import { formatDateTime } from '@/lib/format'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -86,13 +87,13 @@ export default async function ActivityDetailPage({
         <div>
           <div className="text-[12px] text-[var(--color-faint)]">Created</div>
           <div className="mt-1 text-[14px] text-[var(--color-ink)]">
-            {activity.createdAt.toISOString()}
+            {formatDateTime(activity.createdAt)}
           </div>
         </div>
         <div>
           <div className="text-[12px] text-[var(--color-faint)]">Last updated</div>
           <div className="mt-1 text-[14px] text-[var(--color-ink)]">
-            {activity.updatedAt.toISOString()}
+            {formatDateTime(activity.updatedAt)}
           </div>
         </div>
         <div>
@@ -104,7 +105,7 @@ export default async function ActivityDetailPage({
         <div>
           <div className="text-[12px] text-[var(--color-faint)]">Ended</div>
           <div className="mt-1 text-[14px] text-[var(--color-ink)]">
-            {activity.endedAt?.toISOString() ?? '—'}
+            {formatDateTime(activity.endedAt)}
           </div>
         </div>
       </section>
@@ -154,7 +155,7 @@ export default async function ActivityDetailPage({
               {activity.deliveries.map((d) => (
                 <tr key={d.id} className="border-t border-[color:var(--color-line)]">
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
-                    {d.createdAt.toISOString()}
+                    {formatDateTime(d.createdAt)}
                   </td>
                   <td className="py-3">{d.type}</td>
                   <td className="py-3">
