@@ -53,7 +53,7 @@ export default async function LogsPage({
           <table className="w-full text-left text-[14px]">
             <thead className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
               <tr>
-                <th className="pb-2 font-medium">Time</th>
+                <th className="pb-2 font-medium">Time (EST)</th>
                 <th className="pb-2 font-medium">Activity</th>
                 <th className="pb-2 font-medium">Type</th>
                 <th className="pb-2 font-medium">Status</th>
