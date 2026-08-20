@@ -34,14 +34,28 @@ type LogRow =
       data: null
     }
 
+function rowMatchesQuery(row: LogRow, query: string) {
+  const q = query.trim().toLowerCase()
+  if (!q) return true
+  return (
+    row.activityId.toLowerCase().includes(q) ||
+    row.activityName.toLowerCase().includes(q) ||
+    row.type?.toLowerCase().includes(q) ||
+    row.status.toLowerCase().includes(q) ||
+    (row.kind === 'delivery' && String(row.apnsStatus ?? '').includes(q)) ||
+    (row.kind === 'delivery' && (row.apnsReason ?? '').toLowerCase().includes(q)) ||
+    (row.kind === 'delivery' && JSON.stringify(row.data ?? {}).toLowerCase().includes(q))
+  )
+}
+
 export default async function LogsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ project?: string }>
+  searchParams: Promise<{ project?: string; q?: string }>
 }) {
   const session = await getSession()
   if (!session) redirect('/login')
-  const { project: projectId } = await searchParams
+  const { project: projectId, q = '' } = await searchParams
   const projects = await prisma.project.findMany({
     where: { accountId: session.accountId },
     orderBy: { createdAt: 'desc' },
@@ -103,14 +117,39 @@ export default async function LogsPage({
     })),
   ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
+  const filteredRows = rows.filter((row) => rowMatchesQuery(row, q))
+
   return (
     <div>
       <PageHeader title="Logs" />
-      <ProjectPicker projects={projects} selectedId={selected.id} path="/logs" />
-      {rows.length === 0 ? (
+      <div className="mb-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)] lg:items-end">
+        <ProjectPicker projects={projects} selectedId={selected.id} path="/logs" />
+        <form action="/logs" method="GET" className="surface-card p-4">
+          <input type="hidden" name="project" value={selected.id} />
+          <label className="mb-1 block text-[13px] text-[var(--color-muted)]" htmlFor="q">
+            Search activity ID
+          </label>
+          <input
+            id="q"
+            name="q"
+            defaultValue={q}
+            className="field"
+            placeholder="Paste an activity UUID"
+          />
+          <button type="submit" className="btn-primary mt-3">
+            Search
+          </button>
+        </form>
+      </div>
+
+      {filteredRows.length === 0 ? (
         <EmptyState
-          title="No deliveries yet"
-          body="When Live Hive talks to APNs, the result shows up here."
+          title="No matching logs"
+          body={
+            q
+              ? `No rows matched "${q}". Try another activity ID or clear the search.`
+              : 'When Live Hive talks to APNs, the result shows up here.'
+          }
         />
       ) : (
         <div className="overflow-x-auto">
@@ -127,7 +166,7 @@ export default async function LogsPage({
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => (
+              {filteredRows.map((row) => (
                 <tr key={row.id} className="border-t border-[color:var(--color-line)] align-top">
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
                     {formatDateTime(row.createdAt)}
