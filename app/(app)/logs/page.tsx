@@ -6,6 +6,32 @@ import { ProjectPicker } from '@/components/dashboard/ProjectPicker'
 import { formatDateTime } from '@/lib/format'
 import Link from 'next/link'
 
+type LogRow =
+  | {
+      id: string
+      kind: 'delivery'
+      createdAt: Date
+      activityId: string
+      activityName: string
+      type: string
+      status: 'queued' | 'sent' | 'failed'
+      apnsStatus: number | null
+      apnsReason: string | null
+      error: string | null
+    }
+  | {
+      id: string
+      kind: 'activity'
+      createdAt: Date
+      activityId: string
+      activityName: string
+      type: string | null
+      status: 'active' | 'ended' | 'expired' | 'failed'
+      apnsStatus: null
+      apnsReason: null
+      error: null
+    }
+
 export default async function LogsPage({
   searchParams,
 }: {
@@ -32,18 +58,52 @@ export default async function LogsPage({
     )
   }
 
-  const deliveries = await prisma.delivery.findMany({
-    where: { projectId: selected.id },
-    orderBy: { createdAt: 'desc' },
-    take: 100,
-    include: { activity: true },
-  })
+  const [deliveries, activities] = await Promise.all([
+    prisma.delivery.findMany({
+      where: { projectId: selected.id },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+      include: { activity: true },
+    }),
+    prisma.activity.findMany({
+      where: { projectId: selected.id },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    }),
+  ])
+
+  const rows: LogRow[] = [
+    ...deliveries.map((delivery) => ({
+      id: delivery.id,
+      kind: 'delivery' as const,
+      createdAt: delivery.createdAt,
+      activityId: delivery.activityId,
+      activityName: delivery.activity.externalActivityId,
+      type: delivery.type,
+      status: delivery.status,
+      apnsStatus: delivery.apnsStatus,
+      apnsReason: delivery.apnsReason,
+      error: delivery.error,
+    })),
+    ...activities.map((activity) => ({
+      id: `activity-${activity.id}`,
+      kind: 'activity' as const,
+      createdAt: activity.createdAt,
+      activityId: activity.id,
+      activityName: activity.externalActivityId,
+      type: activity.type,
+      status: activity.status,
+      apnsStatus: null,
+      apnsReason: null,
+      error: null,
+    })),
+  ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
   return (
     <div>
       <PageHeader title="Logs" />
       <ProjectPicker projects={projects} selectedId={selected.id} path="/logs" />
-      {deliveries.length === 0 ? (
+      {rows.length === 0 ? (
         <EmptyState
           title="No deliveries yet"
           body="When Live Hive talks to APNs, the result shows up here."
@@ -62,27 +122,29 @@ export default async function LogsPage({
               </tr>
             </thead>
             <tbody>
-              {deliveries.map((d) => (
-                <tr key={d.id} className="border-t border-[color:var(--color-line)]">
+              {rows.map((row) => (
+                <tr key={row.id} className="border-t border-[color:var(--color-line)]">
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
-                    {formatDateTime(d.createdAt)}
+                    {formatDateTime(row.createdAt)}
                   </td>
                   <td className="py-3">
                     <Link
-                      href={`/activities/${d.activityId}`}
+                      href={`/activities/${row.activityId}`}
                       className="font-mono text-[var(--color-ink)] hover:underline"
                     >
-                      {d.activity.externalActivityId}
+                      {row.activityName}
                     </Link>
                   </td>
-                  <td className="py-3">{d.type}</td>
                   <td className="py-3">
-                    <StatusPill status={d.status} />
+                    {row.kind === 'activity' ? 'register / start' : row.type}
+                  </td>
+                  <td className="py-3">
+                    <StatusPill status={row.status} />
                   </td>
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
-                    {d.apnsStatus ?? '—'} {d.apnsReason ?? ''}
+                    {row.kind === 'delivery' ? `${row.apnsStatus ?? '—'} ${row.apnsReason ?? ''}` : '—'}
                   </td>
-                  <td className="py-3 text-[13px] text-red-300">{d.error ?? ''}</td>
+                  <td className="py-3 text-[13px] text-red-300">{row.error ?? ''}</td>
                 </tr>
               ))}
             </tbody>
