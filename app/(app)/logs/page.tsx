@@ -5,19 +5,6 @@ import { EmptyState, PageHeader, StatusPill } from '@/components/dashboard/ui'
 import { ProjectPicker } from '@/components/dashboard/ProjectPicker'
 import Link from 'next/link'
 
-function formatDiagnostics(value: unknown) {
-  if (!value || typeof value !== 'object') return '—'
-  const diagnostics = value as Record<string, unknown>
-  const pieces = [
-    diagnostics.apnsStatus != null ? `APNs ${diagnostics.apnsStatus}` : null,
-    typeof diagnostics.apnsReason === 'string' && diagnostics.apnsReason
-      ? diagnostics.apnsReason
-      : null,
-    typeof diagnostics.error === 'string' && diagnostics.error ? diagnostics.error : null,
-  ].filter(Boolean)
-  return pieces.length > 0 ? pieces.join(' • ') : '—'
-}
-
 export default async function LogsPage({
   searchParams,
 }: {
@@ -70,12 +57,12 @@ export default async function LogsPage({
                 <th className="pb-2 font-medium">Type</th>
                 <th className="pb-2 font-medium">Status</th>
                 <th className="pb-2 font-medium">APNs</th>
-                <th className="pb-2 font-medium">Diagnostics</th>
+                <th className="pb-2 font-medium">Error</th>
               </tr>
             </thead>
             <tbody>
               {deliveries.map((d) => (
-                <tr key={d.id} className="border-t border-[color:var(--color-line)] align-top">
+                <tr key={d.id} className="border-t border-[color:var(--color-line)]">
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
                     {d.createdAt.toISOString()}
                   </td>
@@ -94,17 +81,7 @@ export default async function LogsPage({
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
                     {d.apnsStatus ?? '—'} {d.apnsReason ?? ''}
                   </td>
-                  <td className="py-3 text-[13px] text-[var(--color-muted)]">
-                    <div>{formatDiagnostics(d.diagnostics) ?? '—'}</div>
-                    {d.diagnostics && typeof d.diagnostics === 'object' ? (
-                      <details className="mt-1 text-[12px] text-[var(--color-faint)]">
-                        <summary className="cursor-pointer select-none">View details</summary>
-                        <pre className="mt-2 overflow-x-auto rounded-md bg-[color:var(--color-surface-2)] p-2 font-mono text-[11px] leading-5 text-[var(--color-ink)]">
-                          {JSON.stringify(d.diagnostics, null, 2)}
-                        </pre>
-                      </details>
-                    ) : null}
-                  </td>
+                  <td className="py-3 text-[13px] text-red-300">{d.error ?? ''}</td>
                 </tr>
               ))}
             </tbody>
