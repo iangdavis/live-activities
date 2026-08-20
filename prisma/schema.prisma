@@ -30,6 +30,11 @@ model Account {
 
   projects Project[]
 
+  // Stripe billing fields
+  stripeCustomerId       String?
+  stripeSubscriptionId   String?
+  stripeSubscriptionItemId String?
+
   @@index([ownerId])
 }
 
@@ -167,4 +172,29 @@ model UsageMonth {
   updates   Int    @default(0)
 
   @@unique([projectId, month])
+}
+
+/// Per-account usage for billing (metered billing is per Account)
+model AccountUsageMonth {
+  id        String @id @default(cuid())
+  accountId String
+  month     String
+  units     Int    @default(0)
+
+  @@unique([accountId, month])
+}
+
+/// Records for payments/invoices for reconciliation and dashboard
+model Payment {
+  id          String   @id @default(cuid())
+  accountId   String
+  provider    String   // e.g. stripe
+  providerId  String?  // e.g. stripe invoice id
+  amountCents Int
+  currency    String
+  status      String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([accountId])
 }
