@@ -6,9 +6,7 @@ import { EmptyState, Notice, PageHeader } from '@/components/dashboard/ui'
 import { ProjectPicker } from '@/components/dashboard/ProjectPicker'
 import { listApiKeys } from '@/lib/api-keys'
 import { encryptionKeyStatus } from '@/lib/env'
-import { prisma } from '@/lib/db'
 import { ProjectApiKeys } from '@/components/dashboard/ProjectApiKeys'
-import { SetupChecklist } from '@/components/dashboard/SetupChecklist'
 import { XcodeSetupCard } from '@/components/dashboard/XcodeSetupCard'
 
 export default async function SetupPage({
@@ -58,71 +56,11 @@ export default async function SetupPage({
   const publicKeys = keys.filter((key) => key.type === 'PUBLIC' && !key.revokedAt)
   const revealedPublicKey = publicKeys.find((key) => key.revealedKey)?.revealedKey ?? null
 
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-  const [activeActivities, createdLast7d, deliveriesLast7d, sentLast7d, failedLast7d, latestActivity] =
-    await Promise.all([
-      prisma.activity.count({ where: { projectId: project.id, status: 'active' } }),
-      prisma.activity.count({ where: { projectId: project.id, createdAt: { gte: sevenDaysAgo } } }),
-      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: sevenDaysAgo } } }),
-      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: sevenDaysAgo }, status: 'sent' } }),
-      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: sevenDaysAgo }, status: 'failed' } }),
-      prisma.activity.findFirst({
-        where: { projectId: project.id },
-        orderBy: { createdAt: 'desc' },
-        select: { id: true },
-      }),
-    ])
-
-  const successRateLast7d = deliveriesLast7d > 0 ? (sentLast7d / deliveriesLast7d) * 100 : 0
-
   return (
     <div>
       <PageHeader title="Setup" />
       <Notice error={error || (!encryption.ok ? encryption.message : undefined)} saved={saved === '1'} />
       <ProjectPicker projects={projects} selectedId={project.id} path="/setup" />
-
-      <div className="mb-6 grid gap-4 md:grid-cols-4">
-        <section className="surface-card p-5">
-          <div className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-            Active activities
-          </div>
-          <div className="mt-2 text-3xl font-semibold text-[var(--color-ink)]">{activeActivities}</div>
-        </section>
-        <section className="surface-card p-5">
-          <div className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-            Success rate, 7d
-          </div>
-          <div className="mt-2 text-3xl font-semibold text-[var(--color-ink)]">
-            {Math.round(successRateLast7d * 10) / 10}%
-          </div>
-        </section>
-        <section className="surface-card p-5">
-          <div className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-            Deliveries, 7d
-          </div>
-          <div className="mt-2 text-3xl font-semibold text-[var(--color-ink)]">{deliveriesLast7d}</div>
-          <div className="mt-1 text-[12px] text-[var(--color-muted)]">
-            {sentLast7d} sent, {failedLast7d} failed
-          </div>
-        </section>
-        <section className="surface-card p-5">
-          <div className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-            Created, 7d
-          </div>
-          <div className="mt-2 text-3xl font-semibold text-[var(--color-ink)]">{createdLast7d}</div>
-          <div className="mt-1 text-[12px] text-[var(--color-muted)]">
-            Latest activity shown below if present
-          </div>
-        </section>
-      </div>
-
-      <SetupChecklist
-        apnsConfigured={apnsConfigured}
-        hasPublicKey={publicKeys.length > 0}
-        hasActivity={Boolean(latestActivity)}
-        hasDelivery={deliveriesLast7d > 0}
-        latestActivityHref={latestActivity ? `/activities/${latestActivity.id}` : undefined}
-      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="surface-card p-6">
