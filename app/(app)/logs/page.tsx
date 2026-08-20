@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import { EmptyState, PageHeader, StatusPill } from '@/components/dashboard/ui'
 import { ProjectPicker } from '@/components/dashboard/ProjectPicker'
+import { formatDateTime } from '@/lib/format'
 import Link from 'next/link'
 
 export default async function LogsPage({
@@ -64,7 +65,7 @@ export default async function LogsPage({
               {deliveries.map((d) => (
                 <tr key={d.id} className="border-t border-[color:var(--color-line)]">
                   <td className="py-3 font-mono text-[12px] text-[var(--color-muted)]">
-                    {d.createdAt.toISOString()}
+                    {formatDateTime(d.createdAt)}
                   </td>
                   <td className="py-3">
                     <Link
