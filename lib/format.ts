@@ -9,3 +9,11 @@ export function formatDateTime(value: Date | string | number | null | undefined)
   if (Number.isNaN(date.getTime())) return '—'
   return dateTimeFormatter.format(date)
 }
+
+export function getLocalTimeZoneLabel() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZoneName: 'short',
+    hour: 'numeric',
+  }).formatToParts(new Date())
+  return parts.find((part) => part.type === 'timeZoneName')?.value ?? 'local time'
+}
