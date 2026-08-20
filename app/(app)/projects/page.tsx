@@ -17,7 +17,7 @@ export default async function ProjectsPage({
 
   return (
     <div>
-      <PageHeader title="Projects" />
+      <PageHeader title="Setup" />
       <Notice error={error} />
 
       <form action={createProjectAction} className="surface-card mb-8 max-w-lg p-5">
