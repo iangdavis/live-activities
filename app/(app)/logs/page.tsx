@@ -34,18 +34,25 @@ type LogRow =
       data: null
     }
 
+function rowSearchText(row: LogRow) {
+  return JSON.stringify({
+    activityId: row.activityId,
+    activityName: row.activityName,
+    type: row.type,
+    status: row.status,
+    apnsStatus: row.apnsStatus,
+    apnsReason: row.apnsReason,
+    error: row.error,
+    data: row.data,
+    createdAt: row.createdAt.toISOString(),
+    friendlyTime: formatDateTime(row.createdAt),
+  }).toLowerCase()
+}
+
 function rowMatchesQuery(row: LogRow, query: string) {
   const q = query.trim().toLowerCase()
   if (!q) return true
-  return (
-    row.activityId.toLowerCase().includes(q) ||
-    row.activityName.toLowerCase().includes(q) ||
-    row.type?.toLowerCase().includes(q) ||
-    row.status.toLowerCase().includes(q) ||
-    (row.kind === 'delivery' && String(row.apnsStatus ?? '').includes(q)) ||
-    (row.kind === 'delivery' && (row.apnsReason ?? '').toLowerCase().includes(q)) ||
-    (row.kind === 'delivery' && JSON.stringify(row.data ?? {}).toLowerCase().includes(q))
-  )
+  return rowSearchText(row).includes(q)
 }
 
 export default async function LogsPage({
@@ -127,14 +134,14 @@ export default async function LogsPage({
         <form action="/logs" method="GET" className="surface-card p-4">
           <input type="hidden" name="project" value={selected.id} />
           <label className="mb-1 block text-[13px] text-[var(--color-muted)]" htmlFor="q">
-            Search activity ID
+            Search logs
           </label>
           <input
             id="q"
             name="q"
             defaultValue={q}
             className="field"
-            placeholder="Paste an activity UUID"
+            placeholder="Search anything in the log"
           />
           <button type="submit" className="btn-primary mt-3">
             Search
@@ -147,7 +154,7 @@ export default async function LogsPage({
           title="No matching logs"
           body={
             q
-              ? `No rows matched "${q}". Try another activity ID or clear the search.`
+              ? `No rows matched "${q}". Try another term or clear the search.`
               : 'When Live Hive talks to APNs, the result shows up here.'
           }
         />
