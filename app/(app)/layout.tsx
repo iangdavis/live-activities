@@ -7,7 +7,6 @@ import { redirect } from 'next/navigation'
 const NAV = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/projects', label: 'Projects' },
-  { href: '/activities', label: 'Activities' },
   { href: '/logs', label: 'Logs' },
   { href: '/docs', label: 'Docs' },
   { href: '/settings', label: 'Settings' },
