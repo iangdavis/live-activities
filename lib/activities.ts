@@ -42,25 +42,23 @@ function serializeError(error: unknown) {
   }
 }
 
-function deliveryDiagnostics(input: {
+function conciseDeliveryError(input: {
   project: Project
   event: 'update' | 'end'
   status: 'sent' | 'failed'
   apnsStatus?: number | null
   apnsReason?: string | null
   error?: string | null
-  apnsError?: unknown
 }) {
-  return {
-    projectId: input.project.publicId,
-    apnsEnvironment: input.project.apnsEnvironment,
-    event: input.event,
-    status: input.status,
-    apnsStatus: input.apnsStatus ?? null,
-    apnsReason: input.apnsReason ?? null,
-    error: input.error ?? null,
-    apnsError: input.apnsError ? serializeError(input.apnsError) : null,
-  }
+  const bits = [
+    `event=${input.event}`,
+    `status=${input.status}`,
+    `apns=${input.apnsStatus ?? 'n/a'}`,
+    input.apnsReason ? `reason=${input.apnsReason}` : null,
+    input.error ? `error=${input.error}` : null,
+    `env=${input.project.apnsEnvironment}`,
+  ].filter(Boolean)
+  return bits.join(' | ')
 }
 
 export function activityRegistrationWaitMs() {
@@ -322,23 +320,22 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
     })
 
     const status = result.ok ? 'sent' : 'failed'
-    const diagnostics = deliveryDiagnostics({
-      project: delivery.project,
-      event: delivery.type,
-      status,
-      apnsStatus: result.status,
-      apnsReason: result.reason,
-      error: result.ok ? null : result.error ?? null,
-      apnsError: result.ok ? null : result.error,
-    })
     const updated = await prisma.delivery.update({
       where: { id: delivery.id },
       data: {
         status,
         apnsStatus: result.status,
         apnsReason: result.ok ? null : result.reason,
-        error: result.ok ? null : result.error,
-        diagnostics: diagnostics as Prisma.InputJsonValue,
+        error: result.ok
+          ? null
+          : conciseDeliveryError({
+              project: delivery.project,
+              event: delivery.type,
+              status,
+              apnsStatus: result.status,
+              apnsReason: result.reason,
+              error: result.error ?? null,
+            }),
         completedAt: new Date(),
       },
     })
@@ -387,20 +384,16 @@ export async function processDelivery(deliveryId: string): Promise<Delivery> {
       })
     }
 
-    const diagnostics = deliveryDiagnostics({
-      project: delivery.project,
-      event: delivery.type,
-      status: 'failed',
-      error: message,
-      apnsError: error,
-    })
-
     const updated = await prisma.delivery.update({
       where: { id: delivery.id },
       data: {
         status: 'failed',
-        error: message,
-        diagnostics: diagnostics as Prisma.InputJsonValue,
+        error: conciseDeliveryError({
+          project: delivery.project,
+          event: delivery.type,
+          status: 'failed',
+          error: message,
+        }),
         completedAt: new Date(),
       },
     })
