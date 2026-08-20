@@ -1,6 +1,7 @@
 import { CreateApiKeyForm } from '@/components/dashboard/CreateApiKeyForm'
 import { CopyButton } from '@/components/dashboard/CopyButton'
 import { revokeApiKeyAction } from '@/app/(app)/actions'
+import { formatDateTime } from '@/lib/format'
 
 type KeyRow = {
   id: string
@@ -59,7 +60,7 @@ function KeyTable({
                     )}
                   </td>
                   <td className="py-3 text-[var(--color-muted)]">
-                    {key.lastUsedAt ? key.lastUsedAt.toISOString() : 'Never'}
+                    {formatDateTime(key.lastUsedAt)}
                   </td>
                   <td className="py-3 text-right">
                     {!key.revokedAt && (
