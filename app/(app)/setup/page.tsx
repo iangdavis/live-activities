@@ -9,7 +9,6 @@ import { encryptionKeyStatus } from '@/lib/env'
 import { ProjectApiKeys } from '@/components/dashboard/ProjectApiKeys'
 import { XcodeSetupCard } from '@/components/dashboard/XcodeSetupCard'
 import { CopyButton } from '@/components/dashboard/CopyButton'
-import { httpEndCurl, httpUpdateCurl } from '@/lib/xcode-setup'
 import { prisma } from '@/lib/db'
 
 export default async function SetupPage({
@@ -64,8 +63,51 @@ export default async function SetupPage({
     select: { externalActivityId: true },
   })
   const supportInfo = `Project: ${project.name}\nProject ID: ${project.publicId}\nInternal ID: ${project.id}`
-  const updateCurl = latestActivity ? httpUpdateCurl(latestActivity.externalActivityId) : null
-  const endCurl = latestActivity ? httpEndCurl(latestActivity.externalActivityId) : null
+  const nodeSnippet = latestActivity
+    ? `import { LiveHive } from '@livehive/node'
+
+const liveHive = new LiveHive({
+  apiKey: process.env.LIVEHIVE_API_KEY!,
+})
+
+async function sendUpdate() {
+  await liveHive.update('${latestActivity.externalActivityId}', {
+    contentState: {
+      status: 'driver_arriving',
+      eta: '5 min',
+    },
+  })
+}
+
+async function endActivity() {
+  await liveHive.end('${latestActivity.externalActivityId}', {
+    contentState: {
+      status: 'delivered',
+    },
+  })
+}`
+    : `import { LiveHive } from '@livehive/node'
+
+const liveHive = new LiveHive({
+  apiKey: process.env.LIVEHIVE_API_KEY!,
+})
+
+async function sendUpdate(activityId: string) {
+  await liveHive.update(activityId, {
+    contentState: {
+      status: 'driver_arriving',
+      eta: '5 min',
+    },
+  })
+}
+
+async function endActivity(activityId: string) {
+  await liveHive.end(activityId, {
+    contentState: {
+      status: 'delivered',
+    },
+  })
+}`
 
   return (
     <div>
@@ -173,40 +215,17 @@ export default async function SetupPage({
       <ProjectApiKeys projectId={project.id} keys={keys} />
 
       <section className="surface-card mt-6 p-6">
-        <h2 className="text-[16px] text-[var(--color-ink)]">Curl snippets</h2>
+        <h2 className="text-[16px] text-[var(--color-ink)]">Node backend example</h2>
         <p className="mt-1 text-[13px] text-[var(--color-muted)]">
-          Use these when you want to send an update or end from your backend.
+          Copy this into your server and swap the content state for your own app data.
         </p>
-        {latestActivity && updateCurl && endCurl ? (
-          <div className="mt-4 space-y-4">
-            <div>
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-[12px] text-[var(--color-faint)]">Update</p>
-                <CopyButton value={updateCurl} />
-              </div>
-              <pre className="mt-1 overflow-x-auto rounded-lg bg-black/30 p-3 font-mono text-[12px] text-[var(--color-ink-soft)]">
-                {updateCurl}
-              </pre>
-            </div>
-            <div>
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-[12px] text-[var(--color-faint)]">End</p>
-                <CopyButton value={endCurl} />
-              </div>
-              <pre className="mt-1 overflow-x-auto rounded-lg bg-black/30 p-3 font-mono text-[12px] text-[var(--color-ink-soft)]">
-                {endCurl}
-              </pre>
-            </div>
-          </div>
-        ) : (
-          <p className="mt-3 text-[13px] text-[var(--color-muted)]">
-            Create and register an activity first, then the curl examples will appear here.
-          </p>
-        )}
-      </section>
-
-      <section className="mt-6">
-        <XcodeSetupCard bundleId={project.bundleId} publicKey={revealedPublicKey} />
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <p className="text-[12px] text-[var(--color-faint)]">Node example</p>
+          <CopyButton value={nodeSnippet} />
+        </div>
+        <pre className="mt-1 overflow-x-auto rounded-lg bg-black/30 p-3 font-mono text-[12px] leading-5 text-[var(--color-ink-soft)]">
+          {nodeSnippet}
+        </pre>
       </section>
 
       <section className="surface-card mt-6 p-6">
@@ -222,6 +241,10 @@ export default async function SetupPage({
         <div className="mt-3">
           <CopyButton value={supportInfo} label="Copy support info" />
         </div>
+      </section>
+
+      <section className="mt-6">
+        <XcodeSetupCard bundleId={project.bundleId} publicKey={revealedPublicKey} />
       </section>
     </div>
   )
