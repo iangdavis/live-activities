@@ -8,6 +8,7 @@ import { listApiKeys } from '@/lib/api-keys'
 import { encryptionKeyStatus } from '@/lib/env'
 import { ProjectApiKeys } from '@/components/dashboard/ProjectApiKeys'
 import { XcodeSetupCard } from '@/components/dashboard/XcodeSetupCard'
+import { CopyButton } from '@/components/dashboard/CopyButton'
 
 export default async function SetupPage({
   searchParams,
@@ -55,6 +56,7 @@ export default async function SetupPage({
   const encryption = encryptionKeyStatus()
   const publicKeys = keys.filter((key) => key.type === 'PUBLIC' && !key.revokedAt)
   const revealedPublicKey = publicKeys.find((key) => key.revealedKey)?.revealedKey ?? null
+  const supportInfo = `Project: ${project.name}\nProject ID: ${project.publicId}\nInternal ID: ${project.id}`
 
   return (
     <div>
@@ -64,17 +66,18 @@ export default async function SetupPage({
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="surface-card p-6">
-          <h2 className="text-[16px] text-[var(--color-ink)]">Project credentials</h2>
-          <dl className="mt-4 space-y-3 text-[14px]">
-            <div>
-              <dt className="text-[var(--color-faint)]">Project ID</dt>
-              <dd className="mt-1 font-mono text-[var(--color-ink)]">{project.publicId}</dd>
-            </div>
-            <div>
-              <dt className="text-[var(--color-faint)]">Internal ID</dt>
-              <dd className="mt-1 font-mono text-[var(--color-ink-soft)]">{project.id}</dd>
-            </div>
-          </dl>
+          <h2 className="text-[16px] text-[var(--color-ink)]">Project support info</h2>
+          <p className="mt-2 text-[13px] text-[var(--color-muted)]">
+            Only use this if you need to paste identifiers into support or bug reports.
+          </p>
+          <div className="mt-4 rounded-lg border border-[color:var(--color-line)] bg-[color:var(--color-surface-2)] p-4">
+            <pre className="overflow-x-auto font-mono text-[12px] leading-5 text-[var(--color-ink)]">
+              {supportInfo}
+            </pre>
+          </div>
+          <div className="mt-3">
+            <CopyButton value={supportInfo} label="Copy support info" />
+          </div>
         </section>
 
         <section className="surface-card p-6">
