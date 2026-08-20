@@ -32,36 +32,22 @@ export default async function ProjectDetailPage({
   const publicKeys = keys.filter((key) => key.type === 'PUBLIC' && !key.revokedAt)
   const revealedPublicKey = publicKeys.find((key) => key.revealedKey)?.revealedKey ?? null
 
-  const [activityStats, deliveryStats, latestActivity] = await Promise.all([
-    prisma.activity.aggregate({
-      where: { projectId: project.id },
-      _count: { _all: true },
-      _sum: {
-        status: true,
-      },
-    }),
-    Promise.all([
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  const [activeActivities, createdLast7d, deliveriesLast7d, sentLast7d, failedLast7d, latestActivity] =
+    await Promise.all([
       prisma.activity.count({ where: { projectId: project.id, status: 'active' } }),
-      prisma.activity.count({ where: { projectId: project.id, createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } } }),
-      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), status: 'sent' } } }),
-      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), status: 'failed' } } }),
-      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } } }),
-    ]),
-    prisma.activity.findFirst({
-      where: { projectId: project.id },
-      orderBy: { createdAt: 'desc' },
-      select: { id: true },
-    }),
-  ])
+      prisma.activity.count({ where: { projectId: project.id, createdAt: { gte: sevenDaysAgo } } }),
+      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: sevenDaysAgo } } }),
+      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: sevenDaysAgo }, status: 'sent' } }),
+      prisma.delivery.count({ where: { projectId: project.id, createdAt: { gte: sevenDaysAgo }, status: 'failed' } }),
+      prisma.activity.findFirst({
+        where: { projectId: project.id },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true },
+      }),
+    ])
 
-  const activeActivities = deliveryStats[0]
-  const activitiesLast7d = deliveryStats[1]
-  const sentLast7d = deliveryStats[2]
-  const failedLast7d = deliveryStats[3]
-  const deliveriesLast7d = deliveryStats[4]
-  const successRateLast7d =
-    deliveriesLast7d > 0 ? (sentLast7d / deliveriesLast7d) * 100 : 0
-  const activityCount = activityStats._count._all
+  const successRateLast7d = deliveriesLast7d > 0 ? (sentLast7d / deliveriesLast7d) * 100 : 0
 
   return (
     <div>
@@ -97,11 +83,11 @@ export default async function ProjectDetailPage({
         </section>
         <section className="surface-card p-5">
           <div className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-            Activity count
+            Created, 7d
           </div>
-          <div className="mt-2 text-3xl font-semibold text-[var(--color-ink)]">{activityCount}</div>
+          <div className="mt-2 text-3xl font-semibold text-[var(--color-ink)]">{createdLast7d}</div>
           <div className="mt-1 text-[12px] text-[var(--color-muted)]">
-            {activitiesLast7d} created in the last 7 days
+            Latest activity shown below if present
           </div>
         </section>
       </div>
