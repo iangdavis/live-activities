@@ -83,6 +83,10 @@ See `.env.example` for every variable.
 | `DIRECT_URL` | Direct Postgres URL for migrations |
 | `AUTH_SECRET` | Signs session cookies |
 | `APP_URL` | Canonical origin (`https://livehive.dev`) |
+| `STRIPE_SECRET_KEY` | Stripe secret key for checkout and portal calls |
+| `STRIPE_PRICE_ID` | Stripe subscription price used by checkout |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret for `/api/billing/webhook` |
+| `NEXT_PUBLIC_APP_ORIGIN` | Public origin used for Stripe success/cancel/return URLs |
 | `ENCRYPTION_KEY` | 32-byte hex key that encrypts APNs `.p8` material |
 | `CRON_SECRET` | Bearer token for `/api/cron/deliver` and activation metrics |
 
