@@ -29,10 +29,11 @@ model Account {
   updatedAt DateTime @updatedAt
 
   projects Project[]
+  plan     AccountPlan @default(free)
 
   // Stripe billing fields
-  stripeCustomerId       String?
-  stripeSubscriptionId   String?
+  stripeCustomerId         String?
+  stripeSubscriptionId     String?
   stripeSubscriptionItemId String?
 
   @@index([ownerId])
@@ -63,6 +64,11 @@ model Project {
 enum ApnsEnvironment {
   sandbox
   production
+}
+
+enum AccountPlan {
+  free
+  paid
 }
 
 enum ApiKeyType {

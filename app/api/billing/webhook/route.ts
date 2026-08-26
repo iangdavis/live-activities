@@ -25,7 +25,15 @@ export async function POST(request: Request) {
         if (accountId && session.subscription) {
           const subscription = await stripe.subscriptions.retrieve(session.subscription, { expand: ['items'] })
           const item = subscription.items.data[0]
-          await prisma.account.update({ where: { id: accountId }, data: { stripeCustomerId: session.customer, stripeSubscriptionId: subscription.id, stripeSubscriptionItemId: item.id } })
+          await prisma.account.update({
+            where: { id: accountId },
+            data: {
+              plan: subscription.status === 'active' || subscription.status === 'trialing' ? 'paid' : 'free',
+              stripeCustomerId: session.customer,
+              stripeSubscriptionId: subscription.id,
+              stripeSubscriptionItemId: item.id,
+            },
+          })
         }
         break
       }
@@ -38,7 +46,14 @@ export async function POST(request: Request) {
         const acct = await prisma.account.findFirst({ where: { stripeCustomerId: customerId } })
         if (acct) {
           const item = subscription.items?.data?.[0]
-          await prisma.account.update({ where: { id: acct.id }, data: { stripeSubscriptionId: subscription.id, stripeSubscriptionItemId: item?.id ?? null } })
+          await prisma.account.update({
+            where: { id: acct.id },
+            data: {
+              plan: subscription.status === 'active' || subscription.status === 'trialing' ? 'paid' : 'free',
+              stripeSubscriptionId: subscription.id,
+              stripeSubscriptionItemId: item?.id ?? null,
+            },
+          })
         }
         break
       }

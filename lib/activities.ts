@@ -74,9 +74,12 @@ export async function registerActivity(input: {
   pushToken: string
   type?: string
   expiresAt?: Date
-  createLimit?: number
 }) {
   const pushToken = normalizePushToken(input.pushToken)
+  const account = await prisma.account.findUnique({
+    where: { id: input.project.accountId },
+    select: { plan: true, stripeSubscriptionItemId: true },
+  })
   const existing = await prisma.activity.findUnique({
     where: {
       projectId_externalActivityId: {
@@ -86,15 +89,15 @@ export async function registerActivity(input: {
     },
   })
 
-  if (!existing && input.createLimit != null) {
+  if (!existing && account?.plan !== 'paid') {
     const activeCount = await prisma.activity.count({
       where: { projectId: input.project.id, status: 'active' },
     })
-    if (activeCount >= input.createLimit) {
+    if (activeCount >= FREE_TIER.maxActiveActivities) {
       throw new ApiError(
         403,
         'plan_limit',
-        `Active activity limit (${input.createLimit}) reached.`,
+        `Free plan includes ${FREE_TIER.maxActiveActivities} activities per month. Upgrade to continue.`,
       )
     }
   }
@@ -127,6 +130,7 @@ export async function registerActivity(input: {
       projectId: input.project.id,
       properties: { activity_id: input.externalActivityId },
     })
+    await reportAccountUsageForProject(input.project.id, 1)
   }
 
   return {
@@ -222,7 +226,7 @@ async function reportAccountUsageForProject(projectId: string, units = 1) {
 
   // report to Stripe immediately if subscription item present
   const account = await prisma.account.findUnique({ where: { id: accountId } })
-  if (account?.stripeSubscriptionItemId) {
+  if (account?.plan === 'paid' && account.stripeSubscriptionItemId) {
     try {
       await stripe.subscriptionItems.createUsageRecord(account.stripeSubscriptionItemId, {
         quantity: units,
@@ -234,10 +238,6 @@ async function reportAccountUsageForProject(projectId: string, units = 1) {
       log.error('stripe usage record failed', { accountId, error: String(err) })
     }
   }
-}
-
-async function incrementUsage(projectId: string) {
-  await reportAccountUsageForProject(projectId, 1)
 }
 
 function projectCredentials(project: Project): ApnsCredentials {
@@ -309,7 +309,6 @@ export async function enqueueAndDeliver(input: {
   })
 
   if (input.type === 'update') {
-    await incrementUsage(input.project.id)
     await trackOnce({
       name: EVENTS.FIRST_UPDATE_ATTEMPTED,
       userId: input.userId,

@@ -64,6 +64,7 @@ export async function createUserWithAccount(input: {
       accounts: {
         create: {
           name: input.name?.trim() || email.split('@')[0] || 'Personal',
+          plan: 'free',
         },
       },
     },

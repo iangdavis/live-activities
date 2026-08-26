@@ -4,7 +4,6 @@ import { hashApiKey, isApiKeyFormat, isPublicApiKeyFormat, type ApiKeyKind } fro
 import { ApiError } from './errors'
 import { clientIp, limits, rateLimit } from './rate-limit'
 import { registerActivity } from './activities'
-import { FREE_TIER } from './plan'
 import type { Project } from '@prisma/client'
 
 const bearerRe = /^Bearer\s+(.+)$/i
@@ -150,6 +149,5 @@ export async function handleActivityRegistration(
     pushToken: body.push_token,
     type: body.type,
     expiresAt: body.expires_at ? new Date(body.expires_at) : undefined,
-    createLimit: auth.keyType === 'PUBLIC' ? FREE_TIER.maxActiveActivities : undefined,
   })
 }
