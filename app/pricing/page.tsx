@@ -7,7 +7,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Live Hive pricing: free for up to 100 activities per month, then $0.01 per additional activity.',
+    'Live Hive pricing: free for up to 100 activities per month, then $0.01 per live activity.',
   alternates: { canonical: '/pricing' },
 }
 

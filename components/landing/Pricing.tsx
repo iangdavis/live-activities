@@ -8,8 +8,8 @@ export function Pricing() {
   return (
     <section id="pricing" className="container-page py-20 sm:py-28">
       <SectionHeading title="Simple pricing.">
-        Start free for up to 100 activities each month. After that, paid usage
-        is billed at $0.01 per additional activity.
+        Start free for up to 100 activities each month. After that, pay
+        $0.01 per live activity.
       </SectionHeading>
 
       <Reveal delay={60} className="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
