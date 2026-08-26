@@ -1,11 +1,13 @@
 import { stripe } from '@/lib/stripe'
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/db'
+import { publicAppUrl } from '@/lib/env'
 
 export async function POST(request: Request) {
+  const appUrl = publicAppUrl()
   const session = await getSession()
   if (!session) {
-    return Response.redirect(`${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/login`, 303)
+    return Response.redirect(`${appUrl}/login`, 303)
   }
 
   const account = await prisma.account.findUnique({ where: { id: session.accountId } })
@@ -29,8 +31,8 @@ export async function POST(request: Request) {
       line_items: [{ price, quantity: 1 }],
       customer: customerId,
       metadata: { accountId: account.id },
-      success_url: `${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/settings?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/settings`,
+      success_url: `${appUrl}/settings?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/settings`,
     })
 
     if (!sessionObj.url) {
