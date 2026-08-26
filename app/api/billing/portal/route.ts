@@ -3,7 +3,7 @@ import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/db'
 import { publicAppUrl } from '@/lib/env'
 
-export async function POST() {
+async function handleBillingPortal() {
   const appUrl = publicAppUrl()
   const session = await getSession()
   if (!session) {
@@ -38,4 +38,12 @@ export async function POST() {
     console.error('billing portal error', err)
     return new Response(JSON.stringify({ error: 'Could not create billing portal session' }), { status: 500 })
   }
+}
+
+export async function GET() {
+  return handleBillingPortal()
+}
+
+export async function POST() {
+  return handleBillingPortal()
 }

@@ -3,7 +3,7 @@ import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/db'
 import { publicAppUrl } from '@/lib/env'
 
-export async function POST(request: Request) {
+async function handleCheckoutSession() {
   const appUrl = publicAppUrl()
   const session = await getSession()
   if (!session) {
@@ -44,4 +44,12 @@ export async function POST(request: Request) {
     console.error('create-checkout-session error', err)
     return new Response(JSON.stringify({ error: 'Could not create checkout session' }), { status: 500 })
   }
+}
+
+export async function GET() {
+  return handleCheckoutSession()
+}
+
+export async function POST() {
+  return handleCheckoutSession()
 }

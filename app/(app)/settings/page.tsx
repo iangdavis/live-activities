@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/dashboard/ui'
 import { prisma } from '@/lib/db'
 import { currentMonthKey, FREE_TIER } from '@/lib/plan'
+import Link from 'next/link'
 
 export default async function SettingsPage() {
   const session = await getSession()
@@ -69,17 +70,13 @@ export default async function SettingsPage() {
         </div>
         <div className="mt-4 flex flex-wrap gap-3">
           {!isPaid ? (
-            <form action="/api/billing/create-checkout-session" method="POST">
-              <button type="submit" className="btn-primary">
-                Upgrade to Paid
-              </button>
-            </form>
+            <Link href="/api/billing/create-checkout-session" className="btn-primary">
+              Upgrade to Paid
+            </Link>
           ) : null}
-          <form action="/api/billing/portal" method="POST">
-            <button type="submit" className="btn-ghost">
-              Billing
-            </button>
-          </form>
+          <Link href="/api/billing/portal" className="btn-ghost">
+            Billing
+          </Link>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
