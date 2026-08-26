@@ -18,22 +18,20 @@ export const PLANS = [
     cadence: '/ month',
     features: [
       '1 project',
-      '1,000 active activities',
-      '10,000 updates / month',
+      '100 activities / month',
       'Basic delivery logs',
     ],
   },
   {
-    name: 'Pro',
-    price: '$49',
+    name: 'Paid',
+    price: '$0.01',
     cadence: '/ month',
     featured: true,
     features: [
       'Unlimited projects',
-      '50,000 active activities',
-      '1,000,000 updates / month',
+      'First 100 activities free',
+      'Then pay per activity',
       'Delivery logs',
-      'Email support',
     ],
   },
 ] as const

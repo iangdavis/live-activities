@@ -8,8 +8,8 @@ export function Pricing() {
   return (
     <section id="pricing" className="container-page py-20 sm:py-28">
       <SectionHeading title="Simple pricing.">
-        Start on the free plan. Paid billing comes later; Pro is listed so you
-        know where this is going.
+        Start free for up to 100 activities each month. After that, paid usage
+        is billed at $0.01 per additional activity.
       </SectionHeading>
 
       <Reveal delay={60} className="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
@@ -69,8 +69,8 @@ export function Pricing() {
 
       <Reveal delay={120}>
         <p className="mt-8 text-center text-[13px] text-[var(--color-faint)]">
-          Pricing is subject to change during early access. No credit card required
-          for the free plan.
+          No credit card required for the free plan. Upgrade anytime from the
+          dashboard.
         </p>
       </Reveal>
     </section>
