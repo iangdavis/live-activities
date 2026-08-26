@@ -9,19 +9,29 @@ export default async function SettingsPage() {
   const session = await getSession()
   if (!session) redirect('/login')
   const month = currentMonthKey()
-  const account = await prisma.account.findUnique({
-    where: { id: session.accountId },
-    select: { plan: true },
-  })
-  const usage = await prisma.accountUsageMonth.findUnique({
-    where: {
-      accountId_month: {
-        accountId: session.accountId,
-        month,
-      },
-    },
-    select: { units: true },
-  })
+  let account: { plan: 'free' | 'paid' } | null = null
+  let usage: { units: number } | null = null
+
+  try {
+    ;[account, usage] = await Promise.all([
+      prisma.account.findUnique({
+        where: { id: session.accountId },
+        select: { plan: true },
+      }),
+      prisma.accountUsageMonth.findUnique({
+        where: {
+          accountId_month: {
+            accountId: session.accountId,
+            month,
+          },
+        },
+        select: { units: true },
+      }),
+    ])
+  } catch (error) {
+    console.error('settings billing summary failed', error)
+  }
+
   const isPaid = account?.plan === 'paid'
   const activitiesThisCycle = usage?.units ?? 0
   const freeIncluded = FREE_TIER.maxActiveActivities
