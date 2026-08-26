@@ -27,8 +27,8 @@ export async function POST(request: Request) {
       line_items: [{ price, quantity: 1 }],
       customer: customerId,
       metadata: { accountId: account.id },
-      success_url: `${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/settings/payments?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/settings/payments`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/settings?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/settings`,
     })
 
     return new Response(JSON.stringify({ url: sessionObj.url }), { status: 200, headers: { 'Content-Type': 'application/json' } })

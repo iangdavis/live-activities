@@ -2,7 +2,6 @@ import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/dashboard/ui'
 import { prisma } from '@/lib/db'
-import Link from 'next/link'
 import { currentMonthKey, FREE_TIER } from '@/lib/plan'
 
 export default async function SettingsPage() {
@@ -78,12 +77,9 @@ export default async function SettingsPage() {
           ) : null}
           <form action="/api/billing/portal" method="POST">
             <button type="submit" className="btn-ghost">
-              {isPaid ? 'Change or Downgrade Plan' : 'Manage billing'}
+              Billing
             </button>
           </form>
-          <Link href="/settings/payments" className="btn-ghost">
-            View payments
-          </Link>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2">

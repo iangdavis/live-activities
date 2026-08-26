@@ -10,7 +10,7 @@ export async function POST() {
   try {
     const portal = await stripe.billingPortal.sessions.create({
       customer: account.stripeCustomerId,
-      return_url: `${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/settings/payments`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_ORIGIN || ''}/settings`,
     })
     return new Response(JSON.stringify({ url: portal.url }), { status: 200, headers: { 'Content-Type': 'application/json' } })
   } catch (err) {
