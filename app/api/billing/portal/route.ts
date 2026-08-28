@@ -33,6 +33,13 @@ function htmlError(appUrl: string, title: string, message: string, status = 500)
   })
 }
 
+function describeStripeError(err: unknown): string {
+  if (err instanceof Error) {
+    return err.message
+  }
+  return 'Unknown Stripe error'
+}
+
 async function handleBillingPortal() {
   const appUrl = publicAppUrl()
   const session = await getSession()
@@ -43,6 +50,15 @@ async function handleBillingPortal() {
   const account = await prisma.account.findUnique({ where: { id: session.accountId } })
   if (!account) {
     return htmlError(appUrl, 'Billing unavailable', 'We could not find your account.', 404)
+  }
+
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return htmlError(
+      appUrl,
+      'Billing unavailable',
+      'Stripe is not configured on this deployment, so the billing portal cannot open yet.',
+      503,
+    )
   }
 
   try {
@@ -65,11 +81,13 @@ async function handleBillingPortal() {
     })
     return Response.redirect(portal.url, 303)
   } catch (err) {
-    console.error('billing portal error', err)
+    const details = describeStripeError(err)
+    console.error('billing portal error', details, err)
     return htmlError(
       appUrl,
       'Billing unavailable',
-      'We could not open Stripe billing right now. Please try again in a moment.',
+      'We could not open Stripe billing right now. Stripe may not have Customer Portal enabled for this account yet. Please try again later or contact support.',
+      503,
     )
   }
 }
