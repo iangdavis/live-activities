@@ -15,9 +15,6 @@ export function Pricing() {
       <Reveal delay={60} className="mx-auto mt-12 grid max-w-5xl gap-5 lg:grid-cols-[1fr_1.15fr]">
         <article className="surface-card relative overflow-hidden p-7 sm:p-8">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[color:var(--color-accent)]/50 to-transparent" />
-          <p className="font-mono text-[10px] uppercase tracking-[0.34em] text-[var(--color-accent-soft)]">
-            Free
-          </p>
           <h3 className="mt-3 text-[38px] font-semibold tracking-tight text-[var(--color-ink)] sm:text-[46px]">
             Free
           </h3>
@@ -25,34 +22,23 @@ export function Pricing() {
             Send up to 100 live activities per month.
           </p>
 
-          <div className="mt-6 rounded-2xl border border-[color:var(--color-line)] bg-[rgba(255,255,255,0.02)] p-4">
-            <div className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-              Included
-            </div>
-            <ul className="mt-4 space-y-3">
-              <li className="flex items-start gap-3 text-[14.5px] text-[var(--color-ink-soft)]">
-                <CheckIcon width={18} height={18} className="mt-0.5 shrink-0 text-[var(--color-live)]" />
-                <span>1 project</span>
-              </li>
-              <li className="flex items-start gap-3 text-[14.5px] text-[var(--color-ink-soft)]">
-                <CheckIcon width={18} height={18} className="mt-0.5 shrink-0 text-[var(--color-live)]" />
-                <span>Detailed logs</span>
-              </li>
-            </ul>
-          </div>
+          <ul className="mt-6 space-y-3">
+            <li className="flex items-start gap-3 text-[14.5px] text-[var(--color-ink-soft)]">
+              <CheckIcon width={18} height={18} className="mt-0.5 shrink-0 text-[var(--color-live)]" />
+              <span>1 project</span>
+            </li>
+            <li className="flex items-start gap-3 text-[14.5px] text-[var(--color-ink-soft)]">
+              <CheckIcon width={18} height={18} className="mt-0.5 shrink-0 text-[var(--color-live)]" />
+              <span>Detailed logs</span>
+            </li>
+          </ul>
 
-          <Link href="/signup" className="btn-ghost mt-8 w-full sm:w-auto">
+          <Link href="/signup" className="btn-primary mt-8 w-full sm:w-auto">
             Start Free
           </Link>
         </article>
 
-        <article className="surface-card relative overflow-hidden border-[color:var(--color-accent)]/25 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015))] p-7 sm:p-8">
-          <div className="absolute right-6 top-6 rounded-full border border-[color:var(--color-accent)]/30 bg-[color:var(--color-accent)]/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.28em] text-[var(--color-accent-soft)]">
-            Best value
-          </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.34em] text-[var(--color-accent-soft)]">
-            Paid
-          </p>
+        <article className="surface-card relative overflow-hidden p-7 sm:p-8">
           <div className="mt-3 flex flex-wrap items-end gap-x-3 gap-y-2">
             <h3 className="text-[38px] font-semibold tracking-tight text-[var(--color-ink)] sm:text-[50px]">
               Paid
@@ -64,25 +50,6 @@ export function Pricing() {
           <p className="mt-3 max-w-2xl text-[16px] leading-relaxed text-[var(--color-ink-soft)]">
             The first 100 live activities are free, then you only pay for what you use.
           </p>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-[color:var(--color-line)] bg-[rgba(0,0,0,0.18)] p-4">
-              <div className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-                Projects
-              </div>
-              <div className="mt-2 text-[20px] font-semibold text-[var(--color-ink)]">
-                Unlimited
-              </div>
-            </div>
-            <div className="rounded-2xl border border-[color:var(--color-line)] bg-[rgba(0,0,0,0.18)] p-4">
-              <div className="text-[12px] uppercase tracking-wide text-[var(--color-faint)]">
-                Logs
-              </div>
-              <div className="mt-2 text-[20px] font-semibold text-[var(--color-ink)]">
-                Detailed
-              </div>
-            </div>
-          </div>
 
           <ul className="mt-6 space-y-3">
             <li className="flex items-start gap-3 text-[14.5px] text-[var(--color-ink-soft)]">
