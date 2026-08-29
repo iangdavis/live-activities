@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
   const router = useRouter()
   const params = useSearchParams()
-  const next = params.get('next') || '/dashboard'
+  const next = params.get('next') || (mode === 'signup' ? '/welcome' : '/dashboard')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')

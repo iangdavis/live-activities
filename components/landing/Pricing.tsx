@@ -20,7 +20,7 @@ export function Pricing() {
             Send up to 100 live activities per month.
           </p>
 
-          <ul className="mt-6 space-y-3 text-[14.5px] text-[var(--color-ink-soft)]">
+          <ul className="mt-6 list-disc space-y-3 pl-5 text-[14.5px] text-[var(--color-ink-soft)] marker:text-[var(--color-ink-soft)]">
             <li>1 project</li>
             <li>Detailed logs</li>
           </ul>

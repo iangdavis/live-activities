@@ -5,6 +5,8 @@ const AUTH_PAGES = ['/login', '/signup']
 
 function isAppPath(pathname: string) {
   return (
+    pathname === '/welcome' ||
+    pathname.startsWith('/welcome/') ||
     pathname === '/dashboard' ||
     pathname.startsWith('/dashboard/') ||
     pathname === '/projects' ||
@@ -51,6 +53,8 @@ export const config = {
     '/settings/:path*',
     '/api-keys',
     '/api-keys/:path*',
+    '/welcome',
+    '/welcome/:path*',
     '/login',
     '/signup',
   ],
