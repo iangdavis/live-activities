@@ -3,13 +3,7 @@ import { Logo } from '@/components/landing/Logo'
 import { site } from '@/lib/config'
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
-
-const NAV = [
-  { href: '/dashboard', label: 'Dashboard' },
-  { href: '/logs', label: 'Logs' },
-  { href: '/docs', label: 'Docs' },
-  { href: '/settings', label: 'Settings' },
-]
+import { prisma } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,6 +14,18 @@ export default async function DashboardLayout({
 }) {
   const session = await getSession()
   if (!session) redirect('/login')
+  const firstProject = await prisma.project.findFirst({
+    where: { accountId: session.accountId },
+    orderBy: { createdAt: 'desc' },
+    select: { id: true },
+  })
+  const nav = [
+    { href: '/dashboard', label: 'Dashboard' },
+    { href: firstProject ? `/projects/${firstProject.id}` : '/setup', label: 'Setup' },
+    { href: '/logs', label: 'Logs' },
+    { href: '/docs', label: 'Docs' },
+    { href: '/settings', label: 'Settings' },
+  ]
 
   const greetingName = session.name?.trim() || session.email.split('@')[0] || 'there'
 
@@ -35,7 +41,7 @@ export default async function DashboardLayout({
           </Link>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col md:overflow-visible">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
