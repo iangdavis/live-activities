@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { Reveal } from './Reveal'
 import { SectionHeading } from './SectionHeading'
 import { CheckIcon } from './icons'
-
 export function Pricing() {
   return (
     <section id="pricing" className="container-page py-20 sm:py-28">
@@ -22,15 +21,9 @@ export function Pricing() {
             Send up to 100 live activities per month.
           </p>
 
-          <ul className="mt-6 space-y-3">
-            <li className="flex items-start gap-3 text-[14.5px] text-[var(--color-ink-soft)]">
-              <CheckIcon width={18} height={18} className="mt-0.5 shrink-0 text-[var(--color-live)]" />
-              <span>1 project</span>
-            </li>
-            <li className="flex items-start gap-3 text-[14.5px] text-[var(--color-ink-soft)]">
-              <CheckIcon width={18} height={18} className="mt-0.5 shrink-0 text-[var(--color-live)]" />
-              <span>Detailed logs</span>
-            </li>
+          <ul className="mt-6 space-y-3 text-[14.5px] text-[var(--color-ink-soft)]">
+            <li>1 project</li>
+            <li>Detailed logs</li>
           </ul>
 
           <Link href="/signup" className="btn-primary mt-8 w-full sm:w-auto">
@@ -40,10 +33,10 @@ export function Pricing() {
 
         <article className="surface-card relative overflow-hidden p-7 sm:p-8">
           <div className="mt-3 flex flex-wrap items-end gap-x-3 gap-y-2">
-            <h3 className="text-[38px] font-semibold tracking-tight text-[var(--color-ink)] sm:text-[50px]">
+            <h3 className="text-[38px] font-semibold leading-none tracking-tight text-[var(--color-ink)] sm:text-[50px]">
               Paid
             </h3>
-            <div className="text-[18px] font-medium text-[var(--color-ink-soft)]">
+            <div className="pb-[0.08em] text-[18px] font-medium leading-none text-[var(--color-ink-soft)]">
               $0.01 per live activity
             </div>
           </div>
