@@ -12,7 +12,7 @@ export function Pricing() {
       </SectionHeading>
 
       <Reveal delay={60} className="mx-auto mt-12 grid max-w-5xl gap-5 lg:grid-cols-[1fr_1.15fr]">
-        <article className="surface-card relative overflow-hidden p-7 sm:p-8">
+        <article className="surface-card relative flex h-full flex-col overflow-hidden p-7 sm:p-8">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[color:var(--color-accent)]/50 to-transparent" />
           <h3 className="mt-3 text-[38px] font-semibold tracking-tight text-[var(--color-ink)] sm:text-[46px]">
             Free
@@ -26,12 +26,12 @@ export function Pricing() {
             <li>Detailed logs</li>
           </ul>
 
-          <Link href="/signup" className="btn-primary mt-8 w-full sm:w-auto">
+          <Link href="/signup" className="btn-primary mt-auto w-full sm:w-auto">
             Start Free
           </Link>
         </article>
 
-        <article className="surface-card relative overflow-hidden p-7 sm:p-8">
+        <article className="surface-card relative flex h-full flex-col overflow-hidden p-7 sm:p-8">
           <div className="mt-3 flex flex-wrap items-end gap-x-3 gap-y-2">
             <h3 className="text-[38px] font-semibold leading-none tracking-tight text-[var(--color-ink)] sm:text-[50px]">
               Paid
@@ -59,7 +59,7 @@ export function Pricing() {
             </li>
           </ul>
 
-          <Link href="/signup" className="btn-primary mt-8 w-full sm:w-auto">
+          <Link href="/signup" className="btn-primary mt-auto w-full sm:w-auto">
             Start Free
           </Link>
         </article>
