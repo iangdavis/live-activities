@@ -7,6 +7,8 @@ function isAppPath(pathname: string) {
   return (
     pathname === '/welcome' ||
     pathname.startsWith('/welcome/') ||
+    pathname === '/setup' ||
+    pathname.startsWith('/setup/') ||
     pathname === '/dashboard' ||
     pathname.startsWith('/dashboard/') ||
     pathname === '/projects' ||
@@ -43,6 +45,8 @@ export const config = {
   matcher: [
     '/dashboard',
     '/dashboard/:path*',
+    '/setup',
+    '/setup/:path*',
     '/projects',
     '/projects/:path*',
     '/activities',
