@@ -8,18 +8,13 @@ import { Notice } from '@/components/dashboard/ui'
 export default async function SetupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; create?: string }>
+  searchParams: Promise<{ error?: string }>
 }) {
   const session = await getSession()
   if (!session) redirect('/login')
 
-  const { error, create } = await searchParams
+  const { error } = await searchParams
   const projects = await listProjects(session.accountId)
-  const shouldCreate = create === '1'
-
-  if (projects.length > 0 && !shouldCreate) {
-    redirect(`/projects/${projects[0].id}`)
-  }
 
   return (
     <div className="flex min-h-[calc(100vh-9rem)] items-center justify-center">

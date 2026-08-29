@@ -24,7 +24,7 @@ export default async function DashboardHome() {
         <EmptyState
           title="No projects yet"
           body="Hit New project to create your first project and start seeing delivery health and activity metrics here."
-          actionHref="/setup?create=1"
+          actionHref="/setup"
           actionLabel="New project"
         />
       </div>
@@ -64,7 +64,7 @@ export default async function DashboardHome() {
   return (
     <div>
       <PageHeader title="Dashboard">
-        <Link href="/setup?create=1" className="btn-primary">
+        <Link href="/setup" className="btn-primary">
           New project
         </Link>
       </PageHeader>
