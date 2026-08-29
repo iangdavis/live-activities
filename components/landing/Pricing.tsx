@@ -25,9 +25,11 @@ export function Pricing() {
             <li>Detailed logs</li>
           </ul>
 
-          <Link href="/signup" className="btn-primary mt-auto">
-            Start Free
-          </Link>
+          <div className="mt-auto pt-8">
+            <Link href="/signup" className="btn-primary self-start">
+              Start Free
+            </Link>
+          </div>
         </article>
 
         <article className="surface-card relative flex h-full flex-col overflow-hidden p-7 sm:p-8">
@@ -58,9 +60,11 @@ export function Pricing() {
             </li>
           </ul>
 
-          <Link href="/signup" className="btn-primary mt-auto">
-            Start Free
-          </Link>
+          <div className="mt-auto pt-8">
+            <Link href="/signup" className="btn-primary self-start">
+              Start Free
+            </Link>
+          </div>
         </article>
       </Reveal>
 
