@@ -16,5 +16,5 @@ export default async function ApiKeysRedirectPage({
     orderBy: { createdAt: 'desc' },
   })
   if (first) redirect(`/projects/${first.id}`)
-  redirect('/projects')
+  redirect('/setup?create=1')
 }

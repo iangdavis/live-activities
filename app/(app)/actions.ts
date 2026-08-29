@@ -33,7 +33,7 @@ export async function createProjectAction(formData: FormData) {
   } catch (error) {
     unstable_rethrow(error)
     if (error instanceof ApiError) {
-      redirect(`/projects?error=${encodeURIComponent(error.message)}`)
+      redirect(`/setup?create=1&error=${encodeURIComponent(error.message)}`)
     }
     throw error
   }

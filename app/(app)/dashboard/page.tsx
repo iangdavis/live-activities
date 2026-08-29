@@ -24,7 +24,7 @@ export default async function DashboardHome() {
         <EmptyState
           title="No projects yet"
           body="Hit New project to create your first project and start seeing delivery health and activity metrics here."
-          actionHref="/setup"
+          actionHref="/setup?create=1"
           actionLabel="New project"
         />
       </div>
@@ -64,7 +64,7 @@ export default async function DashboardHome() {
   return (
     <div>
       <PageHeader title="Dashboard">
-        <Link href="/setup" className="btn-primary">
+        <Link href="/setup?create=1" className="btn-primary">
           New project
         </Link>
       </PageHeader>
@@ -127,8 +127,8 @@ export default async function DashboardHome() {
               <section className="surface-card p-6">
                 <h3 className="text-[16px] text-[var(--color-ink)]">Health note</h3>
                 <p className="mt-3 text-[13px] text-[var(--color-muted)]">
-                  Use this section to watch delivery health for the selected project. Setup lives in
-                  the setup screen.
+                  Use this section to watch delivery health for the selected project. APNs and key
+                  setup live on the project page.
                 </p>
               </section>
             </div>
