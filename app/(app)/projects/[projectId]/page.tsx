@@ -61,7 +61,12 @@ export default async function ProjectDetailPage({
 
   return (
     <div>
-      <PageHeader title={project.name} />
+      <div className="mb-8">
+        <p className="text-[12px] uppercase tracking-[0.22em] text-[var(--color-faint)]">
+          Project
+        </p>
+        <PageHeader title={project.name} />
+      </div>
       <Notice
         error={error || (!encryption.ok ? encryption.message : undefined)}
         saved={saved === '1'}

@@ -4,6 +4,7 @@ import { site } from '@/lib/config'
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/db'
+import { AppSidebarNav } from '@/components/dashboard/AppSidebarNav'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,17 +41,7 @@ export default async function DashboardLayout({
             </span>
           </Link>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col md:overflow-visible">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-[14px] text-[var(--color-muted)] hover:bg-white/[0.03] hover:text-[var(--color-ink)]"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <AppSidebarNav items={nav} />
         <form action="/api/auth/logout" method="POST" className="hidden px-3 pb-6 md:block">
           <button
             type="submit"

@@ -87,8 +87,9 @@ export async function updateProjectApns(
       ? decryptSecret(project.apnsKeyEncrypted)
       : null
 
-  if (input.apnsKeyPem?.trim()) {
-    apnsKeyEncrypted = encryptSecret(nextPrivateKey)
+  const submittedPrivateKey = input.apnsKeyPem?.trim() || null
+  if (submittedPrivateKey) {
+    apnsKeyEncrypted = encryptSecret(submittedPrivateKey)
   }
 
   let verificationError: string | null = null
