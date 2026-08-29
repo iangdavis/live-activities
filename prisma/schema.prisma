@@ -53,6 +53,9 @@ model Project {
   apnsKeyEncrypted String?
   bundleId         String?
   apnsEnvironment  ApnsEnvironment @default(sandbox)
+  apnsVerificationStatus ApnsVerificationStatus @default(required)
+  apnsVerificationError  String?
+  apnsVerifiedAt         DateTime?
 
   apiKeys    ApiKey[]
   activities Activity[]
@@ -64,6 +67,12 @@ model Project {
 enum ApnsEnvironment {
   sandbox
   production
+}
+
+enum ApnsVerificationStatus {
+  required
+  verified
+  failed
 }
 
 enum AccountPlan {

@@ -80,59 +80,69 @@ export async function updateProjectApns(
   const appleTeamId = input.appleTeamId.trim()
   const appleKeyId = input.appleKeyId.trim()
   const bundleId = input.bundleId.trim()
-  if (!appleTeamId || !appleKeyId || !bundleId) {
-    throw new ApiError(400, 'invalid_request', 'Team ID, Key ID, and Bundle ID are required.')
-  }
-  if (!/^[A-Z0-9]{10}$/.test(appleTeamId)) {
-    throw new ApiError(400, 'invalid_request', 'Team ID must be 10 uppercase letters or numbers.')
-  }
-  if (!/^[A-Z0-9]{10}$/.test(appleKeyId)) {
-    throw new ApiError(400, 'invalid_request', 'Key ID must be 10 uppercase letters or numbers.')
-  }
-  if (!/^[A-Za-z0-9.-]+$/.test(bundleId) || !bundleId.includes('.')) {
-    throw new ApiError(400, 'invalid_request', 'Bundle ID must look like com.example.app.')
-  }
-
   let apnsKeyEncrypted = project.apnsKeyEncrypted
   const nextPrivateKey = input.apnsKeyPem?.trim()
     ? input.apnsKeyPem.trim()
     : project.apnsKeyEncrypted
       ? decryptSecret(project.apnsKeyEncrypted)
       : null
-  if (!nextPrivateKey) {
-    throw new ApiError(400, 'invalid_request', 'Paste your APNs private key (.p8) to verify these settings.')
-  }
-
-  try {
-    await createApnsJwt({
-      teamId: appleTeamId,
-      keyId: appleKeyId,
-      privateKeyPem: nextPrivateKey,
-      bundleId,
-      environment: input.apnsEnvironment,
-    })
-  } catch (error) {
-    throw new ApiError(
-      400,
-      'invalid_request',
-      error instanceof Error
-        ? `APNs credential check failed: ${error.message}`
-        : 'APNs credential check failed. Check Team ID, Key ID, Bundle ID, and .p8 key.',
-    )
-  }
 
   if (input.apnsKeyPem?.trim()) {
     apnsKeyEncrypted = encryptSecret(nextPrivateKey)
   }
 
-  return prisma.project.update({
+  let verificationError: string | null = null
+  if (!appleTeamId || !appleKeyId || !bundleId) {
+    verificationError = 'Team ID, Key ID, and Bundle ID are required.'
+  } else if (!/^[A-Z0-9]{10}$/.test(appleTeamId)) {
+    verificationError = 'Team ID must be 10 uppercase letters or numbers.'
+  } else if (!/^[A-Z0-9]{10}$/.test(appleKeyId)) {
+    verificationError = 'Key ID must be 10 uppercase letters or numbers.'
+  } else if (!/^[A-Za-z0-9.-]+$/.test(bundleId) || !bundleId.includes('.')) {
+    verificationError = 'Bundle ID must look like com.example.app.'
+  } else if (!nextPrivateKey) {
+    verificationError = 'Paste your APNs private key (.p8) to verify these settings.'
+  } else {
+    try {
+      await createApnsJwt({
+        teamId: appleTeamId,
+        keyId: appleKeyId,
+        privateKeyPem: nextPrivateKey,
+        bundleId,
+        environment: input.apnsEnvironment,
+      })
+    } catch (error) {
+      verificationError = error instanceof Error
+        ? `APNs credential check failed: ${error.message}`
+        : 'APNs credential check failed. Check Team ID, Key ID, Bundle ID, and .p8 key.'
+    }
+  }
+
+  const updated = await prisma.project.update({
     where: { id: project.id },
     data: {
-      appleTeamId,
-      appleKeyId,
-      bundleId,
+      appleTeamId: appleTeamId || null,
+      appleKeyId: appleKeyId || null,
+      bundleId: bundleId || null,
       apnsEnvironment: input.apnsEnvironment,
       apnsKeyEncrypted,
+      apnsVerificationStatus: verificationError
+        ? 'failed'
+        : apnsKeyEncrypted
+          ? 'verified'
+          : 'required',
+      apnsVerificationError: verificationError,
+      apnsVerifiedAt: verificationError
+        ? null
+        : apnsKeyEncrypted
+          ? new Date()
+          : null,
     },
   })
+
+  if (verificationError) {
+    throw new ApiError(400, 'invalid_request', verificationError)
+  }
+
+  return updated
 }

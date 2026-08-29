@@ -26,10 +26,21 @@ export default async function ProjectDetailPage({
   const { error, saved, ok } = await searchParams
   const project = await getOwnedProject(session.accountId, projectId)
   const keys = await listApiKeys(session.accountId, project.id)
-  const apnsConfigured = Boolean(project.apnsKeyEncrypted)
   const encryption = encryptionKeyStatus()
   const publicKeys = keys.filter((key) => key.type === 'PUBLIC' && !key.revokedAt)
   const revealedPublicKey = publicKeys.find((key) => key.revealedKey)?.revealedKey ?? null
+  const apnsStatusTone =
+    project.apnsVerificationStatus === 'verified'
+      ? 'border-[color:var(--color-accent)]/25 bg-[color:var(--color-accent)]/10 text-[var(--color-accent-soft)]'
+      : project.apnsVerificationStatus === 'failed'
+        ? 'border-red-500/25 bg-red-500/10 text-red-300'
+        : 'border-white/10 bg-white/[0.03] text-[var(--color-muted)]'
+  const apnsStatusLabel =
+    project.apnsVerificationStatus === 'verified'
+      ? 'Verified'
+      : project.apnsVerificationStatus === 'failed'
+        ? 'Verification failed'
+        : 'Required'
 
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
   const [activeActivities, createdLast7d, deliveriesLast7d, sentLast7d, failedLast7d, latestActivity] =
@@ -97,17 +108,13 @@ export default async function ProjectDetailPage({
           <div className="flex items-start justify-between gap-3">
             <h2 className="text-[16px] text-[var(--color-ink)]">Apple / APNs</h2>
             <span
-              className={`rounded-full border px-2 py-0.5 font-mono text-[11px] uppercase tracking-wide ${
-                apnsConfigured
-                  ? 'border-[color:var(--color-accent)]/25 bg-[color:var(--color-accent)]/10 text-[var(--color-accent-soft)]'
-                  : 'border-white/10 bg-white/[0.03] text-[var(--color-muted)]'
-              }`}
+              className={`rounded-full border px-2 py-0.5 font-mono text-[11px] uppercase tracking-wide ${apnsStatusTone}`}
             >
-              {apnsConfigured ? 'Configured' : 'Required'}
+              {apnsStatusLabel}
             </span>
           </div>
           <p className="mt-2 text-[13px] text-[var(--color-muted)]">
-            {apnsConfigured
+            {project.apnsVerificationStatus === 'verified'
               ? 'A private key is stored (encrypted). Paste a new key only if you are rotating it.'
               : 'One-time setup: paste your Apple Team ID, Key ID, Bundle ID, and .p8 key so Live Hive can deliver Live Activity updates.'}{' '}
             Saving runs an APNs credential check before Live Hive accepts the settings.{' '}
@@ -115,6 +122,11 @@ export default async function ProjectDetailPage({
               APNs docs
             </a>
           </p>
+          {project.apnsVerificationStatus === 'failed' && project.apnsVerificationError ? (
+            <p className="mt-3 rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-[13px] text-red-300">
+              {project.apnsVerificationError}
+            </p>
+          ) : null}
           <form action={updateApnsAction} className="mt-4 space-y-3">
             <input type="hidden" name="projectId" value={project.id} />
             <div>
@@ -179,7 +191,7 @@ export default async function ProjectDetailPage({
                 name="apnsKeyPem"
                 className="field min-h-28 font-mono text-[13px]"
                 placeholder={
-                  apnsConfigured
+                  project.apnsVerificationStatus === 'verified'
                     ? 'Key on file. Paste a new key to rotate.'
                     : '-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----'
                 }
