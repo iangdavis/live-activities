@@ -7,7 +7,6 @@ import { prisma } from '@/lib/db'
 import { updateApnsAction } from '../../actions'
 import { Notice, PageHeader } from '@/components/dashboard/ui'
 import { ProjectApiKeys } from '@/components/dashboard/ProjectApiKeys'
-import { SetupChecklist } from '@/components/dashboard/SetupChecklist'
 import { XcodeSetupCard } from '@/components/dashboard/XcodeSetupCard'
 
 function percent(value: number) {
@@ -19,12 +18,12 @@ export default async function ProjectDetailPage({
   searchParams,
 }: {
   params: Promise<{ projectId: string }>
-  searchParams: Promise<{ error?: string; saved?: string }>
+  searchParams: Promise<{ error?: string; saved?: string; ok?: string }>
 }) {
   const session = await getSession()
   if (!session) redirect('/login')
   const { projectId } = await params
-  const { error, saved } = await searchParams
+  const { error, saved, ok } = await searchParams
   const project = await getOwnedProject(session.accountId, projectId)
   const keys = await listApiKeys(session.accountId, project.id)
   const apnsConfigured = Boolean(project.apnsKeyEncrypted)
@@ -55,6 +54,7 @@ export default async function ProjectDetailPage({
       <Notice
         error={error || (!encryption.ok ? encryption.message : undefined)}
         saved={saved === '1'}
+        ok={ok}
       />
 
       <div className="mb-6 grid gap-4 md:grid-cols-4">
@@ -92,14 +92,6 @@ export default async function ProjectDetailPage({
         </section>
       </div>
 
-      <SetupChecklist
-        apnsConfigured={apnsConfigured}
-        hasPublicKey={publicKeys.length > 0}
-        hasActivity={Boolean(latestActivity)}
-        hasDelivery={deliveriesLast7d > 0}
-        latestActivityHref={latestActivity ? `/activities/${latestActivity.id}` : undefined}
-      />
-
       <div>
         <section className="surface-card p-6">
           <div className="flex items-start justify-between gap-3">
@@ -118,6 +110,7 @@ export default async function ProjectDetailPage({
             {apnsConfigured
               ? 'A private key is stored (encrypted). Paste a new key only if you are rotating it.'
               : 'One-time setup: paste your Apple Team ID, Key ID, Bundle ID, and .p8 key so Live Hive can deliver Live Activity updates.'}{' '}
+            Saving runs an APNs credential check before Live Hive accepts the settings.{' '}
             <a href="/docs/apns" className="text-[var(--color-accent-soft)] hover:underline">
               APNs docs
             </a>

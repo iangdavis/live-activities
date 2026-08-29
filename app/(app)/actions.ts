@@ -53,7 +53,7 @@ export async function updateApnsAction(formData: FormData) {
           : 'sandbox',
       apnsKeyPem: String(formData.get('apnsKeyPem') || '') || undefined,
     })
-    redirect(`/projects/${projectId}?saved=1`)
+    redirect(`/projects/${projectId}?saved=1&ok=${encodeURIComponent('APNs credential check passed. Live Hive can sign pushes with these settings.')}`)
   } catch (error) {
     unstable_rethrow(error)
     const message =
