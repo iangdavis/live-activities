@@ -13,7 +13,6 @@ export function Pricing() {
 
       <Reveal delay={60} className="mx-auto mt-12 grid max-w-5xl gap-5 lg:grid-cols-[1fr_1.15fr]">
         <article className="surface-card relative flex h-full flex-col overflow-hidden p-7 sm:p-8">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[color:var(--color-accent)]/50 to-transparent" />
           <h3 className="mt-3 text-[38px] font-semibold tracking-tight text-[var(--color-ink)] sm:text-[46px]">
             Free
           </h3>
@@ -26,7 +25,7 @@ export function Pricing() {
             <li>Detailed logs</li>
           </ul>
 
-          <Link href="/signup" className="btn-primary mt-auto w-full sm:w-auto">
+          <Link href="/signup" className="btn-primary mt-12 w-full sm:w-auto">
             Start Free
           </Link>
         </article>
@@ -59,7 +58,7 @@ export function Pricing() {
             </li>
           </ul>
 
-          <Link href="/signup" className="btn-primary mt-auto w-full sm:w-auto">
+          <Link href="/signup" className="btn-primary mt-12 w-full sm:w-auto">
             Start Free
           </Link>
         </article>
