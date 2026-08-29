@@ -25,7 +25,7 @@ export function Pricing() {
             <li>Detailed logs</li>
           </ul>
 
-          <Link href="/signup" className="btn-primary mt-28 w-full sm:w-auto">
+          <Link href="/signup" className="btn-primary mt-auto pt-12 w-full sm:w-auto">
             Start Free
           </Link>
         </article>
@@ -58,7 +58,7 @@ export function Pricing() {
             </li>
           </ul>
 
-          <Link href="/signup" className="btn-primary mt-12 w-full sm:w-auto">
+          <Link href="/signup" className="btn-primary mt-auto pt-12 w-full sm:w-auto">
             Start Free
           </Link>
         </article>
