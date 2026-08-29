@@ -100,21 +100,7 @@ export default async function ProjectDetailPage({
         latestActivityHref={latestActivity ? `/activities/${latestActivity.id}` : undefined}
       />
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="surface-card p-6">
-          <h2 className="text-[16px] text-[var(--color-ink)]">Project credentials</h2>
-          <dl className="mt-4 space-y-3 text-[14px]">
-            <div>
-              <dt className="text-[var(--color-faint)]">Project ID</dt>
-              <dd className="mt-1 font-mono text-[var(--color-ink)]">{project.publicId}</dd>
-            </div>
-            <div>
-              <dt className="text-[var(--color-faint)]">Internal ID</dt>
-              <dd className="mt-1 font-mono text-[var(--color-ink-soft)]">{project.id}</dd>
-            </div>
-          </dl>
-        </section>
-
+      <div>
         <section className="surface-card p-6">
           <div className="flex items-start justify-between gap-3">
             <h2 className="text-[16px] text-[var(--color-ink)]">Apple / APNs</h2>
